@@ -17,6 +17,4 @@ understand Leptos.
 
 You can find more detailed docs for each part of the API at [Docs.rs](https://docs.rs/leptos/latest/leptos/).
 
-**Important Note**: This current version of the book reflects the `0.5.1` release. The CodeSandbox versions of the examples still reflect `0.4` and earlier APIs and are in the process of being updated.
-
 > The source code for the book is available [here](https://github.com/leptos-rs/book). PRs for typos or clarification are always welcome.
