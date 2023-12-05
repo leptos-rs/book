@@ -60,9 +60,7 @@ config = { procMacro = { ignored =
           # Optional:
           # "component",
           "server"
-        ]
-    }
-} }
+        ] } } }
 ```
 
 ```admonish info
