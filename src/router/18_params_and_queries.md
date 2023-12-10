@@ -56,7 +56,7 @@ let query = use_query::<ContactSearch>();
 // id: || -> usize
 let id = move || {
 	params.with(|params| {
-		params
+		params.as_ref()
 			.map(|params| params.id)
 			.unwrap_or_default()
 	})
