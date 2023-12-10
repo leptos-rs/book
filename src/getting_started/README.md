@@ -117,6 +117,7 @@ Trunk should automatically compile your app and open it in your default browser.
 If you make edits to `main.rs`, Trunk will recompile your source code and
 live-reload the page.
 
+> Due to an upstream [issue](https://github.com/thedodd/trunk/issues/597), `trunk` v0.17.5 will not work with live-reload on Windows. Use `trunk` v0.17.3 or [`trunk-ng`](https://github.com/thedodd/trunk/issues/597#issuecomment-1772944469) as a temporary workaround.
 
 Welcome to the world of UI development with Rust and WebAssembly (WASM), powered by Leptos and Trunk!
 
