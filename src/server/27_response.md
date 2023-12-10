@@ -21,7 +21,7 @@ pub async fn tea_and_cookies() -> Result<(), ServerFnError> {
 	// set a cookie in the HTTP response
 	let mut cookie = Cookie::build("biscuits", "yes").finish();
 	if let Ok(cookie) = HeaderValue::from_str(&cookie.to_string()) {
-		res.insert_header(header::SET_COOKIE, cookie);
+		response.insert_header(header::SET_COOKIE, cookie);
 	}
 }
 ```
