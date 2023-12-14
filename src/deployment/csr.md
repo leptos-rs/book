@@ -10,7 +10,9 @@ trunk build --release
 
 We've created several example repositories which show how to set up and deploy a Leptos CSR app to various hosting services.
 
-
+1. [Github Pages](#github-pages)
+2. [Vercel](#vercel)
+3. [Spin serverless webassembly](#spin---serverless-webassembly)
 
 
 ## Github Pages

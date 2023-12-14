@@ -53,6 +53,9 @@ CMD ["/app/leptos_start"]
 ## Deploy to Fly.io
 
 
+## Deploy to Shuttle.rs
+
+[Leptos Axum Starter Template for Shuttle.rs](https://github.com/Rust-WASI-WASM/shuttle-leptos-axum)
 
 ## Deploy to AWS Lambda
 
