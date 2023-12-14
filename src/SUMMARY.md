@@ -49,6 +49,9 @@
 - [Progressive Enhancement and Graceful Degradation](./progressive_enhancement/README.md)
   - [`<ActionForm/>`s](./progressive_enhancement/action_form.md)
 - [Deployment](./deployment/README.md)
+  - [Deploying CSR Apps](./deployment/csr.md)
+  - [CSR Apps with Tauri](./deployment/tauri.md)
+  - [Deploying SSR Apps](./deployment/ssr.md)
   - [Optimizing WASM Binary Size](./deployment/binary_size.md)
 - [Guide: Islands](./islands.md)
 
