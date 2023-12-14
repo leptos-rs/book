@@ -10,7 +10,7 @@ trunk build --release
 
 We've created several example repositories which show how to set up and deploy a Leptos CSR app to various hosting services.
 
-However, if you'd like to add a CSR template or share a github action for a different hosting service for CSR apps, feel free to open an issue on [the Leptos book's Github repo.](https://github.com/leptos-rs/book/issues)
+
 
 
 ## Github Pages
@@ -148,7 +148,7 @@ Note: Both the preview and deploy actions will need your Vercel credentials setu
 Finally, you're ready to simply copy and paste the two files - one for deployment, one for PR previews - from below or from [the example repo's `.github/workflows/` folder](https://github.com/diversable/vercel-leptos-CSR-deployment/tree/main/.github/workflows) into your own github workflows folder - then, on your next commit or PR deploys will occur automatically.
 
 
-Production deployment script:
+<i>Production deployment script: `vercel_deploy.yml`</i>
 
 ```admonish example collapsible=true
 
@@ -203,7 +203,7 @@ Production deployment script:
 
 ```
 
-Preview deployments script:
+<i>Preview deployments script: `vercel_preview.yml`</i>
 
 ```admonish example collapsible=true
 
@@ -326,8 +326,10 @@ Start by installing the [Spin CLI using the instructions, here](https://develope
 
 5. Copy and paste the following into your `.github/workflows/<SCRIPT_NAME>.yml` files
 
+6. With the 'preview' and 'deploy' scripts active, Github Actions will now generate previews on pull requests & deploy automatically on updates to your 'main' branch.
 
-Production deployment script: `spin_deploy.yml`
+
+<i>Production deployment script: `spin_deploy.yml`</i>
 ```admonish example collapsible=true
 
 	# For setup instructions needed for Fermyon Cloud, see:
@@ -423,7 +425,7 @@ Production deployment script: `spin_deploy.yml`
 
 ```
 
-Preview deployment script: `spin_preview.yml`
+<i>Preview deployment script: `spin_preview.yml`</i>>
 
 ```admonish example collapsible=true
 
@@ -526,3 +528,8 @@ Preview deployment script: `spin_preview.yml`
 
 See [the example repo here](https://github.com/diversable/leptos-spin-CSR).
 
+
+---
+
+
+Don't see your preferred hosting provider? If you'd like to add a CSR template or share a github action for a different hosting service for CSR apps, feel free to open an issue on [the Leptos book's Github repo.](https://github.com/leptos-rs/book/issues)
