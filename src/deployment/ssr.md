@@ -30,8 +30,11 @@ COPY . .
 RUN cargo leptos build --release -vv
 
 FROM rustlang/rust:nightly-bullseye as runner
+
+# --- NB: update binary name from "leptos-start" to match your app name in Cargo.toml ---
 # Copy the server binary to the /app directory
 COPY --from=builder /app/target/release/leptos-start /app/
+
 # /target/site contains our JS/WASM/CSS, etc.
 COPY --from=builder /app/target/site /app/site
 # Copy Cargo.toml if it’s needed at runtime
@@ -43,6 +46,8 @@ ENV RUST_LOG="info"
 ENV LEPTOS_SITE_ADDR="0.0.0.0:8080"
 ENV LEPTOS_SITE_ROOT="site"
 EXPOSE 8080
+
+# --- NB: update binary name from "leptos_start" to match your app name in Cargo.toml ---
 # Run the server
 CMD ["/app/leptos_start"]
 ```
@@ -50,10 +55,40 @@ CMD ["/app/leptos_start"]
 > Read more: [`gnu` and `musl` build files for Leptos apps](https://github.com/leptos-rs/leptos/issues/1152#issuecomment-1634916088).
 
 
+
 ## Deploy to Fly.io
+
+First, create a `Dockerfile` in the root of your application and fill it in with the suggested contents (above); make sure to update the binary names in the Dockerfile example
+to the name of your own application, and make other adjustments as necessary.
+
+Also, ensure you have the `flyctl` CLI tool installed, and have an account set up at [Fly.io](https://fly.io/). To install `flyctl` on MacOS, Linux, or Windows WSL, run:
+
+```sh
+curl -L https://fly.io/install.sh | sh
+```
+
+If you have issues, or for installing to other platforms [see the full instructions here](https://fly.io/docs/hands-on/install-flyctl/)
+
+Then login to Fly.io
+
+```sh
+fly auth login
+```
+
+and launch your app using the command
+
+```sh
+fly launch
+```
+
+The `flyctl` CLI tool will walk you through the process of deploying your app to Fly.io.
+
+
 
 
 ## Deploy to Shuttle.rs
+
+
 
 [Leptos Axum Starter Template for Shuttle.rs](https://github.com/Rust-WASI-WASM/shuttle-leptos-axum)
 
