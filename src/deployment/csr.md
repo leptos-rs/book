@@ -427,7 +427,7 @@ Start by installing the [Spin CLI using the instructions, here](https://develope
 
 ```
 
-<i>Preview deployment script: `spin_preview.yml`</i>>
+<i>Preview deployment script: `spin_preview.yml`</i>
 
 ```admonish example collapsible=true
 

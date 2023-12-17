@@ -1,5 +1,9 @@
 # Deploying a Full-Stack SSR App
 
+
+
+## Creating a Dockerfile
+
 The most popular way for people to deploy full-stack apps built with `cargo-leptos` is to use a cloud hosting service that supports deployment via a Docker build. Here’s a sample `Dockerfile`, which is based on the one we use to deploy the Leptos website.
 
 ```dockerfile
@@ -130,13 +134,18 @@ To set up the Github Actions deployment workflow, copy the following into a `.gi
 
 On the next commit to your Github `main` branch, your project will automatically deploy to Fly.io.
 
-
-## Deploy to Shuttle.rs
-
+See [the example repo here](https://github.com/diversable/fly-io-leptos-ssr-test-deploy).
 
 
-[Leptos Axum Starter Template for Shuttle.rs](https://github.com/Rust-WASI-WASM/shuttle-leptos-axum)
+
 
 ## Deploy to AWS Lambda
 
-[Leptos Axum Starter Template for AWS Lambda](https://github.com/leptos-rs/start-aws)
+Leptos has recently gained official support for AWS Lambda: see the [Leptos Axum Starter Template for AWS Lambda](https://github.com/leptos-rs/start-aws) for instructions on working with Leptos & AWS Lambda functions.
+
+
+## Deploy to Shuttle.rs
+
+Unfortunately, Leptos is not currently *officially* supported with the Shuttle.rs service.
+
+[Leptos Axum Starter Template for Shuttle.rs](https://github.com/Rust-WASI-WASM/shuttle-leptos-axum)
