@@ -202,7 +202,7 @@ signals do keep their reactivity if you pass them into the view.
 Note that I changed the `set_data.update()` to a `data.with()`. `.with()` is the
 non-cloning way of accessing a signal’s value. In this case, we are only updating
 the internal values, not updating the list of values: because signals maintain their
-own state, we don’t actual need to update the `data` signal at all, so the immutable
+own state, we don’t actually need to update the `data` signal at all, so the immutable
 `.with()` is fine here.
 
 > In fact, this version doesn’t update `data`, so the `<For/>` is essentially a static
