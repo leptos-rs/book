@@ -52,10 +52,17 @@ reactively update when the signal changes.
 Now every time I click the button, the text should toggle between red and black as
 the number switches between even and odd.
 
-Some CSS class names can’t be directly parsed by the `view` macro, especially if they include a mix of dashes and numbers or other characters. In that case, you can use a tuple syntax: `class=("name", value)` still directly updates a single class.
-
 ```rust
-class=("button-20", move || count() % 2 == 1)
+<button
+    on:click=move |_| {
+        set_count.update(|n| *n += 1);
+    }
+    // the class: syntax reactively updates a single class
+    // here, we'll set the `red` class when `count` is odd
+    class:red=move || count() % 2 == 1
+>
+    "Click me"
+</button>
 ```
 
 > If you’re following along, make sure you go into your `index.html` and add something like this:
@@ -67,6 +74,12 @@ class=("button-20", move || count() % 2 == 1)
 >   }
 > </style>
 > ```
+
+Some CSS class names can’t be directly parsed by the `view` macro, especially if they include a mix of dashes and numbers or other characters. In that case, you can use a tuple syntax: `class=("name", value)` still directly updates a single class.
+
+```rust
+class=("button-20", move || count() % 2 == 1)
+```
 
 ## Dynamic Styles
 
@@ -172,7 +185,7 @@ for expensive calculations.
 <iframe src="https://codesandbox.io/p/sandbox/2-dynamic-attributes-0-5-lwdrpm?file=%2Fsrc%2Fmain.rs%3A1%2C1" width="100%" height="1000px" style="max-height: 100vh"></iframe>
 
 <details>
-<summary>Code Sandbox Source</summary>
+<summary>CodeSandbox Source</summary>
 
 ```rust
 use leptos::*;
