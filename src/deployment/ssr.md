@@ -1,11 +1,11 @@
 # Deploying a Full-Stack SSR App
 
-It's possible to deploy Leptos fullstack, SSR apps to any number of server or container hosting services. The *easiest* way to get a Leptos SSR app into production might be to use a VPS service and either running Leptos natively in a VM ([see here for more details](https://github.com/leptos-rs/start-axum?tab=readme-ov-file#executing-a-server-on-a-remote-machine-without-the-toolchain)), or by containerizing your Leptos app and running it in [Podman](https://podman.io/) or [Docker](https://www.docker.com/) on any colocated or cloud server.
+It's possible to deploy Leptos fullstack, SSR apps to any number of server or container hosting services. The most simple way to get a Leptos SSR app into production might be to use a VPS service and either run Leptos natively in a VM ([see here for more details](https://github.com/leptos-rs/start-axum?tab=readme-ov-file#executing-a-server-on-a-remote-machine-without-the-toolchain)). Alternatively, you could containerize your Leptos app and run it in [Podman](https://podman.io/) or [Docker](https://www.docker.com/) on any colocated or cloud server.
 
 There are a multitude of different deployment setups and hosting services, and in general, Leptos itself is agnostic to the deployment setup you use. With this diversity of deployment targets in mind, on this page we will go over:
 - [creating a `Containerfile` (or `Dockerfile`) for use with Leptos SSR apps](#creating-a-containerfile)
 - Using a `Dockerfile` to [deploy to a cloud service](#cloud-deployments) - [for example, Fly.io](#deploy-to-flyio)
-- Deploying Leptos to [serverless runtimes](#deploy-to-serverless-runtimes) - for example, [AWS Lambda](#aws-lambda) and [JS-hosted WASM runtimes like Deno](#deno--cloudflare-workers)
+- Deploying Leptos to [serverless runtimes](#deploy-to-serverless-runtimes) - for example, [AWS Lambda](#aws-lambda) and [JS-hosted WASM runtimes like Deno & Cloudflare](#deno--cloudflare-workers)
 - [Platforms that have not yet gained Leptos SSR support](#currently-unsupported-platforms)
 
 *Note: Leptos does not endorse the use of any particular method of deployment or hosting service.*
