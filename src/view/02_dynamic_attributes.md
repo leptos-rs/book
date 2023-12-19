@@ -160,7 +160,7 @@ places in your application with minimal overhead.
 Note: Using a derived signal like this means that the calculation runs once per
 signal change (when `count()` changes) and once per place we access `double_count`;
 in other words, twice. This is a very cheap calculation, so that’s fine.
-We’ll look at memos in a later chapter, which re designed to solve this problem
+We’ll look at memos in a later chapter, which were designed to solve this problem
 for expensive calculations.
 
 > #### Advanced Topic: Injecting Raw HTML
