@@ -111,7 +111,8 @@ to our view:
 ```rust
 <progress
     max="50"
-    // signals are functions, so this <=> `move || count.get()`
+    // signals are functions, so `value=count` and `value=move || count.get()`
+    // are interchangeable.
     value=count
 />
 ```
