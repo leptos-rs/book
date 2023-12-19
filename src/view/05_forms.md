@@ -137,6 +137,54 @@ The view should be pretty self-explanatory by now. Note two things:
 2. We use `node_ref` to fill the `NodeRef`. (Older examples sometimes use `_ref`.
    They are the same thing, but `node_ref` has better rust-analyzer support.)
 
+## Special Cases: `<textarea>` and `<select>`
+
+Two form elements tend to cause some confusion, in different ways.
+
+### `<textarea>`
+
+Unlike `<input>`, the `<textarea>` element does not support a `value` attribute.
+Instead, it receives its value as a plain text node in its HTML children,
+
+In the current version of Leptos (in fact in Leptos 0.1-0.5), creating a dynamic child
+inserts a comment marker node. This can cause incorrect `<textarea>` rendering (and issues
+during hydration) if you try to use it to show dynamic content.
+
+Instead, you can pass a non-reactive initial value as a child, and use `prop:value` to
+set its current value. (`<textarea>` doesn’t support the `value` attribut, but _does_
+support the `value` property...)
+
+```rust
+view! {
+    <textarea
+        prop:value=move || some_value.get()
+        on:input=/* etc */
+    >
+        /* untracked, plain-text initial value */
+        {untrack(move || some_value.get())}
+    </textarea>
+}
+```
+
+### `<select>`
+
+The `<select>` element also does not have a `value` attribute, _or_ a `value` property.
+Instead, its value is determined by the `selected` attribute of its `<option>`
+fields. Some frameworks obscure this with a `value` field on `<select>`; if you try this
+in Leptos (or vanilla JavaScript) it won’t work.
+
+Instead, use the `selected` field:
+
+```rust
+view! {
+    <select>
+        <option selected=move || count.get() == 0>"0"</option>
+        <option selected=move || count.get() == 1>"1"</option>
+        <option selected=move || count.get() == 2>"2"</option>
+    </select>
+}
+```
+
 [Click to open CodeSandbox.](https://codesandbox.io/p/sandbox/5-forms-0-5-rf2t7c?file=%2Fsrc%2Fmain.rs%3A1%2C1)
 
 <iframe src="https://codesandbox.io/p/sandbox/5-forms-0-5-rf2t7c?file=%2Fsrc%2Fmain.rs%3A1%2C1" width="100%" height="1000px" style="max-height: 100vh"></iframe>
