@@ -75,7 +75,7 @@ Deploying a Leptos CSR app to Github pages is a simple affair. First, go to your
 
 
 		- name: Download and install Trunk binary
-			run: wget -qO- https://github.com/trunk-rs/trunk/releases/download/v0.18.1/trunk-x86_64-unknown-linux-gnu.tar.gz | tar -xzf-
+			run: wget -qO- https://github.com/trunk-rs/trunk/releases/download/v0.18.2/trunk-x86_64-unknown-linux-gnu.tar.gz | tar -xzf-
 
 		- name: Build with Trunk
 			# "${GITHUB_REPOSITORY#*/}" evaluates into the name of the repository
@@ -187,7 +187,7 @@ Finally, you're ready to simply copy and paste the two files - one for deploymen
 			cargo fmt --check
 
 		- name: Download and install Trunk binary
-			run: wget -qO- https://github.com/trunk-rs/trunk/releases/download/v0.18.1/trunk-x86_64-unknown-linux-gnu.tar.gz | tar -xzf-
+			run: wget -qO- https://github.com/trunk-rs/trunk/releases/download/v0.18.2/trunk-x86_64-unknown-linux-gnu.tar.gz | tar -xzf-
 
 
 		- name: Build with Trunk
@@ -286,7 +286,7 @@ Finally, you're ready to simply copy and paste the two files - one for deploymen
 			run: rustup target add wasm32-unknown-unknown
 
 		- name: Download and install Trunk binary
-			run: wget -qO- https://github.com/trunk-rs/trunk/releases/download/v0.18.1/trunk-x86_64-unknown-linux-gnu.tar.gz | tar -xzf-
+			run: wget -qO- https://github.com/trunk-rs/trunk/releases/download/v0.18.2/trunk-x86_64-unknown-linux-gnu.tar.gz | tar -xzf-
 
 
 		- name: Build with Trunk
@@ -396,7 +396,7 @@ Start by installing the [Spin CLI using the instructions, here](https://develope
 
 
 		- name: Download and install Trunk binary
-			run: wget -qO- https://github.com/trunk-rs/trunk/releases/download/v0.18.1/trunk-x86_64-unknown-linux-gnu.tar.gz | tar -xzf-
+			run: wget -qO- https://github.com/trunk-rs/trunk/releases/download/v0.18.2/trunk-x86_64-unknown-linux-gnu.tar.gz | tar -xzf-
 
 
 		- name: Build with Trunk
@@ -495,7 +495,7 @@ Start by installing the [Spin CLI using the instructions, here](https://develope
 
 
 		- name: Download and install Trunk binary
-			run: wget -qO- https://github.com/trunk-rs/trunk/releases/download/v0.18.1/trunk-x86_64-unknown-linux-gnu.tar.gz | tar -xzf-
+			run: wget -qO- https://github.com/trunk-rs/trunk/releases/download/v0.18.2/trunk-x86_64-unknown-linux-gnu.tar.gz | tar -xzf-
 
 
 		- name: Build with Trunk

@@ -104,7 +104,6 @@ By default, Fly.io will auto-stop machines that don't have traffic coming to the
 [See this page in the Fly.io docs for more details](https://fly.io/docs/apps/autostart-stop/).
 ```
 
-
 If you would prefer to use Github Actions to manage your deployments, you will need to create a new access token via the [Fly.io](https://fly.io/) web UI.
 
 Go to "Account" > "Access Tokens" and create a token named something like "github_actions", then add the token to your Github repo's secrets by going into your project's Github repo, then clicking
