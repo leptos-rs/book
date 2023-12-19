@@ -10,9 +10,12 @@ trunk build --release
 
 We've created several example repositories which show how to set up and deploy a Leptos CSR app to various hosting services.
 
-1. [Github Pages](#github-pages)
-2. [Vercel](#vercel)
-3. [Spin serverless webassembly](#spin---serverless-webassembly)
+*Note: Leptos does not endorse the use of any particular hosting service - feel free to use any service that supports static site deploys.*
+
+Examples:
+- [Github Pages](#github-pages)
+- [Vercel](#vercel)
+- [Spin (serverless WebAssembly)](#spin---serverless-webassembly)
 
 
 ## Github Pages
@@ -72,7 +75,7 @@ Deploying a Leptos CSR app to Github pages is a simple affair. First, go to your
 
 
 		- name: Download and install Trunk binary
-			run: wget -qO- https://github.com/trunk-rs/trunk/releases/download/v0.18.0/trunk-x86_64-unknown-linux-gnu.tar.gz | tar -xzf-
+			run: wget -qO- https://github.com/trunk-rs/trunk/releases/download/v0.18.1/trunk-x86_64-unknown-linux-gnu.tar.gz | tar -xzf-
 
 		- name: Build with Trunk
 			# "${GITHUB_REPOSITORY#*/}" evaluates into the name of the repository
@@ -184,7 +187,7 @@ Finally, you're ready to simply copy and paste the two files - one for deploymen
 			cargo fmt --check
 
 		- name: Download and install Trunk binary
-			run: wget -qO- https://github.com/trunk-rs/trunk/releases/download/v0.18.0/trunk-x86_64-unknown-linux-gnu.tar.gz | tar -xzf-
+			run: wget -qO- https://github.com/trunk-rs/trunk/releases/download/v0.18.1/trunk-x86_64-unknown-linux-gnu.tar.gz | tar -xzf-
 
 
 		- name: Build with Trunk
@@ -283,7 +286,7 @@ Finally, you're ready to simply copy and paste the two files - one for deploymen
 			run: rustup target add wasm32-unknown-unknown
 
 		- name: Download and install Trunk binary
-			run: wget -qO- https://github.com/trunk-rs/trunk/releases/download/v0.18.0/trunk-x86_64-unknown-linux-gnu.tar.gz | tar -xzf-
+			run: wget -qO- https://github.com/trunk-rs/trunk/releases/download/v0.18.1/trunk-x86_64-unknown-linux-gnu.tar.gz | tar -xzf-
 
 
 		- name: Build with Trunk
@@ -326,7 +329,7 @@ Start by installing the [Spin CLI using the instructions, here](https://develope
 
 4. Go into your Github repo and open "Settings" > "Secrets and Variables" > "Actions" and add the Fermyon cloud token to "Repository secrets" using the variable name "FERMYON_CLOUD_TOKEN"
 
-5. Copy and paste the following into your `.github/workflows/<SCRIPT_NAME>.yml` files
+5. Copy and paste the following Github Actions scripts (below) into your `.github/workflows/<SCRIPT_NAME>.yml` files
 
 6. With the 'preview' and 'deploy' scripts active, Github Actions will now generate previews on pull requests & deploy automatically on updates to your 'main' branch.
 
@@ -393,7 +396,7 @@ Start by installing the [Spin CLI using the instructions, here](https://develope
 
 
 		- name: Download and install Trunk binary
-			run: wget -qO- https://github.com/trunk-rs/trunk/releases/download/v0.18.0/trunk-x86_64-unknown-linux-gnu.tar.gz | tar -xzf-
+			run: wget -qO- https://github.com/trunk-rs/trunk/releases/download/v0.18.1/trunk-x86_64-unknown-linux-gnu.tar.gz | tar -xzf-
 
 
 		- name: Build with Trunk
@@ -492,7 +495,7 @@ Start by installing the [Spin CLI using the instructions, here](https://develope
 
 
 		- name: Download and install Trunk binary
-			run: wget -qO- https://github.com/trunk-rs/trunk/releases/download/v0.18.0/trunk-x86_64-unknown-linux-gnu.tar.gz | tar -xzf-
+			run: wget -qO- https://github.com/trunk-rs/trunk/releases/download/v0.18.1/trunk-x86_64-unknown-linux-gnu.tar.gz | tar -xzf-
 
 
 		- name: Build with Trunk
@@ -529,9 +532,3 @@ Start by installing the [Spin CLI using the instructions, here](https://develope
 ```
 
 See [the example repo here](https://github.com/diversable/leptos-spin-CSR).
-
-
----
-
-
-Don't see your preferred hosting provider? If you'd like to add a CSR template or share a github action for a different hosting service for CSR apps, feel free to open an issue on [the Leptos book's Github repo.](https://github.com/leptos-rs/book/issues)
