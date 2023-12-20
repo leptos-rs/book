@@ -173,7 +173,16 @@ While the initial setup for JS-hosted WASM runtimes is not onerous, the more imp
 If you're willing to live with the limitations of WASM server-side, the best place to get started right now is by checking out the [example of running Leptos with Deno](https://github.com/leptos-rs/leptos/tree/main/examples/hackernews_js_fetch) in the official Leptos Github repo.
 
 
-## Currently Unsupported Platforms
+## Platforms Working on Leptos Support
+
+### Deploy to Spin Serverless WASI (with Leptos SSR)
+
+WebAssembly on the server has been gaining steam lately, and the developers of the open source serverless WebAssembly framework Spin are working on natively supporting Leptos. While the Leptos-Spin SSR integration is still in its early stages, there is a working example you may wish to try out.
+
+The full set of instructions to get Leptos SSR & Spin working together are available as [a post on the Fermyon blog](
+https://www.fermyon.com/blog/leptos-spin-get-started), or if you want to skip the article and just start playing around with a working starter repo, [see here](https://github.com/diversable/leptos-spin-ssr-test).
+
+
 
 ### Deploy to Shuttle.rs
 
