@@ -205,6 +205,7 @@ fn App() -> impl IntoView {
             on:click=move |_| {
                 set_count.update(|n| *n += 1);
             }
+
             // the class: syntax reactively updates a single class
             // here, we'll set the `red` class when `count` is odd
             class:red=move || count() % 2 == 1
@@ -223,8 +224,7 @@ fn App() -> impl IntoView {
             // reactively sets that attribute
             // signals are functions, so this <=> `move || count.get()`
             value=count
-        >
-        </progress>
+        ></progress>
         <br/>
 
         // This progress bar will use `double_count`
@@ -234,34 +234,7 @@ fn App() -> impl IntoView {
             // derived signals are functions, so they can also
             // reactive update the DOM
             value=double_count
-        >
-        </progress>
-        <p>"Count: " {count}</p>
-        <p>"Double Count: " {double_count}</p>
-    }
-}
-
-fn main() {
-    leptos::mount_to_body(App)
-}
-
-            // passing a function to an attribute
-            // reactively sets that attribute
-            // signals are functions, so this <=> `move || count.get()`
-            value=count
-        >
-        </progress>
-        <br/>
-
-        // This progress bar will use `double_count`
-        // so it should move twice as fast!
-        <progress
-            max="50"
-            // derived signals are functions, so they can also
-            // reactive update the DOM
-            value=double_count
-        >
-        </progress>
+        ></progress>
         <p>"Count: " {count}</p>
         <p>"Double Count: " {double_count}</p>
     }
