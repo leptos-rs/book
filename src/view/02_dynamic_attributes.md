@@ -86,15 +86,33 @@ class=("button-20", move || count() % 2 == 1)
 Individual CSS properties can be directly updated with a similar `style:` syntax.
 
 ```rust
+// Signals holding dynamic data
 let (x, set_x) = create_signal(0);
 let (y, set_y) = create_signal(0);
 view! {
+
+    // Buttons updating dynamic data
+    <button
+        on:click={move |_| {
+            set_x.update(|n| *n += 10);
+        }}
+    >
+        "Move x!"
+    </button>
+    <button
+        on:click={move |_| {
+            set_y.update(|n| *n += 10);
+        }}
+    >
+        "Move y!"
+    </button>
+
+    // Dynamic Styles
     <div
         style="position: absolute"
         style:left=move || format!("{}px", x() + 100)
         style:top=move || format!("{}px", y() + 100)
         style:background-color=move || format!("rgb({}, {}, 100)", x(), y())
-        style=("--columns", x)
     >
         "Moves when coordinates change"
     </div>
