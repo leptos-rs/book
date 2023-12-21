@@ -92,8 +92,9 @@ Individual CSS properties can be directly updated with a similar `style:` syntax
                 on:click={move |_| {
                     set_x.update(|n| *n += 10);
                 }}
-                // Leptos adds these to a single html style attribute
+                // set the `style` attribute
                 style="position: absolute"
+                // and toggle individual CSS properties with `style:`
                 style:left=move || format!("{}px", x() + 100)
                 style:background-color=move || format!("rgb({}, {}, 100)", x(), 100)
                 style:max-width="400px"
