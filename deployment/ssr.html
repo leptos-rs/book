@@ -1,0 +1,372 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Deploying SSR Apps</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href=".././mdbook-admonish.css">
+
+    </head>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('light')
+            html.classList.add(theme);
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../01_introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="../getting_started/index.html"><strong aria-hidden="true">2.</strong> Getting Started</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../getting_started/leptos_dx.html"><strong aria-hidden="true">2.1.</strong> Leptos DX</a></li><li class="chapter-item expanded "><a href="../getting_started/community_crates.html"><strong aria-hidden="true">2.2.</strong> The Leptos Community and leptos-* Crates</a></li></ol></li><li class="chapter-item expanded "><a href="../view/index.html"><strong aria-hidden="true">3.</strong> Part 1: Building User Interfaces</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../view/01_basic_component.html"><strong aria-hidden="true">3.1.</strong> A Basic Component</a></li><li class="chapter-item expanded "><a href="../view/02_dynamic_attributes.html"><strong aria-hidden="true">3.2.</strong> Dynamic Attributes</a></li><li class="chapter-item expanded "><a href="../view/03_components.html"><strong aria-hidden="true">3.3.</strong> Components and Props</a></li><li class="chapter-item expanded "><a href="../view/04_iteration.html"><strong aria-hidden="true">3.4.</strong> Iteration</a></li><li class="chapter-item expanded "><a href="../view/04b_iteration.html"><strong aria-hidden="true">3.5.</strong> Iterating over More Complex Data</a></li><li class="chapter-item expanded "><a href="../view/05_forms.html"><strong aria-hidden="true">3.6.</strong> Forms and Inputs</a></li><li class="chapter-item expanded "><a href="../view/06_control_flow.html"><strong aria-hidden="true">3.7.</strong> Control Flow</a></li><li class="chapter-item expanded "><a href="../view/07_errors.html"><strong aria-hidden="true">3.8.</strong> Error Handling</a></li><li class="chapter-item expanded "><a href="../view/08_parent_child.html"><strong aria-hidden="true">3.9.</strong> Parent-Child Communication</a></li><li class="chapter-item expanded "><a href="../view/09_component_children.html"><strong aria-hidden="true">3.10.</strong> Passing Children to Components</a></li><li class="chapter-item expanded "><a href="../view/builder.html"><strong aria-hidden="true">3.11.</strong> No Macros: The View Builder Syntax</a></li></ol></li><li class="chapter-item expanded "><a href="../reactivity/index.html"><strong aria-hidden="true">4.</strong> Reactivity</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../reactivity/working_with_signals.html"><strong aria-hidden="true">4.1.</strong> Working with Signals</a></li><li class="chapter-item expanded "><a href="../reactivity/14_create_effect.html"><strong aria-hidden="true">4.2.</strong> Responding to Changes with create_effect</a></li><li class="chapter-item expanded "><a href="../reactivity/interlude_functions.html"><strong aria-hidden="true">4.3.</strong> Interlude: Reactivity and Functions</a></li></ol></li><li class="chapter-item expanded "><a href="../testing.html"><strong aria-hidden="true">5.</strong> Testing</a></li><li class="chapter-item expanded "><a href="../async/index.html"><strong aria-hidden="true">6.</strong> Async</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../async/10_resources.html"><strong aria-hidden="true">6.1.</strong> Loading Data with Resources</a></li><li class="chapter-item expanded "><a href="../async/11_suspense.html"><strong aria-hidden="true">6.2.</strong> Suspense</a></li><li class="chapter-item expanded "><a href="../async/12_transition.html"><strong aria-hidden="true">6.3.</strong> Transition</a></li><li class="chapter-item expanded "><a href="../async/13_actions.html"><strong aria-hidden="true">6.4.</strong> Actions</a></li></ol></li><li class="chapter-item expanded "><a href="../interlude_projecting_children.html"><strong aria-hidden="true">7.</strong> Interlude: Projecting Children</a></li><li class="chapter-item expanded "><a href="../15_global_state.html"><strong aria-hidden="true">8.</strong> Global State Management</a></li><li class="chapter-item expanded "><a href="../router/index.html"><strong aria-hidden="true">9.</strong> Router</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../router/16_routes.html"><strong aria-hidden="true">9.1.</strong> Defining &lt;Routes/&gt;</a></li><li class="chapter-item expanded "><a href="../router/17_nested_routing.html"><strong aria-hidden="true">9.2.</strong> Nested Routing</a></li><li class="chapter-item expanded "><a href="../router/18_params_and_queries.html"><strong aria-hidden="true">9.3.</strong> Params and Queries</a></li><li class="chapter-item expanded "><a href="../router/19_a.html"><strong aria-hidden="true">9.4.</strong> &lt;A/&gt;</a></li><li class="chapter-item expanded "><a href="../router/20_form.html"><strong aria-hidden="true">9.5.</strong> &lt;Form/&gt;</a></li></ol></li><li class="chapter-item expanded "><a href="../interlude_styling.html"><strong aria-hidden="true">10.</strong> Interlude: Styling</a></li><li class="chapter-item expanded "><a href="../metadata.html"><strong aria-hidden="true">11.</strong> Metadata</a></li><li class="chapter-item expanded "><a href="../csr_wrapping_up.html"><strong aria-hidden="true">12.</strong> Client-Side Rendering: Wrapping Up</a></li><li class="chapter-item expanded "><a href="../ssr/index.html"><strong aria-hidden="true">13.</strong> Part 2: Server Side Rendering</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../ssr/21_cargo_leptos.html"><strong aria-hidden="true">13.1.</strong> cargo-leptos</a></li><li class="chapter-item expanded "><a href="../ssr/22_life_cycle.html"><strong aria-hidden="true">13.2.</strong> The Life of a Page Load</a></li><li class="chapter-item expanded "><a href="../ssr/23_ssr_modes.html"><strong aria-hidden="true">13.3.</strong> Async Rendering and SSR “Modes”</a></li><li class="chapter-item expanded "><a href="../ssr/24_hydration_bugs.html"><strong aria-hidden="true">13.4.</strong> Hydration Bugs</a></li></ol></li><li class="chapter-item expanded "><a href="../server/index.html"><strong aria-hidden="true">14.</strong> Working with the Server</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../server/25_server_functions.html"><strong aria-hidden="true">14.1.</strong> Server Functions</a></li><li class="chapter-item expanded "><a href="../server/26_extractors.html"><strong aria-hidden="true">14.2.</strong> Extractors</a></li><li class="chapter-item expanded "><a href="../server/27_response.html"><strong aria-hidden="true">14.3.</strong> Responses and Redirects</a></li></ol></li><li class="chapter-item expanded "><a href="../progressive_enhancement/index.html"><strong aria-hidden="true">15.</strong> Progressive Enhancement and Graceful Degradation</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../progressive_enhancement/action_form.html"><strong aria-hidden="true">15.1.</strong> &lt;ActionForm/&gt;s</a></li></ol></li><li class="chapter-item expanded "><a href="../deployment/index.html"><strong aria-hidden="true">16.</strong> Deployment</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../deployment/csr.html"><strong aria-hidden="true">16.1.</strong> Deploying CSR Apps</a></li><li class="chapter-item expanded "><a href="../deployment/ssr.html" class="active"><strong aria-hidden="true">16.2.</strong> Deploying SSR Apps</a></li><li class="chapter-item expanded "><a href="../deployment/binary_size.html"><strong aria-hidden="true">16.3.</strong> Optimizing WASM Binary Size</a></li></ol></li><li class="chapter-item expanded "><a href="../islands.html"><strong aria-hidden="true">17.</strong> Guide: Islands</a></li><li class="chapter-item expanded "><a href="../appendix_reactive_graph.html"><strong aria-hidden="true">18.</strong> Appendix: How Does the Reactive System Work?</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title"></h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="deploying-a-full-stack-ssr-app"><a class="header" href="#deploying-a-full-stack-ssr-app">Deploying a Full-Stack SSR App</a></h1>
+<p>It's possible to deploy Leptos fullstack, SSR apps to any number of server or container hosting services. The most simple way to get a Leptos SSR app into production might be to use a VPS service and either run Leptos natively in a VM (<a href="https://github.com/leptos-rs/start-axum?tab=readme-ov-file#executing-a-server-on-a-remote-machine-without-the-toolchain">see here for more details</a>). Alternatively, you could containerize your Leptos app and run it in <a href="https://podman.io/">Podman</a> or <a href="https://www.docker.com/">Docker</a> on any colocated or cloud server.</p>
+<p>There are a multitude of different deployment setups and hosting services, and in general, Leptos itself is agnostic to the deployment setup you use. With this diversity of deployment targets in mind, on this page we will go over:</p>
+<ul>
+<li><a href="#creating-a-containerfile">creating a <code>Containerfile</code> (or <code>Dockerfile</code>) for use with Leptos SSR apps</a></li>
+<li>Using a <code>Dockerfile</code> to <a href="#cloud-deployments">deploy to a cloud service</a> - <a href="#deploy-to-flyio">for example, Fly.io</a></li>
+<li>Deploying Leptos to <a href="#deploy-to-serverless-runtimes">serverless runtimes</a> - for example, <a href="#aws-lambda">AWS Lambda</a> and <a href="#deno--cloudflare-workers">JS-hosted WASM runtimes like Deno &amp; Cloudflare</a></li>
+<li><a href="#currently-unsupported-platforms">Platforms that have not yet gained Leptos SSR support</a></li>
+</ul>
+<p><em>Note: Leptos does not endorse the use of any particular method of deployment or hosting service.</em></p>
+<h2 id="creating-a-containerfile"><a class="header" href="#creating-a-containerfile">Creating a Containerfile</a></h2>
+<p>The most popular way for people to deploy full-stack apps built with <code>cargo-leptos</code> is to use a cloud hosting service that supports deployment via a Podman or Docker build. Here’s a sample <code>Containerfile</code> / <code>Dockerfile</code>, which is based on the one we use to deploy the Leptos website.</p>
+<pre><code class="language-dockerfile"># Get started with a build env with Rust nightly
+FROM rustlang/rust:nightly-bullseye as builder
+
+# If you’re using stable, use this instead
+# FROM rust:1.74-bullseye as builder
+
+# Install cargo-binstall, which makes it easier to install other
+# cargo extensions like cargo-leptos
+RUN wget https://github.com/cargo-bins/cargo-binstall/releases/latest/download/cargo-binstall-x86_64-unknown-linux-musl.tgz
+RUN tar -xvf cargo-binstall-x86_64-unknown-linux-musl.tgz
+RUN cp cargo-binstall /usr/local/cargo/bin
+
+# Install cargo-leptos
+RUN cargo binstall cargo-leptos -y
+
+# Add the WASM target
+RUN rustup target add wasm32-unknown-unknown
+
+# Make an /app dir, which everything will eventually live in
+RUN mkdir -p /app
+WORKDIR /app
+COPY . .
+
+# Build the app
+RUN cargo leptos build --release -vv
+
+FROM rustlang/rust:nightly-bullseye as runner
+
+# -- NB: update binary name from &quot;leptos_start&quot; to match your app name in Cargo.toml --
+# Copy the server binary to the /app directory
+COPY --from=builder /app/target/release/leptos_start /app/
+
+# /target/site contains our JS/WASM/CSS, etc.
+COPY --from=builder /app/target/site /app/site
+# Copy Cargo.toml if it’s needed at runtime
+COPY --from=builder /app/Cargo.toml /app/
+WORKDIR /app
+
+# Set any required env variables and
+ENV RUST_LOG=&quot;info&quot;
+ENV LEPTOS_SITE_ADDR=&quot;0.0.0.0:8080&quot;
+ENV LEPTOS_SITE_ROOT=&quot;site&quot;
+EXPOSE 8080
+
+# -- NB: update binary name from &quot;leptos_start&quot; to match your app name in Cargo.toml --
+# Run the server
+CMD [&quot;/app/leptos_start&quot;]
+</code></pre>
+<blockquote>
+<p>Read more: <a href="https://github.com/leptos-rs/leptos/issues/1152#issuecomment-1634916088"><code>gnu</code> and <code>musl</code> build files for Leptos apps</a>.</p>
+</blockquote>
+<h2 id="cloud-deployments"><a class="header" href="#cloud-deployments">Cloud Deployments</a></h2>
+<h3 id="deploy-to-flyio"><a class="header" href="#deploy-to-flyio">Deploy to Fly.io</a></h3>
+<p>One option for deploying your Leptos SSR app is to use a service like <a href="https://fly.io/">Fly.io</a>, which takes a Dockerfile definition of your Leptos app and runs it in a quick-starting micro-VM; Fly also offers a variety of storage options and managed DBs to use with your projects. The following example will show how to deploy a simple Leptos starter app, just to get you up and going; <a href="https://fly.io/docs/database-storage-guides/">see here for more about working with storage options on Fly.io</a> if and when required.</p>
+<p>First, create a <code>Dockerfile</code> in the root of your application and fill it in with the suggested contents (above); make sure to update the binary names in the Dockerfile example
+to the name of your own application, and make other adjustments as necessary.</p>
+<p>Also, ensure you have the <code>flyctl</code> CLI tool installed, and have an account set up at <a href="https://fly.io/">Fly.io</a>. To install <code>flyctl</code> on MacOS, Linux, or Windows WSL, run:</p>
+<pre><code class="language-sh">curl -L https://fly.io/install.sh | sh
+</code></pre>
+<p>If you have issues, or for installing to other platforms <a href="https://fly.io/docs/hands-on/install-flyctl/">see the full instructions here</a></p>
+<p>Then login to Fly.io</p>
+<pre><code class="language-sh">fly auth login
+</code></pre>
+<p>and manually launch your app using the command</p>
+<pre><code class="language-sh">fly launch
+</code></pre>
+<p>The <code>flyctl</code> CLI tool will walk you through the process of deploying your app to Fly.io.</p>
+<div id="admonition-note" class="admonition admonish-note">
+<div class="admonition-title">
+<p>Note</p>
+<p><a class="admonition-anchor-link" href="#admonition-note"></a></p>
+</div>
+<div>
+<p>By default, Fly.io will auto-stop machines that don't have traffic coming to them after a certain period of time. Although Fly.io's lightweight VM's start up quickly, if you want to minimize the latency of your Leptos app and ensure it's always swift to respond, go into the generated <code>fly.toml</code> file and change the <code>min_machines_running</code> to 1 from the default of 0.</p>
+<p><a href="https://fly.io/docs/apps/autostart-stop/">See this page in the Fly.io docs for more details</a>.</p>
+</div>
+</div>
+<p>If you would prefer to use Github Actions to manage your deployments, you will need to create a new access token via the <a href="https://fly.io/">Fly.io</a> web UI.</p>
+<p>Go to &quot;Account&quot; &gt; &quot;Access Tokens&quot; and create a token named something like &quot;github_actions&quot;, then add the token to your Github repo's secrets by going into your project's Github repo, then clicking
+&quot;Settings&quot; &gt; &quot;Secrets and Variables&quot; &gt; &quot;Actions&quot; and creating a &quot;New repository secret&quot; with the name &quot;FLY_API_TOKEN&quot;.</p>
+<p>To generate a <code>fly.toml</code> config file for deployment to Fly.io, you must first run the following from within the project source directory</p>
+<pre><code class="language-sh">fly launch --no-deploy
+</code></pre>
+<p>to create a new Fly app and register it with the service. Git commit your new <code>fly.toml</code> file.</p>
+<p>To set up the Github Actions deployment workflow, copy the following into a <code>.github/workflows/fly_deploy.yml</code> file:</p>
+<details id="admonition-example" class="admonition admonish-example">
+<summary class="admonition-title">
+<p>Example</p>
+<p><a class="admonition-anchor-link" href="#admonition-example"></a></p>
+</summary>
+<div>
+<pre><code># For more details, see: https://fly.io/docs/app-guides/continuous-deployment-with-github-actions/
+
+name: Deploy to Fly.io
+on:
+push:
+	branches:
+	- main
+jobs:
+deploy:
+	name: Deploy app
+	runs-on: ubuntu-latest
+	steps:
+	- uses: actions/checkout@v4
+	- uses: superfly/flyctl-actions/setup-flyctl@master
+	- name: Deploy to fly
+		id: deployment
+		run: |
+		  flyctl deploy --remote-only | tail -n 1 &gt;&gt; $GITHUB_STEP_SUMMARY
+		env:
+		  FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+</code></pre>
+</div>
+</details>
+<p>On the next commit to your Github <code>main</code> branch, your project will automatically deploy to Fly.io.</p>
+<p>See <a href="https://github.com/diversable/fly-io-leptos-ssr-test-deploy">the example repo here</a>.</p>
+<h2 id="deploy-to-serverless-runtimes"><a class="header" href="#deploy-to-serverless-runtimes">Deploy to Serverless Runtimes</a></h2>
+<p>Leptos supports deploying to FaaS (Function as a Service) or 'serverless' runtimes such as AWS Lambda as well as <a href="https://wintercg.org/">WinterCG</a>-compatible JS runtimes such as <a href="https://deno.com/deploy">Deno</a> and Cloudflare. Just be aware that serverless environments do place some restrictions on the functionality available to your SSR app when compared with VM or container type deployments (see notes, below).</p>
+<h3 id="aws-lambda"><a class="header" href="#aws-lambda">AWS Lambda</a></h3>
+<p>With a little help from the <a href="https://www.cargo-lambda.info/">Cargo Lambda</a> tool, Leptos SSR apps can be deployed to AWS Lambda. A starter template repo using Axum as the server is available at <a href="https://github.com/leptos-rs/start-aws">leptos-rs/start-aws</a>; the instructions there can be adapted for you to use a Leptos+Actix-web server as well. The starter repo includes a Github Actions script for CI/CD, as well as instructions for setting up your Lambda functions and getting the necessary credentials for cloud deployment.</p>
+<p>However, please keep in mind that some native server functionality does not work with FaaS services like Lambda because the environment is not necessarily consistent from one request to the next. In particular, the <a href="https://github.com/leptos-rs/start-aws#state">'start-aws' docs</a> state that &quot;since AWS Lambda is a serverless platform, you'll need to be more careful about how you manage long-lived state. Writing to disk or using a state extractor will not work reliably across requests. Instead, you'll need a database or other microservices that you can query from the Lambda function.&quot;</p>
+<p>The other factor to bear in mind is the 'cold-start' time for functions as a service - depending on your use case and the FaaS platform you use, this may or may not meet your latency requirements; you may need to keep one function running at all times to optimize the speed of your requests.</p>
+<h3 id="deno--cloudflare-workers"><a class="header" href="#deno--cloudflare-workers">Deno &amp; Cloudflare Workers</a></h3>
+<p>Currently, Leptos-Axum supports running in Javascript-hosted WebAssembly runtimes such as Deno, Cloudflare Workers, etc. This option requires some changes to the setup of your source code (for example, in <code>Cargo.toml</code> you must define your app using <code>crate-type = [&quot;cdylib&quot;]</code> and the &quot;wasm&quot; feature must be enabled for <code>leptos_axum</code>). <a href="https://github.com/leptos-rs/leptos/tree/main/examples/hackernews_js_fetch">The Leptos HackerNews JS-fetch example</a> demonstrates the required modifications and shows how to run an app in the Deno runtime. Additionally, the <a href="https://docs.rs/leptos_axum/latest/leptos_axum/#js-fetch-integration"><code>leptos_axum</code> crate docs</a> are a helpful reference when setting up your own <code>Cargo.toml</code> file for JS-hosted WASM runtimes.</p>
+<p>While the initial setup for JS-hosted WASM runtimes is not onerous, the more important restriction to keep in mind is that since your app will be compiled to WebAssembly (<code>wasm32-unknown-unknown</code>) on the server as well as the client, you must ensure that the crates you use in your app are all WASM-compatible; this may or may not be a deal-breaker depending on your app's requirements, as not all crates in the Rust ecosystem have WASM support.</p>
+<p>If you're willing to live with the limitations of WASM server-side, the best place to get started right now is by checking out the <a href="https://github.com/leptos-rs/leptos/tree/main/examples/hackernews_js_fetch">example of running Leptos with Deno</a> in the official Leptos Github repo.</p>
+<h2 id="platforms-working-on-leptos-support"><a class="header" href="#platforms-working-on-leptos-support">Platforms Working on Leptos Support</a></h2>
+<h3 id="deploy-to-spin-serverless-wasi-with-leptos-ssr"><a class="header" href="#deploy-to-spin-serverless-wasi-with-leptos-ssr">Deploy to Spin Serverless WASI (with Leptos SSR)</a></h3>
+<p>WebAssembly on the server has been gaining steam lately, and the developers of the open source serverless WebAssembly framework Spin are working on natively supporting Leptos. While the Leptos-Spin SSR integration is still in its early stages, there is a working example you may wish to try out.</p>
+<p>The full set of instructions to get Leptos SSR &amp; Spin working together are available as <a href="https://www.fermyon.com/blog/leptos-spin-get-started">a post on the Fermyon blog</a>, or if you want to skip the article and just start playing around with a working starter repo, <a href="https://github.com/diversable/leptos-spin-ssr-test">see here</a>.</p>
+<h3 id="deploy-to-shuttlers"><a class="header" href="#deploy-to-shuttlers">Deploy to Shuttle.rs</a></h3>
+<p>Several Leptos users have asked about the possibility of using the Rust-friendly <a href="https://www.shuttle.rs/">Shuttle.rs</a> service to deploy Leptos apps. Unfortunately, Leptos is not officially supported by the Shuttle.rs service at the moment.</p>
+<p>However, the folks at Shuttle.rs are committed to getting Leptos support in the future; if you would like to keep up-to-date on the status of that work, keep an eye on <a href="https://github.com/shuttle-hq/shuttle/issues/1002#issuecomment-1853661643">this Github issue</a>.</p>
+<p>Additionally, some effort has been made to get Shuttle working with Leptos, but to date, deploys to the Shuttle cloud are still not working as expected. That work is available here, if you would like to investigate for yourself or contribute fixes: <a href="https://github.com/Rust-WASI-WASM/shuttle-leptos-axum">Leptos Axum Starter Template for Shuttle.rs</a>.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../deployment/csr.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../deployment/binary_size.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../deployment/csr.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../deployment/binary_size.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

@@ -1,0 +1,403 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Testing</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="./mdbook-admonish.css">
+
+    </head>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('light')
+            html.classList.add(theme);
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="01_introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="getting_started/index.html"><strong aria-hidden="true">2.</strong> Getting Started</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="getting_started/leptos_dx.html"><strong aria-hidden="true">2.1.</strong> Leptos DX</a></li><li class="chapter-item expanded "><a href="getting_started/community_crates.html"><strong aria-hidden="true">2.2.</strong> The Leptos Community and leptos-* Crates</a></li></ol></li><li class="chapter-item expanded "><a href="view/index.html"><strong aria-hidden="true">3.</strong> Part 1: Building User Interfaces</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="view/01_basic_component.html"><strong aria-hidden="true">3.1.</strong> A Basic Component</a></li><li class="chapter-item expanded "><a href="view/02_dynamic_attributes.html"><strong aria-hidden="true">3.2.</strong> Dynamic Attributes</a></li><li class="chapter-item expanded "><a href="view/03_components.html"><strong aria-hidden="true">3.3.</strong> Components and Props</a></li><li class="chapter-item expanded "><a href="view/04_iteration.html"><strong aria-hidden="true">3.4.</strong> Iteration</a></li><li class="chapter-item expanded "><a href="view/04b_iteration.html"><strong aria-hidden="true">3.5.</strong> Iterating over More Complex Data</a></li><li class="chapter-item expanded "><a href="view/05_forms.html"><strong aria-hidden="true">3.6.</strong> Forms and Inputs</a></li><li class="chapter-item expanded "><a href="view/06_control_flow.html"><strong aria-hidden="true">3.7.</strong> Control Flow</a></li><li class="chapter-item expanded "><a href="view/07_errors.html"><strong aria-hidden="true">3.8.</strong> Error Handling</a></li><li class="chapter-item expanded "><a href="view/08_parent_child.html"><strong aria-hidden="true">3.9.</strong> Parent-Child Communication</a></li><li class="chapter-item expanded "><a href="view/09_component_children.html"><strong aria-hidden="true">3.10.</strong> Passing Children to Components</a></li><li class="chapter-item expanded "><a href="view/builder.html"><strong aria-hidden="true">3.11.</strong> No Macros: The View Builder Syntax</a></li></ol></li><li class="chapter-item expanded "><a href="reactivity/index.html"><strong aria-hidden="true">4.</strong> Reactivity</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="reactivity/working_with_signals.html"><strong aria-hidden="true">4.1.</strong> Working with Signals</a></li><li class="chapter-item expanded "><a href="reactivity/14_create_effect.html"><strong aria-hidden="true">4.2.</strong> Responding to Changes with create_effect</a></li><li class="chapter-item expanded "><a href="reactivity/interlude_functions.html"><strong aria-hidden="true">4.3.</strong> Interlude: Reactivity and Functions</a></li></ol></li><li class="chapter-item expanded "><a href="testing.html" class="active"><strong aria-hidden="true">5.</strong> Testing</a></li><li class="chapter-item expanded "><a href="async/index.html"><strong aria-hidden="true">6.</strong> Async</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="async/10_resources.html"><strong aria-hidden="true">6.1.</strong> Loading Data with Resources</a></li><li class="chapter-item expanded "><a href="async/11_suspense.html"><strong aria-hidden="true">6.2.</strong> Suspense</a></li><li class="chapter-item expanded "><a href="async/12_transition.html"><strong aria-hidden="true">6.3.</strong> Transition</a></li><li class="chapter-item expanded "><a href="async/13_actions.html"><strong aria-hidden="true">6.4.</strong> Actions</a></li></ol></li><li class="chapter-item expanded "><a href="interlude_projecting_children.html"><strong aria-hidden="true">7.</strong> Interlude: Projecting Children</a></li><li class="chapter-item expanded "><a href="15_global_state.html"><strong aria-hidden="true">8.</strong> Global State Management</a></li><li class="chapter-item expanded "><a href="router/index.html"><strong aria-hidden="true">9.</strong> Router</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="router/16_routes.html"><strong aria-hidden="true">9.1.</strong> Defining &lt;Routes/&gt;</a></li><li class="chapter-item expanded "><a href="router/17_nested_routing.html"><strong aria-hidden="true">9.2.</strong> Nested Routing</a></li><li class="chapter-item expanded "><a href="router/18_params_and_queries.html"><strong aria-hidden="true">9.3.</strong> Params and Queries</a></li><li class="chapter-item expanded "><a href="router/19_a.html"><strong aria-hidden="true">9.4.</strong> &lt;A/&gt;</a></li><li class="chapter-item expanded "><a href="router/20_form.html"><strong aria-hidden="true">9.5.</strong> &lt;Form/&gt;</a></li></ol></li><li class="chapter-item expanded "><a href="interlude_styling.html"><strong aria-hidden="true">10.</strong> Interlude: Styling</a></li><li class="chapter-item expanded "><a href="metadata.html"><strong aria-hidden="true">11.</strong> Metadata</a></li><li class="chapter-item expanded "><a href="csr_wrapping_up.html"><strong aria-hidden="true">12.</strong> Client-Side Rendering: Wrapping Up</a></li><li class="chapter-item expanded "><a href="ssr/index.html"><strong aria-hidden="true">13.</strong> Part 2: Server Side Rendering</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ssr/21_cargo_leptos.html"><strong aria-hidden="true">13.1.</strong> cargo-leptos</a></li><li class="chapter-item expanded "><a href="ssr/22_life_cycle.html"><strong aria-hidden="true">13.2.</strong> The Life of a Page Load</a></li><li class="chapter-item expanded "><a href="ssr/23_ssr_modes.html"><strong aria-hidden="true">13.3.</strong> Async Rendering and SSR “Modes”</a></li><li class="chapter-item expanded "><a href="ssr/24_hydration_bugs.html"><strong aria-hidden="true">13.4.</strong> Hydration Bugs</a></li></ol></li><li class="chapter-item expanded "><a href="server/index.html"><strong aria-hidden="true">14.</strong> Working with the Server</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="server/25_server_functions.html"><strong aria-hidden="true">14.1.</strong> Server Functions</a></li><li class="chapter-item expanded "><a href="server/26_extractors.html"><strong aria-hidden="true">14.2.</strong> Extractors</a></li><li class="chapter-item expanded "><a href="server/27_response.html"><strong aria-hidden="true">14.3.</strong> Responses and Redirects</a></li></ol></li><li class="chapter-item expanded "><a href="progressive_enhancement/index.html"><strong aria-hidden="true">15.</strong> Progressive Enhancement and Graceful Degradation</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="progressive_enhancement/action_form.html"><strong aria-hidden="true">15.1.</strong> &lt;ActionForm/&gt;s</a></li></ol></li><li class="chapter-item expanded "><a href="deployment/index.html"><strong aria-hidden="true">16.</strong> Deployment</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="deployment/csr.html"><strong aria-hidden="true">16.1.</strong> Deploying CSR Apps</a></li><li class="chapter-item expanded "><a href="deployment/ssr.html"><strong aria-hidden="true">16.2.</strong> Deploying SSR Apps</a></li><li class="chapter-item expanded "><a href="deployment/binary_size.html"><strong aria-hidden="true">16.3.</strong> Optimizing WASM Binary Size</a></li></ol></li><li class="chapter-item expanded "><a href="islands.html"><strong aria-hidden="true">17.</strong> Guide: Islands</a></li><li class="chapter-item expanded "><a href="appendix_reactive_graph.html"><strong aria-hidden="true">18.</strong> Appendix: How Does the Reactive System Work?</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title"></h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="testing-your-components"><a class="header" href="#testing-your-components">Testing Your Components</a></h1>
+<p>Testing user interfaces can be relatively tricky, but really important. This article
+will discuss a couple principles and approaches for testing a Leptos app.</p>
+<h2 id="1-test-business-logic-with-ordinary-rust-tests"><a class="header" href="#1-test-business-logic-with-ordinary-rust-tests">1. Test business logic with ordinary Rust tests</a></h2>
+<p>In many cases, it makes sense to pull the logic out of your components and test
+it separately. For some simple components, there’s no particular logic to test, but
+for many it’s worth using a testable wrapping type and implementing the logic in
+ordinary Rust <code>impl</code> blocks.</p>
+<p>For example, instead of embedding logic in a component directly like this:</p>
+<pre><code class="language-rust">#[component]
+pub fn TodoApp() -&gt; impl IntoView {
+    let (todos, set_todos) = create_signal(vec![Todo { /* ... */ }]);
+    // ⚠️ this is hard to test because it's embedded in the component
+    let num_remaining = move || todos.with(|todos| {
+        todos.iter().filter(|todo| !todo.completed).sum()
+    });
+}</code></pre>
+<p>You could pull that logic out into a separate data structure and test it:</p>
+<pre><code class="language-rust">pub struct Todos(Vec&lt;Todo&gt;);
+
+impl Todos {
+    pub fn num_remaining(&amp;self) -&gt; usize {
+        self.0.iter().filter(|todo| !todo.completed).sum()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn test_remaining() {
+        // ...
+    }
+}
+
+#[component]
+pub fn TodoApp() -&gt; impl IntoView {
+    let (todos, set_todos) = create_signal(Todos(vec![Todo { /* ... */ }]));
+    // ✅ this has a test associated with it
+    let num_remaining = move || todos.with(Todos::num_remaining);
+}</code></pre>
+<p>In general, the less of your logic is wrapped into your components themselves, the
+more idiomatic your code will feel and the easier it will be to test.</p>
+<h2 id="2-test-components-with-end-to-end-e2e-testing"><a class="header" href="#2-test-components-with-end-to-end-e2e-testing">2. Test components with end-to-end (<code>e2e</code>) testing</a></h2>
+<p>Our <a href="https://github.com/leptos-rs/leptos/tree/main/examples"><code>examples</code></a> directory has several examples with extensive end-to-end testing, using different testing tools.</p>
+<p>The easiest way to see how to use these is to take a look at the test examples themselves:</p>
+<h3 id="wasm-bindgen-test-with-counter"><a class="header" href="#wasm-bindgen-test-with-counter"><code>wasm-bindgen-test</code> with <a href="https://github.com/leptos-rs/leptos/blob/main/examples/counter/tests/web.rs"><code>counter</code></a></a></h3>
+<p>This is a fairly simple manual testing setup that uses the <a href="https://rustwasm.github.io/wasm-pack/book/commands/test.html"><code>wasm-pack test</code></a> command.</p>
+<h4 id="sample-test"><a class="header" href="#sample-test">Sample Test</a></h4>
+<pre><code class="language-rust">#[wasm_bindgen_test]
+fn clear() {
+    let document = leptos::document();
+    let test_wrapper = document.create_element(&quot;section&quot;).unwrap();
+    let _ = document.body().unwrap().append_child(&amp;test_wrapper);
+
+    mount_to(
+        test_wrapper.clone().unchecked_into(),
+        || view! { &lt;SimpleCounter initial_value=10 step=1/&gt; },
+    );
+
+    let div = test_wrapper.query_selector(&quot;div&quot;).unwrap().unwrap();
+    let clear = test_wrapper
+        .query_selector(&quot;button&quot;)
+        .unwrap()
+        .unwrap()
+        .unchecked_into::&lt;web_sys::HtmlElement&gt;();
+
+    clear.click();
+
+assert_eq!(
+    div.outer_html(),
+    // here we spawn a mini reactive system to render the test case
+    run_scope(create_runtime(), || {
+        // it's as if we're creating it with a value of 0, right?
+        let (value, set_value) = create_signal(0);
+
+        // we can remove the event listeners because they're not rendered to HTML
+        view! {
+            &lt;div&gt;
+                &lt;button&gt;&quot;Clear&quot;&lt;/button&gt;
+                &lt;button&gt;&quot;-1&quot;&lt;/button&gt;
+                &lt;span&gt;&quot;Value: &quot; {value} &quot;!&quot;&lt;/span&gt;
+                &lt;button&gt;&quot;+1&quot;&lt;/button&gt;
+            &lt;/div&gt;
+        }
+        // the view returned an HtmlElement&lt;Div&gt;, which is a smart pointer for
+        // a DOM element. So we can still just call .outer_html()
+        .outer_html()
+    })
+);
+}</code></pre>
+<h3 id="wasm-bindgen-test-with-counters_stable"><a class="header" href="#wasm-bindgen-test-with-counters_stable"><a href="https://github.com/leptos-rs/leptos/tree/main/examples/counters_stable/tests/web"><code>wasm-bindgen-test</code> with <code>counters_stable</code></a></a></h3>
+<p>This more developed test suite uses a system of fixtures to refactor the manual DOM manipulation of the <code>counter</code> tests and easily test a wide range of cases.</p>
+<h4 id="sample-test-1"><a class="header" href="#sample-test-1">Sample Test</a></h4>
+<pre><code class="language-rust">use super::*;
+use crate::counters_page as ui;
+use pretty_assertions::assert_eq;
+
+#[wasm_bindgen_test]
+fn should_increase_the_total_count() {
+    // Given
+    ui::view_counters();
+    ui::add_counter();
+
+    // When
+    ui::increment_counter(1);
+    ui::increment_counter(1);
+    ui::increment_counter(1);
+
+    // Then
+    assert_eq!(ui::total(), 3);
+}</code></pre>
+<h3 id="playwright-with-counters_stable"><a class="header" href="#playwright-with-counters_stable"><a href="https://github.com/leptos-rs/leptos/tree/main/examples/counters_stable/e2e">Playwright with <code>counters_stable</code></a></a></h3>
+<p>These tests use the common JavaScript testing tool Playwright to run end-to-end tests on the same example, using a library and testing approach familiar to may who have done frontend development before.</p>
+<h4 id="sample-test-2"><a class="header" href="#sample-test-2">Sample Test</a></h4>
+<pre><code class="language-js">import { test, expect } from &quot;@playwright/test&quot;;
+import { CountersPage } from &quot;./fixtures/counters_page&quot;;
+
+test.describe(&quot;Increment Count&quot;, () =&gt; {
+  test(&quot;should increase the total count&quot;, async ({ page }) =&gt; {
+    const ui = new CountersPage(page);
+    await ui.goto();
+    await ui.addCounter();
+
+    await ui.incrementCount();
+    await ui.incrementCount();
+    await ui.incrementCount();
+
+    await expect(ui.total).toHaveText(&quot;3&quot;);
+  });
+});
+</code></pre>
+<h3 id="gherkincucumber-tests-with-todo_app_sqlite"><a class="header" href="#gherkincucumber-tests-with-todo_app_sqlite"><a href="https://github.com/leptos-rs/leptos/blob/main/examples/todo_app_sqlite/e2e/README.md">Gherkin/Cucumber Tests with <code>todo_app_sqlite</code></a></a></h3>
+<p>You can integrate any testing tool you’d like into this flow. This example uses Cucumber, a testing framework based on natural language.</p>
+<pre><code>@add_todo
+Feature: Add Todo
+
+    Background:
+        Given I see the app
+
+    @add_todo-see
+    Scenario: Should see the todo
+        Given I set the todo as Buy Bread
+        When I click the Add button
+        Then I see the todo named Buy Bread
+
+    # @allow.skipped
+    @add_todo-style
+    Scenario: Should see the pending todo
+        When I add a todo as Buy Oranges
+        Then I see the pending todo
+</code></pre>
+<p>The definitions for these actions are defined in Rust code.</p>
+<pre><code class="language-rust">use crate::fixtures::{action, world::AppWorld};
+use anyhow::{Ok, Result};
+use cucumber::{given, when};
+
+#[given(&quot;I see the app&quot;)]
+#[when(&quot;I open the app&quot;)]
+async fn i_open_the_app(world: &amp;mut AppWorld) -&gt; Result&lt;()&gt; {
+    let client = &amp;world.client;
+    action::goto_path(client, &quot;&quot;).await?;
+
+    Ok(())
+}
+
+#[given(regex = &quot;^I add a todo as (.*)$&quot;)]
+#[when(regex = &quot;^I add a todo as (.*)$&quot;)]
+async fn i_add_a_todo_titled(world: &amp;mut AppWorld, text: String) -&gt; Result&lt;()&gt; {
+    let client = &amp;world.client;
+    action::add_todo(client, text.as_str()).await?;
+
+    Ok(())
+}
+
+// etc.</code></pre>
+<h3 id="learning-more"><a class="header" href="#learning-more">Learning More</a></h3>
+<p>Feel free to check out the CI setup in the Leptos repo to learn more about how to use these tools in your own application. All of these testing methods are run regularly against actual Leptos example apps.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="reactivity/interlude_functions.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="async/index.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="reactivity/interlude_functions.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="async/index.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

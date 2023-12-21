@@ -1,0 +1,768 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Deploying CSR Apps</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href=".././mdbook-admonish.css">
+
+    </head>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('light')
+            html.classList.add(theme);
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../01_introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="../getting_started/index.html"><strong aria-hidden="true">2.</strong> Getting Started</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../getting_started/leptos_dx.html"><strong aria-hidden="true">2.1.</strong> Leptos DX</a></li><li class="chapter-item expanded "><a href="../getting_started/community_crates.html"><strong aria-hidden="true">2.2.</strong> The Leptos Community and leptos-* Crates</a></li></ol></li><li class="chapter-item expanded "><a href="../view/index.html"><strong aria-hidden="true">3.</strong> Part 1: Building User Interfaces</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../view/01_basic_component.html"><strong aria-hidden="true">3.1.</strong> A Basic Component</a></li><li class="chapter-item expanded "><a href="../view/02_dynamic_attributes.html"><strong aria-hidden="true">3.2.</strong> Dynamic Attributes</a></li><li class="chapter-item expanded "><a href="../view/03_components.html"><strong aria-hidden="true">3.3.</strong> Components and Props</a></li><li class="chapter-item expanded "><a href="../view/04_iteration.html"><strong aria-hidden="true">3.4.</strong> Iteration</a></li><li class="chapter-item expanded "><a href="../view/04b_iteration.html"><strong aria-hidden="true">3.5.</strong> Iterating over More Complex Data</a></li><li class="chapter-item expanded "><a href="../view/05_forms.html"><strong aria-hidden="true">3.6.</strong> Forms and Inputs</a></li><li class="chapter-item expanded "><a href="../view/06_control_flow.html"><strong aria-hidden="true">3.7.</strong> Control Flow</a></li><li class="chapter-item expanded "><a href="../view/07_errors.html"><strong aria-hidden="true">3.8.</strong> Error Handling</a></li><li class="chapter-item expanded "><a href="../view/08_parent_child.html"><strong aria-hidden="true">3.9.</strong> Parent-Child Communication</a></li><li class="chapter-item expanded "><a href="../view/09_component_children.html"><strong aria-hidden="true">3.10.</strong> Passing Children to Components</a></li><li class="chapter-item expanded "><a href="../view/builder.html"><strong aria-hidden="true">3.11.</strong> No Macros: The View Builder Syntax</a></li></ol></li><li class="chapter-item expanded "><a href="../reactivity/index.html"><strong aria-hidden="true">4.</strong> Reactivity</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../reactivity/working_with_signals.html"><strong aria-hidden="true">4.1.</strong> Working with Signals</a></li><li class="chapter-item expanded "><a href="../reactivity/14_create_effect.html"><strong aria-hidden="true">4.2.</strong> Responding to Changes with create_effect</a></li><li class="chapter-item expanded "><a href="../reactivity/interlude_functions.html"><strong aria-hidden="true">4.3.</strong> Interlude: Reactivity and Functions</a></li></ol></li><li class="chapter-item expanded "><a href="../testing.html"><strong aria-hidden="true">5.</strong> Testing</a></li><li class="chapter-item expanded "><a href="../async/index.html"><strong aria-hidden="true">6.</strong> Async</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../async/10_resources.html"><strong aria-hidden="true">6.1.</strong> Loading Data with Resources</a></li><li class="chapter-item expanded "><a href="../async/11_suspense.html"><strong aria-hidden="true">6.2.</strong> Suspense</a></li><li class="chapter-item expanded "><a href="../async/12_transition.html"><strong aria-hidden="true">6.3.</strong> Transition</a></li><li class="chapter-item expanded "><a href="../async/13_actions.html"><strong aria-hidden="true">6.4.</strong> Actions</a></li></ol></li><li class="chapter-item expanded "><a href="../interlude_projecting_children.html"><strong aria-hidden="true">7.</strong> Interlude: Projecting Children</a></li><li class="chapter-item expanded "><a href="../15_global_state.html"><strong aria-hidden="true">8.</strong> Global State Management</a></li><li class="chapter-item expanded "><a href="../router/index.html"><strong aria-hidden="true">9.</strong> Router</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../router/16_routes.html"><strong aria-hidden="true">9.1.</strong> Defining &lt;Routes/&gt;</a></li><li class="chapter-item expanded "><a href="../router/17_nested_routing.html"><strong aria-hidden="true">9.2.</strong> Nested Routing</a></li><li class="chapter-item expanded "><a href="../router/18_params_and_queries.html"><strong aria-hidden="true">9.3.</strong> Params and Queries</a></li><li class="chapter-item expanded "><a href="../router/19_a.html"><strong aria-hidden="true">9.4.</strong> &lt;A/&gt;</a></li><li class="chapter-item expanded "><a href="../router/20_form.html"><strong aria-hidden="true">9.5.</strong> &lt;Form/&gt;</a></li></ol></li><li class="chapter-item expanded "><a href="../interlude_styling.html"><strong aria-hidden="true">10.</strong> Interlude: Styling</a></li><li class="chapter-item expanded "><a href="../metadata.html"><strong aria-hidden="true">11.</strong> Metadata</a></li><li class="chapter-item expanded "><a href="../csr_wrapping_up.html"><strong aria-hidden="true">12.</strong> Client-Side Rendering: Wrapping Up</a></li><li class="chapter-item expanded "><a href="../ssr/index.html"><strong aria-hidden="true">13.</strong> Part 2: Server Side Rendering</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../ssr/21_cargo_leptos.html"><strong aria-hidden="true">13.1.</strong> cargo-leptos</a></li><li class="chapter-item expanded "><a href="../ssr/22_life_cycle.html"><strong aria-hidden="true">13.2.</strong> The Life of a Page Load</a></li><li class="chapter-item expanded "><a href="../ssr/23_ssr_modes.html"><strong aria-hidden="true">13.3.</strong> Async Rendering and SSR “Modes”</a></li><li class="chapter-item expanded "><a href="../ssr/24_hydration_bugs.html"><strong aria-hidden="true">13.4.</strong> Hydration Bugs</a></li></ol></li><li class="chapter-item expanded "><a href="../server/index.html"><strong aria-hidden="true">14.</strong> Working with the Server</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../server/25_server_functions.html"><strong aria-hidden="true">14.1.</strong> Server Functions</a></li><li class="chapter-item expanded "><a href="../server/26_extractors.html"><strong aria-hidden="true">14.2.</strong> Extractors</a></li><li class="chapter-item expanded "><a href="../server/27_response.html"><strong aria-hidden="true">14.3.</strong> Responses and Redirects</a></li></ol></li><li class="chapter-item expanded "><a href="../progressive_enhancement/index.html"><strong aria-hidden="true">15.</strong> Progressive Enhancement and Graceful Degradation</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../progressive_enhancement/action_form.html"><strong aria-hidden="true">15.1.</strong> &lt;ActionForm/&gt;s</a></li></ol></li><li class="chapter-item expanded "><a href="../deployment/index.html"><strong aria-hidden="true">16.</strong> Deployment</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../deployment/csr.html" class="active"><strong aria-hidden="true">16.1.</strong> Deploying CSR Apps</a></li><li class="chapter-item expanded "><a href="../deployment/ssr.html"><strong aria-hidden="true">16.2.</strong> Deploying SSR Apps</a></li><li class="chapter-item expanded "><a href="../deployment/binary_size.html"><strong aria-hidden="true">16.3.</strong> Optimizing WASM Binary Size</a></li></ol></li><li class="chapter-item expanded "><a href="../islands.html"><strong aria-hidden="true">17.</strong> Guide: Islands</a></li><li class="chapter-item expanded "><a href="../appendix_reactive_graph.html"><strong aria-hidden="true">18.</strong> Appendix: How Does the Reactive System Work?</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title"></h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="deploying-a-client-side-rendered-app"><a class="header" href="#deploying-a-client-side-rendered-app">Deploying a Client-Side-Rendered App</a></h1>
+<p>If you’ve been building an app that only uses client-side rendering, working with Trunk as a dev server and build tool, the process is quite easy.</p>
+<pre><code class="language-bash">trunk build --release
+</code></pre>
+<p><code>trunk build</code> will create a number of build artifacts in a <code>dist/</code> directory. Publishing <code>dist</code> somewhere online should be all you need to deploy your app. This should work very similarly to deploying any JavaScript application.</p>
+<p>We've created several example repositories which show how to set up and deploy a Leptos CSR app to various hosting services.</p>
+<p><em>Note: Leptos does not endorse the use of any particular hosting service - feel free to use any service that supports static site deploys.</em></p>
+<p>Examples:</p>
+<ul>
+<li><a href="#github-pages">Github Pages</a></li>
+<li><a href="#vercel">Vercel</a></li>
+<li><a href="#spin---serverless-webassembly">Spin (serverless WebAssembly)</a></li>
+</ul>
+<h2 id="github-pages"><a class="header" href="#github-pages">Github Pages</a></h2>
+<p>Deploying a Leptos CSR app to Github pages is a simple affair. First, go to your Github repo's settings and click on &quot;Pages&quot; in the left side menu. In the &quot;Build and deployment&quot; section of the page, change the &quot;source&quot; to &quot;Github Actions&quot;. Then copy the following into a file such as <code>.github/workflows/gh-pages-deploy.yml</code></p>
+<details id="admonition-example" class="admonition admonish-example">
+<summary class="admonition-title">
+<p>Example</p>
+<p><a class="admonition-anchor-link" href="#admonition-example"></a></p>
+</summary>
+<div>
+<pre><code>name: Release to Github Pages
+
+on:
+push:
+	branches: [main]
+workflow_dispatch:
+
+permissions:
+contents: write # for committing to gh-pages branch.
+pages: write
+id-token: write
+
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+concurrency:
+group: &quot;pages&quot;
+cancel-in-progress: false
+
+jobs:
+Github-Pages-Release:
+
+	timeout-minutes: 10
+
+	environment:
+	name: github-pages
+	url: ${{ steps.deployment.outputs.page_url }}
+
+	runs-on: ubuntu-latest
+
+	steps:
+	- uses: actions/checkout@v4 # repo checkout
+
+	# Install Rust Nightly Toolchain, with Clippy &amp; Rustfmt
+	- name: Install nightly Rust
+		uses: dtolnay/rust-toolchain@nightly
+		with:
+		components: clippy, rustfmt
+
+	- name: Add WASM target
+		run: rustup target add wasm32-unknown-unknown
+
+	- name: lint
+		run: cargo clippy &amp; cargo fmt
+
+
+	# If using tailwind...
+	# - name: Download and install tailwindcss binary
+	#   run: npm install -D tailwindcss &amp;&amp; npx tailwindcss -i &lt;INPUT/PATH.css&gt; -o &lt;OUTPUT/PATH.css&gt;  # run tailwind
+
+
+	- name: Download and install Trunk binary
+		run: wget -qO- https://github.com/trunk-rs/trunk/releases/download/v0.18.2/trunk-x86_64-unknown-linux-gnu.tar.gz | tar -xzf-
+
+	- name: Build with Trunk
+		# &quot;${GITHUB_REPOSITORY#*/}&quot; evaluates into the name of the repository
+		# using --public-url something will allow trunk to modify all the href paths like from favicon.ico to repo_name/favicon.ico .
+		# this is necessary for github pages where the site is deployed to username.github.io/repo_name and all files must be requested
+		# relatively as favicon.ico. if we skip public-url option, the href paths will instead request username.github.io/favicon.ico which
+		# will obviously return error 404 not found.
+		run: ./trunk build --release --public-url &quot;${GITHUB_REPOSITORY#*/}&quot;
+
+
+	# Deploy to gh-pages branch
+	# - name: Deploy 🚀
+	#   uses: JamesIves/github-pages-deploy-action@v4
+	#   with:
+	#     folder: dist
+
+
+	# Deploy with Github Static Pages
+
+	- name: Setup Pages
+		uses: actions/configure-pages@v4
+		with:
+		enablement: true
+		# token:
+
+	- name: Upload artifact
+		uses: actions/upload-pages-artifact@v2
+		with:
+		# Upload dist dir
+		path: './dist'
+
+	- name: Deploy to GitHub Pages 🚀
+		id: deployment
+		uses: actions/deploy-pages@v3
+</code></pre>
+</div>
+</details>
+<p>For more on deploying to Github Pages <a href="https://github.com/diversable/deploy_leptos_csr_to_gh_pages">see the example repo here</a></p>
+<h2 id="vercel"><a class="header" href="#vercel">Vercel</a></h2>
+<h3 id="step-1-set-up-vercel"><a class="header" href="#step-1-set-up-vercel">Step 1: Set Up Vercel</a></h3>
+<p>In the Vercel Web UI...</p>
+<ol>
+<li>Create a new project</li>
+<li>Ensure
+<ul>
+<li>The &quot;Build Command&quot; is left empty with Override on</li>
+<li>The &quot;Output Directory&quot; is changed to dist (which is the default output directory for Trunk builds) and the Override is on</li>
+</ul>
+</li>
+</ol>
+<img src="./image.png" />
+<h3 id="step-2-add-vercel-credentials-for-github-actions"><a class="header" href="#step-2-add-vercel-credentials-for-github-actions">Step 2: Add Vercel Credentials for GitHub Actions</a></h3>
+<p>Note: Both the preview and deploy actions will need your Vercel credentials setup in GitHub secrets</p>
+<ol>
+<li>
+<p>Retrieve your <a href="https://vercel.com/guides/how-do-i-use-a-vercel-api-access-token">Vercel Access Token</a> by going to &quot;Account Settings&quot; &gt; &quot;Tokens&quot; and creating a new token - save the token to use in sub-step 5, below.</p>
+</li>
+<li>
+<p>Install the <a href="https://vercel.com/cli">Vercel CLI</a> using the <code>npm i -g vercel</code> command, then run <code>vercel login</code> to login to your acccount.</p>
+</li>
+<li>
+<p>Inside your folder, run <code>vercel link</code> to create a new Vercel project; in the CLI, you will be asked to 'Link to an existing project?' - answer yes, then enter the name you created in step 1. A new <code>.vercel</code> folder will be created for you.</p>
+</li>
+<li>
+<p>Inside the generated <code>.vercel</code> folder, open the the <code>project.json</code> file and save the &quot;projectId&quot; and &quot;orgId&quot; for the next step.</p>
+</li>
+<li>
+<p>Inside GitHub, go the repo's &quot;Settings&quot; &gt; &quot;Secrets and Variables&quot; &gt; &quot;Actions&quot; and add the following as <a href="https://docs.github.com/en/actions/security-guides/encrypted-secrets">Repository secrets</a>:</p>
+<ul>
+<li>save your Vercel Access Token (from sub-step 1) as the <code>VERCEL_TOKEN</code> secret</li>
+<li>from the <code>.vercel/project.json</code> add &quot;projectID&quot; as <code>VERCEL_PROJECT_ID</code></li>
+<li>from the <code>.vercel/project.json</code> add &quot;orgId&quot; as <code>VERCEL_ORG_ID</code></li>
+</ul>
+</li>
+</ol>
+<p><i>For full instructions see <a href="https://vercel.com/guides/how-can-i-use-github-actions-with-vercel">&quot;How can I use Github Actions with Vercel&quot;</a></i></p>
+<h3 id="step-3-add-github-action-scripts"><a class="header" href="#step-3-add-github-action-scripts">Step 3: Add Github Action Scripts</a></h3>
+<p>Finally, you're ready to simply copy and paste the two files - one for deployment, one for PR previews - from below or from <a href="https://github.com/diversable/vercel-leptos-CSR-deployment/tree/main/.github/workflows">the example repo's <code>.github/workflows/</code> folder</a> into your own github workflows folder - then, on your next commit or PR deploys will occur automatically.</p>
+<p><i>Production deployment script: <code>vercel_deploy.yml</code></i></p>
+<details id="admonition-example-1" class="admonition admonish-example">
+<summary class="admonition-title">
+<p>Example</p>
+<p><a class="admonition-anchor-link" href="#admonition-example-1"></a></p>
+</summary>
+<div>
+<pre><code>name: Release to Vercel
+
+on:
+push:
+	branches:
+	- main
+env:
+CARGO_TERM_COLOR: always
+VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+jobs:
+Vercel-Production-Deployment:
+	runs-on: ubuntu-latest
+	environment: production
+	steps:
+	- name: git-checkout
+		uses: actions/checkout@v3
+
+	- uses: dtolnay/rust-toolchain@nightly
+		with:
+		components: clippy, rustfmt
+	- uses: Swatinem/rust-cache@v2
+	- name: Setup Rust
+		run: |
+		rustup target add wasm32-unknown-unknown
+		cargo clippy
+		cargo fmt --check
+
+	- name: Download and install Trunk binary
+		run: wget -qO- https://github.com/trunk-rs/trunk/releases/download/v0.18.2/trunk-x86_64-unknown-linux-gnu.tar.gz | tar -xzf-
+
+
+	- name: Build with Trunk
+		run: ./trunk build --release
+
+	- name: Install Vercel CLI
+		run: npm install --global vercel@latest
+
+	- name: Pull Vercel Environment Information
+		run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+
+	- name: Deploy to Vercel &amp; Display URL
+		id: deployment
+		working-directory: ./dist
+		run: |
+		vercel deploy --prod --token=${{ secrets.VERCEL_TOKEN }} &gt;&gt; $GITHUB_STEP_SUMMARY
+		echo $GITHUB_STEP_SUMMARY
+</code></pre>
+</div>
+</details>
+<p><i>Preview deployments script: <code>vercel_preview.yml</code></i></p>
+<details id="admonition-example-2" class="admonition admonish-example">
+<summary class="admonition-title">
+<p>Example</p>
+<p><a class="admonition-anchor-link" href="#admonition-example-2"></a></p>
+</summary>
+<div>
+<pre><code># For more info re: vercel action see:
+# https://github.com/amondnet/vercel-action
+
+name: Leptos CSR Vercel Preview
+
+on:
+pull_request:
+	branches: [ &quot;main&quot; ]
+
+workflow_dispatch:
+
+env:
+CARGO_TERM_COLOR: always
+VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+jobs:
+fmt:
+	name: Rustfmt
+	runs-on: ubuntu-latest
+	steps:
+	- uses: actions/checkout@v4
+	- uses: dtolnay/rust-toolchain@nightly
+		with:
+		components: rustfmt
+	- name: Enforce formatting
+		run: cargo fmt --check
+
+clippy:
+	name: Clippy
+	runs-on: ubuntu-latest
+	steps:
+	- uses: actions/checkout@v4
+	- uses: dtolnay/rust-toolchain@nightly
+		with:
+		components: clippy
+	- uses: Swatinem/rust-cache@v2
+	- name: Linting
+		run: cargo clippy -- -D warnings
+
+test:
+	name: Test
+	runs-on: ubuntu-latest
+	needs: [fmt, clippy]
+	steps:
+	- uses: actions/checkout@v4
+	- uses: dtolnay/rust-toolchain@nightly
+	- uses: Swatinem/rust-cache@v2
+	- name: Run tests
+		run: cargo test
+
+build-and-preview-deploy:
+	runs-on: ubuntu-latest
+	name: Build and Preview
+
+	needs: [test, clippy, fmt]
+
+	permissions:
+	pull-requests: write
+
+	environment:
+	name: preview
+	url: ${{ steps.preview.outputs.preview-url }}
+
+	steps:
+	- name: git-checkout
+		uses: actions/checkout@v4
+
+	- uses: dtolnay/rust-toolchain@nightly
+	- uses: Swatinem/rust-cache@v2
+	- name: Build
+		run: rustup target add wasm32-unknown-unknown
+
+	- name: Download and install Trunk binary
+		run: wget -qO- https://github.com/trunk-rs/trunk/releases/download/v0.18.2/trunk-x86_64-unknown-linux-gnu.tar.gz | tar -xzf-
+
+
+	- name: Build with Trunk
+		run: ./trunk build --release
+
+	- name: Preview Deploy
+		id: preview
+		uses: amondnet/vercel-action@v25.1.1
+		with:
+		vercel-token: ${{ secrets.VERCEL_TOKEN }}
+		github-token: ${{ secrets.GITHUB_TOKEN }}
+		vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+		vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+		github-comment: true
+		working-directory: ./dist
+
+	- name: Display Deployed URL
+		run: |
+		echo &quot;Deployed app URL: ${{ steps.preview.outputs.preview-url }}&quot; &gt;&gt; $GITHUB_STEP_SUMMARY
+</code></pre>
+</div>
+</details>
+<p>See <a href="https://github.com/diversable/vercel-leptos-CSR-deployment">the example repo here</a> for more.</p>
+<h2 id="spin---serverless-webassembly"><a class="header" href="#spin---serverless-webassembly">Spin - Serverless WebAssembly</a></h2>
+<p>Another option is using a serverless platform such as Spin. Although <a href="https://github.com/fermyon/spin">Spin</a> is open source and you can run it on your own infrastructure (eg. inside Kubernetes), the easiest way to get started with Spin in production is to use the Fermyon Cloud.</p>
+<p>Start by installing the <a href="https://developer.fermyon.com/spin/v2/install">Spin CLI using the instructions, here</a>, and creating a Github repo for your Leptos CSR project, if you haven't done so already.</p>
+<ol>
+<li>
+<p>Open &quot;Fermyon Cloud&quot; &gt; &quot;User Settings&quot;. If you’re not logged in, choose the Login With GitHub button.</p>
+</li>
+<li>
+<p>In the “Personal Access Tokens”, choose “Add a Token”. Enter the name “gh_actions” and click “Create Token”.</p>
+</li>
+<li>
+<p>Fermyon Cloud displays the token; click the copy button to copy it to your clipboard.</p>
+</li>
+<li>
+<p>Go into your Github repo and open &quot;Settings&quot; &gt; &quot;Secrets and Variables&quot; &gt; &quot;Actions&quot; and add the Fermyon cloud token to &quot;Repository secrets&quot; using the variable name &quot;FERMYON_CLOUD_TOKEN&quot;</p>
+</li>
+<li>
+<p>Copy and paste the following Github Actions scripts (below) into your <code>.github/workflows/&lt;SCRIPT_NAME&gt;.yml</code> files</p>
+</li>
+<li>
+<p>With the 'preview' and 'deploy' scripts active, Github Actions will now generate previews on pull requests &amp; deploy automatically on updates to your 'main' branch.</p>
+</li>
+</ol>
+<p><i>Production deployment script: <code>spin_deploy.yml</code></i></p>
+<details id="admonition-example-3" class="admonition admonish-example">
+<summary class="admonition-title">
+<p>Example</p>
+<p><a class="admonition-anchor-link" href="#admonition-example-3"></a></p>
+</summary>
+<div>
+<pre><code># For setup instructions needed for Fermyon Cloud, see:
+# https://developer.fermyon.com/cloud/github-actions
+
+# For reference, see:
+# https://developer.fermyon.com/cloud/changelog/gh-actions-spin-deploy
+
+# For the Fermyon gh actions themselves, see:
+# https://github.com/fermyon/actions
+
+name: Release to Spin Cloud
+
+on:
+push:
+	branches: [main]
+workflow_dispatch:
+
+permissions:
+contents: read
+id-token: write
+
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+concurrency:
+group: &quot;spin&quot;
+cancel-in-progress: false
+
+jobs:
+Spin-Release:
+
+	timeout-minutes: 10
+
+	environment:
+	name: production
+	url: ${{ steps.deployment.outputs.app-url }}
+
+	runs-on: ubuntu-latest
+
+	steps:
+	- uses: actions/checkout@v4 # repo checkout
+
+	# Install Rust Nightly Toolchain, with Clippy &amp; Rustfmt
+	- name: Install nightly Rust
+		uses: dtolnay/rust-toolchain@nightly
+		with:
+		components: clippy, rustfmt
+
+	- name: Add WASM &amp; WASI targets
+		run: rustup target add wasm32-unknown-unknown &amp;&amp; rustup target add wasm32-wasi
+
+	- name: lint
+		run: cargo clippy &amp; cargo fmt
+
+
+	# If using tailwind...
+	# - name: Download and install tailwindcss binary
+	#   run: npm install -D tailwindcss &amp;&amp; npx tailwindcss -i &lt;INPUT/PATH.css&gt; -o &lt;OUTPUT/PATH.css&gt;  # run tailwind
+
+
+	- name: Download and install Trunk binary
+		run: wget -qO- https://github.com/trunk-rs/trunk/releases/download/v0.18.2/trunk-x86_64-unknown-linux-gnu.tar.gz | tar -xzf-
+
+
+	- name: Build with Trunk
+		run: ./trunk build --release
+
+
+	# Install Spin CLI &amp; Deploy
+
+	- name: Setup Spin
+		uses: fermyon/actions/spin/setup@v1
+		# with:
+		# plugins:
+
+
+	- name: Build and deploy
+		id: deployment
+		uses: fermyon/actions/spin/deploy@v1
+		with:
+		fermyon_token: ${{ secrets.FERMYON_CLOUD_TOKEN }}
+		# key_values: |-
+			# abc=xyz
+			# foo=bar
+		# variables: |-
+			# password=${{ secrets.SECURE_PASSWORD }}
+			# apikey=${{ secrets.API_KEY }}
+
+	# Create an explicit message to display the URL of the deployed app, as well as in the job graph
+	- name: Deployed URL
+		run: |
+		echo &quot;Deployed app URL: ${{ steps.deployment.outputs.app-url }}&quot; &gt;&gt; $GITHUB_STEP_SUMMARY
+</code></pre>
+</div>
+</details>
+<p><i>Preview deployment script: <code>spin_preview.yml</code></i></p>
+<details id="admonition-example-4" class="admonition admonish-example">
+<summary class="admonition-title">
+<p>Example</p>
+<p><a class="admonition-anchor-link" href="#admonition-example-4"></a></p>
+</summary>
+<div>
+<pre><code># For setup instructions needed for Fermyon Cloud, see:
+# https://developer.fermyon.com/cloud/github-actions
+
+
+# For the Fermyon gh actions themselves, see:
+# https://github.com/fermyon/actions
+
+# Specifically:
+# https://github.com/fermyon/actions?tab=readme-ov-file#deploy-preview-of-spin-app-to-fermyon-cloud---fermyonactionsspinpreviewv1
+
+name: Preview on Spin Cloud
+
+on:
+pull_request:
+	branches: [&quot;main&quot;, &quot;v*&quot;]
+	types: ['opened', 'synchronize', 'reopened', 'closed']
+workflow_dispatch:
+
+permissions:
+contents: read
+pull-requests: write
+
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+concurrency:
+group: &quot;spin&quot;
+cancel-in-progress: false
+
+jobs:
+Spin-Preview:
+
+	timeout-minutes: 10
+
+	environment:
+	name: preview
+	url: ${{ steps.preview.outputs.app-url }}
+
+	runs-on: ubuntu-latest
+
+	steps:
+	- uses: actions/checkout@v4 # repo checkout
+
+	# Install Rust Nightly Toolchain, with Clippy &amp; Rustfmt
+	- name: Install nightly Rust
+		uses: dtolnay/rust-toolchain@nightly
+		with:
+		components: clippy, rustfmt
+
+	- name: Add WASM &amp; WASI targets
+		run: rustup target add wasm32-unknown-unknown &amp;&amp; rustup target add wasm32-wasi
+
+	- name: lint
+		run: cargo clippy &amp; cargo fmt
+
+
+	# If using tailwind...
+	# - name: Download and install tailwindcss binary
+	#   run: npm install -D tailwindcss &amp;&amp; npx tailwindcss -i &lt;INPUT/PATH.css&gt; -o &lt;OUTPUT/PATH.css&gt;  # run tailwind
+
+
+	- name: Download and install Trunk binary
+		run: wget -qO- https://github.com/trunk-rs/trunk/releases/download/v0.18.2/trunk-x86_64-unknown-linux-gnu.tar.gz | tar -xzf-
+
+
+	- name: Build with Trunk
+		run: ./trunk build --release
+
+
+	# Install Spin CLI &amp; Deploy
+
+	- name: Setup Spin
+		uses: fermyon/actions/spin/setup@v1
+		# with:
+		# plugins:
+
+
+	- name: Build and preview
+		id: preview
+		uses: fermyon/actions/spin/preview@v1
+		with:
+		fermyon_token: ${{ secrets.FERMYON_CLOUD_TOKEN }}
+		github_token: ${{ secrets.GITHUB_TOKEN }}
+		undeploy: ${{ github.event.pull_request &amp;&amp; github.event.action == 'closed' }}
+		# key_values: |-
+			# abc=xyz
+			# foo=bar
+		# variables: |-
+			# password=${{ secrets.SECURE_PASSWORD }}
+			# apikey=${{ secrets.API_KEY }}
+
+
+	- name: Display Deployed URL
+		run: |
+		echo &quot;Deployed app URL: ${{ steps.preview.outputs.app-url }}&quot; &gt;&gt; $GITHUB_STEP_SUMMARY
+</code></pre>
+</div>
+</details>
+<p>See <a href="https://github.com/diversable/leptos-spin-CSR">the example repo here</a>.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../deployment/index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../deployment/ssr.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../deployment/index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../deployment/ssr.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

@@ -1,0 +1,424 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Dynamic Attributes</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href=".././mdbook-admonish.css">
+
+    </head>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('light')
+            html.classList.add(theme);
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../01_introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="../getting_started/index.html"><strong aria-hidden="true">2.</strong> Getting Started</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../getting_started/leptos_dx.html"><strong aria-hidden="true">2.1.</strong> Leptos DX</a></li><li class="chapter-item expanded "><a href="../getting_started/community_crates.html"><strong aria-hidden="true">2.2.</strong> The Leptos Community and leptos-* Crates</a></li></ol></li><li class="chapter-item expanded "><a href="../view/index.html"><strong aria-hidden="true">3.</strong> Part 1: Building User Interfaces</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../view/01_basic_component.html"><strong aria-hidden="true">3.1.</strong> A Basic Component</a></li><li class="chapter-item expanded "><a href="../view/02_dynamic_attributes.html" class="active"><strong aria-hidden="true">3.2.</strong> Dynamic Attributes</a></li><li class="chapter-item expanded "><a href="../view/03_components.html"><strong aria-hidden="true">3.3.</strong> Components and Props</a></li><li class="chapter-item expanded "><a href="../view/04_iteration.html"><strong aria-hidden="true">3.4.</strong> Iteration</a></li><li class="chapter-item expanded "><a href="../view/04b_iteration.html"><strong aria-hidden="true">3.5.</strong> Iterating over More Complex Data</a></li><li class="chapter-item expanded "><a href="../view/05_forms.html"><strong aria-hidden="true">3.6.</strong> Forms and Inputs</a></li><li class="chapter-item expanded "><a href="../view/06_control_flow.html"><strong aria-hidden="true">3.7.</strong> Control Flow</a></li><li class="chapter-item expanded "><a href="../view/07_errors.html"><strong aria-hidden="true">3.8.</strong> Error Handling</a></li><li class="chapter-item expanded "><a href="../view/08_parent_child.html"><strong aria-hidden="true">3.9.</strong> Parent-Child Communication</a></li><li class="chapter-item expanded "><a href="../view/09_component_children.html"><strong aria-hidden="true">3.10.</strong> Passing Children to Components</a></li><li class="chapter-item expanded "><a href="../view/builder.html"><strong aria-hidden="true">3.11.</strong> No Macros: The View Builder Syntax</a></li></ol></li><li class="chapter-item expanded "><a href="../reactivity/index.html"><strong aria-hidden="true">4.</strong> Reactivity</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../reactivity/working_with_signals.html"><strong aria-hidden="true">4.1.</strong> Working with Signals</a></li><li class="chapter-item expanded "><a href="../reactivity/14_create_effect.html"><strong aria-hidden="true">4.2.</strong> Responding to Changes with create_effect</a></li><li class="chapter-item expanded "><a href="../reactivity/interlude_functions.html"><strong aria-hidden="true">4.3.</strong> Interlude: Reactivity and Functions</a></li></ol></li><li class="chapter-item expanded "><a href="../testing.html"><strong aria-hidden="true">5.</strong> Testing</a></li><li class="chapter-item expanded "><a href="../async/index.html"><strong aria-hidden="true">6.</strong> Async</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../async/10_resources.html"><strong aria-hidden="true">6.1.</strong> Loading Data with Resources</a></li><li class="chapter-item expanded "><a href="../async/11_suspense.html"><strong aria-hidden="true">6.2.</strong> Suspense</a></li><li class="chapter-item expanded "><a href="../async/12_transition.html"><strong aria-hidden="true">6.3.</strong> Transition</a></li><li class="chapter-item expanded "><a href="../async/13_actions.html"><strong aria-hidden="true">6.4.</strong> Actions</a></li></ol></li><li class="chapter-item expanded "><a href="../interlude_projecting_children.html"><strong aria-hidden="true">7.</strong> Interlude: Projecting Children</a></li><li class="chapter-item expanded "><a href="../15_global_state.html"><strong aria-hidden="true">8.</strong> Global State Management</a></li><li class="chapter-item expanded "><a href="../router/index.html"><strong aria-hidden="true">9.</strong> Router</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../router/16_routes.html"><strong aria-hidden="true">9.1.</strong> Defining &lt;Routes/&gt;</a></li><li class="chapter-item expanded "><a href="../router/17_nested_routing.html"><strong aria-hidden="true">9.2.</strong> Nested Routing</a></li><li class="chapter-item expanded "><a href="../router/18_params_and_queries.html"><strong aria-hidden="true">9.3.</strong> Params and Queries</a></li><li class="chapter-item expanded "><a href="../router/19_a.html"><strong aria-hidden="true">9.4.</strong> &lt;A/&gt;</a></li><li class="chapter-item expanded "><a href="../router/20_form.html"><strong aria-hidden="true">9.5.</strong> &lt;Form/&gt;</a></li></ol></li><li class="chapter-item expanded "><a href="../interlude_styling.html"><strong aria-hidden="true">10.</strong> Interlude: Styling</a></li><li class="chapter-item expanded "><a href="../metadata.html"><strong aria-hidden="true">11.</strong> Metadata</a></li><li class="chapter-item expanded "><a href="../csr_wrapping_up.html"><strong aria-hidden="true">12.</strong> Client-Side Rendering: Wrapping Up</a></li><li class="chapter-item expanded "><a href="../ssr/index.html"><strong aria-hidden="true">13.</strong> Part 2: Server Side Rendering</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../ssr/21_cargo_leptos.html"><strong aria-hidden="true">13.1.</strong> cargo-leptos</a></li><li class="chapter-item expanded "><a href="../ssr/22_life_cycle.html"><strong aria-hidden="true">13.2.</strong> The Life of a Page Load</a></li><li class="chapter-item expanded "><a href="../ssr/23_ssr_modes.html"><strong aria-hidden="true">13.3.</strong> Async Rendering and SSR “Modes”</a></li><li class="chapter-item expanded "><a href="../ssr/24_hydration_bugs.html"><strong aria-hidden="true">13.4.</strong> Hydration Bugs</a></li></ol></li><li class="chapter-item expanded "><a href="../server/index.html"><strong aria-hidden="true">14.</strong> Working with the Server</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../server/25_server_functions.html"><strong aria-hidden="true">14.1.</strong> Server Functions</a></li><li class="chapter-item expanded "><a href="../server/26_extractors.html"><strong aria-hidden="true">14.2.</strong> Extractors</a></li><li class="chapter-item expanded "><a href="../server/27_response.html"><strong aria-hidden="true">14.3.</strong> Responses and Redirects</a></li></ol></li><li class="chapter-item expanded "><a href="../progressive_enhancement/index.html"><strong aria-hidden="true">15.</strong> Progressive Enhancement and Graceful Degradation</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../progressive_enhancement/action_form.html"><strong aria-hidden="true">15.1.</strong> &lt;ActionForm/&gt;s</a></li></ol></li><li class="chapter-item expanded "><a href="../deployment/index.html"><strong aria-hidden="true">16.</strong> Deployment</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../deployment/csr.html"><strong aria-hidden="true">16.1.</strong> Deploying CSR Apps</a></li><li class="chapter-item expanded "><a href="../deployment/ssr.html"><strong aria-hidden="true">16.2.</strong> Deploying SSR Apps</a></li><li class="chapter-item expanded "><a href="../deployment/binary_size.html"><strong aria-hidden="true">16.3.</strong> Optimizing WASM Binary Size</a></li></ol></li><li class="chapter-item expanded "><a href="../islands.html"><strong aria-hidden="true">17.</strong> Guide: Islands</a></li><li class="chapter-item expanded "><a href="../appendix_reactive_graph.html"><strong aria-hidden="true">18.</strong> Appendix: How Does the Reactive System Work?</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title"></h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="view-dynamic-classes-styles-and-attributes"><a class="header" href="#view-dynamic-classes-styles-and-attributes"><code>view</code>: Dynamic Classes, Styles and Attributes</a></h1>
+<p>So far we’ve seen how to use the <code>view</code> macro to create event listeners and to
+create dynamic text by passing a function (such as a signal) into the view.</p>
+<p>But of course there are other things you might want to update in your user interface.
+In this section, we’ll look at how to update classes, styles and attributes dynamically,
+and we’ll introduce the concept of a <strong>derived signal</strong>.</p>
+<p>Let’s start with a simple component that should be familiar: click a button to
+increment a counter.</p>
+<pre><code class="language-rust">#[component]
+fn App() -&gt; impl IntoView {
+    let (count, set_count) = create_signal(0);
+
+    view! {
+        &lt;button
+            on:click=move |_| {
+                set_count.update(|n| *n += 1);
+            }
+        &gt;
+            &quot;Click me: &quot;
+            {move || count()}
+        &lt;/button&gt;
+    }
+}</code></pre>
+<p>So far, this is just the example from the last chapter.</p>
+<h2 id="dynamic-classes"><a class="header" href="#dynamic-classes">Dynamic Classes</a></h2>
+<p>Now let’s say I’d like to update the list of CSS classes on this element dynamically.
+For example, let’s say I want to add the class <code>red</code> when the count is odd. I can
+do this using the <code>class:</code> syntax.</p>
+<pre><code class="language-rust">class:red=move || count() % 2 == 1</code></pre>
+<p><code>class:</code> attributes take</p>
+<ol>
+<li>the class name, following the colon (<code>red</code>)</li>
+<li>a value, which can be a <code>bool</code> or a function that returns a <code>bool</code></li>
+</ol>
+<p>When the value is <code>true</code>, the class is added. When the value is <code>false</code>, the class
+is removed. And if the value is a function that accesses a signal, the class will
+reactively update when the signal changes.</p>
+<p>Now every time I click the button, the text should toggle between red and black as
+the number switches between even and odd.</p>
+<pre><code class="language-rust">&lt;button
+    on:click=move |_| {
+        set_count.update(|n| *n += 1);
+    }
+    // the class: syntax reactively updates a single class
+    // here, we'll set the `red` class when `count` is odd
+    class:red=move || count() % 2 == 1
+&gt;
+    &quot;Click me&quot;
+&lt;/button&gt;</code></pre>
+<blockquote>
+<p>If you’re following along, make sure you go into your <code>index.html</code> and add something like this:</p>
+<pre><code class="language-html">&lt;style&gt;
+  .red {
+    color: red;
+  }
+&lt;/style&gt;
+</code></pre>
+</blockquote>
+<p>Some CSS class names can’t be directly parsed by the <code>view</code> macro, especially if they include a mix of dashes and numbers or other characters. In that case, you can use a tuple syntax: <code>class=(&quot;name&quot;, value)</code> still directly updates a single class.</p>
+<pre><code class="language-rust">class=(&quot;button-20&quot;, move || count() % 2 == 1)</code></pre>
+<h2 id="dynamic-styles"><a class="header" href="#dynamic-styles">Dynamic Styles</a></h2>
+<p>Individual CSS properties can be directly updated with a similar <code>style:</code> syntax.</p>
+<pre><code class="language-rust">    let (x, set_x) = create_signal(0);
+        view! {
+            &lt;button
+                on:click={move |_| {
+                    set_x.update(|n| *n += 10);
+                }}
+                // set the `style` attribute
+                style=&quot;position: absolute&quot;
+                // and toggle individual CSS properties with `style:`
+                style:left=move || format!(&quot;{}px&quot;, x() + 100)
+                style:background-color=move || format!(&quot;rgb({}, {}, 100)&quot;, x(), 100)
+                style:max-width=&quot;400px&quot;
+                // Set a CSS variable for stylesheet use
+                style=(&quot;--columns&quot;, x)
+            &gt;
+                &quot;Click to Move&quot;
+            &lt;/button&gt;
+    }</code></pre>
+<h2 id="dynamic-attributes"><a class="header" href="#dynamic-attributes">Dynamic Attributes</a></h2>
+<p>The same applies to plain attributes. Passing a plain string or primitive value to
+an attribute gives it a static value. Passing a function (including a signal) to
+an attribute causes it to update its value reactively. Let’s add another element
+to our view:</p>
+<pre><code class="language-rust">&lt;progress
+    max=&quot;50&quot;
+    // signals are functions, so `value=count` and `value=move || count.get()`
+    // are interchangeable.
+    value=count
+/&gt;</code></pre>
+<p>Now every time we set the count, not only will the <code>class</code> of the <code>&lt;button&gt;</code> be
+toggled, but the <code>value</code> of the <code>&lt;progress&gt;</code> bar will increase, which means that
+our progress bar will move forward.</p>
+<h2 id="derived-signals"><a class="header" href="#derived-signals">Derived Signals</a></h2>
+<p>Let’s go one layer deeper, just for fun.</p>
+<p>You already know that we create reactive interfaces just by passing functions into
+the <code>view</code>. This means that we can easily change our progress bar. For example,
+suppose we want it to move twice as fast:</p>
+<pre><code class="language-rust">&lt;progress
+    max=&quot;50&quot;
+    value=move || count() * 2
+/&gt;</code></pre>
+<p>But imagine we want to reuse that calculation in more than one place. You can do this
+using a <strong>derived signal</strong>: a closure that accesses a signal.</p>
+<pre><code class="language-rust">let double_count = move || count() * 2;
+
+/* insert the rest of the view */
+&lt;progress
+    max=&quot;50&quot;
+    // we use it once here
+    value=double_count
+/&gt;
+&lt;p&gt;
+    &quot;Double Count: &quot;
+    // and again here
+    {double_count}
+&lt;/p&gt;</code></pre>
+<p>Derived signals let you create reactive computed values that can be used in multiple
+places in your application with minimal overhead.</p>
+<p>Note: Using a derived signal like this means that the calculation runs once per
+signal change (when <code>count()</code> changes) and once per place we access <code>double_count</code>;
+in other words, twice. This is a very cheap calculation, so that’s fine.
+We’ll look at memos in a later chapter, which were designed to solve this problem
+for expensive calculations.</p>
+<blockquote>
+<h4 id="advanced-topic-injecting-raw-html"><a class="header" href="#advanced-topic-injecting-raw-html">Advanced Topic: Injecting Raw HTML</a></h4>
+<p>The <code>view</code> macro provides support for an additional attribute, <code>inner_html</code>, which
+can be used to directly set the HTML contents of any element, wiping out any other
+children you’ve given it. Note that this does <em>not</em> escape the HTML you provide. You
+should make sure that it only contains trusted input or that any HTML entities are
+escaped, to prevent cross-site scripting (XSS) attacks.</p>
+<pre><code class="language-rust">let html = &quot;&lt;p&gt;This HTML will be injected.&lt;/p&gt;&quot;;
+view! {
+  &lt;div inner_html=html/&gt;
+}</code></pre>
+<p><a href="https://docs.rs/leptos/latest/leptos/macro.view.html">Click here for the full <code>view</code> macros docs</a>.</p>
+</blockquote>
+<p><a href="https://codesandbox.io/p/sandbox/2-dynamic-attributes-0-5-lwdrpm?file=%2Fsrc%2Fmain.rs%3A1%2C1">Click to open CodeSandbox.</a></p>
+<iframe src="https://codesandbox.io/p/sandbox/2-dynamic-attributes-0-5-lwdrpm?file=%2Fsrc%2Fmain.rs%3A1%2C1" width="100%" height="1000px" style="max-height: 100vh"></iframe>
+<details>
+<summary>CodeSandbox Source</summary>
+<pre><code class="language-rust">use leptos::*;
+
+#[component]
+fn App() -&gt; impl IntoView {
+    let (count, set_count) = create_signal(0);
+
+    // a &quot;derived signal&quot; is a function that accesses other signals
+    // we can use this to create reactive values that depend on the
+    // values of one or more other signals
+    let double_count = move || count() * 2;
+
+    view! {
+        &lt;button
+            on:click=move |_| {
+                set_count.update(|n| *n += 1);
+            }
+
+            // the class: syntax reactively updates a single class
+            // here, we'll set the `red` class when `count` is odd
+            class:red=move || count() % 2 == 1
+        &gt;
+            &quot;Click me&quot;
+        &lt;/button&gt;
+        // NOTE: self-closing tags like &lt;br&gt; need an explicit /
+        &lt;br/&gt;
+
+        // We'll update this progress bar every time `count` changes
+        &lt;progress
+            // static attributes work as in HTML
+            max=&quot;50&quot;
+
+            // passing a function to an attribute
+            // reactively sets that attribute
+            // signals are functions, so this &lt;=&gt; `move || count.get()`
+            value=count
+        &gt;&lt;/progress&gt;
+        &lt;br/&gt;
+
+        // This progress bar will use `double_count`
+        // so it should move twice as fast!
+        &lt;progress
+            max=&quot;50&quot;
+            // derived signals are functions, so they can also
+            // reactive update the DOM
+            value=double_count
+        &gt;&lt;/progress&gt;
+        &lt;p&gt;&quot;Count: &quot; {count}&lt;/p&gt;
+        &lt;p&gt;&quot;Double Count: &quot; {double_count}&lt;/p&gt;
+    }
+}
+
+fn main() {
+    leptos::mount_to_body(App)
+}</code></pre>
+</details>
+</preview>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../view/01_basic_component.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../view/03_components.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../view/01_basic_component.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../view/03_components.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

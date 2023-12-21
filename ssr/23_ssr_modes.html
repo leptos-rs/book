@@ -1,0 +1,372 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Async Rendering and SSR “Modes”</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href=".././mdbook-admonish.css">
+
+    </head>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('light')
+            html.classList.add(theme);
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../01_introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="../getting_started/index.html"><strong aria-hidden="true">2.</strong> Getting Started</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../getting_started/leptos_dx.html"><strong aria-hidden="true">2.1.</strong> Leptos DX</a></li><li class="chapter-item expanded "><a href="../getting_started/community_crates.html"><strong aria-hidden="true">2.2.</strong> The Leptos Community and leptos-* Crates</a></li></ol></li><li class="chapter-item expanded "><a href="../view/index.html"><strong aria-hidden="true">3.</strong> Part 1: Building User Interfaces</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../view/01_basic_component.html"><strong aria-hidden="true">3.1.</strong> A Basic Component</a></li><li class="chapter-item expanded "><a href="../view/02_dynamic_attributes.html"><strong aria-hidden="true">3.2.</strong> Dynamic Attributes</a></li><li class="chapter-item expanded "><a href="../view/03_components.html"><strong aria-hidden="true">3.3.</strong> Components and Props</a></li><li class="chapter-item expanded "><a href="../view/04_iteration.html"><strong aria-hidden="true">3.4.</strong> Iteration</a></li><li class="chapter-item expanded "><a href="../view/04b_iteration.html"><strong aria-hidden="true">3.5.</strong> Iterating over More Complex Data</a></li><li class="chapter-item expanded "><a href="../view/05_forms.html"><strong aria-hidden="true">3.6.</strong> Forms and Inputs</a></li><li class="chapter-item expanded "><a href="../view/06_control_flow.html"><strong aria-hidden="true">3.7.</strong> Control Flow</a></li><li class="chapter-item expanded "><a href="../view/07_errors.html"><strong aria-hidden="true">3.8.</strong> Error Handling</a></li><li class="chapter-item expanded "><a href="../view/08_parent_child.html"><strong aria-hidden="true">3.9.</strong> Parent-Child Communication</a></li><li class="chapter-item expanded "><a href="../view/09_component_children.html"><strong aria-hidden="true">3.10.</strong> Passing Children to Components</a></li><li class="chapter-item expanded "><a href="../view/builder.html"><strong aria-hidden="true">3.11.</strong> No Macros: The View Builder Syntax</a></li></ol></li><li class="chapter-item expanded "><a href="../reactivity/index.html"><strong aria-hidden="true">4.</strong> Reactivity</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../reactivity/working_with_signals.html"><strong aria-hidden="true">4.1.</strong> Working with Signals</a></li><li class="chapter-item expanded "><a href="../reactivity/14_create_effect.html"><strong aria-hidden="true">4.2.</strong> Responding to Changes with create_effect</a></li><li class="chapter-item expanded "><a href="../reactivity/interlude_functions.html"><strong aria-hidden="true">4.3.</strong> Interlude: Reactivity and Functions</a></li></ol></li><li class="chapter-item expanded "><a href="../testing.html"><strong aria-hidden="true">5.</strong> Testing</a></li><li class="chapter-item expanded "><a href="../async/index.html"><strong aria-hidden="true">6.</strong> Async</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../async/10_resources.html"><strong aria-hidden="true">6.1.</strong> Loading Data with Resources</a></li><li class="chapter-item expanded "><a href="../async/11_suspense.html"><strong aria-hidden="true">6.2.</strong> Suspense</a></li><li class="chapter-item expanded "><a href="../async/12_transition.html"><strong aria-hidden="true">6.3.</strong> Transition</a></li><li class="chapter-item expanded "><a href="../async/13_actions.html"><strong aria-hidden="true">6.4.</strong> Actions</a></li></ol></li><li class="chapter-item expanded "><a href="../interlude_projecting_children.html"><strong aria-hidden="true">7.</strong> Interlude: Projecting Children</a></li><li class="chapter-item expanded "><a href="../15_global_state.html"><strong aria-hidden="true">8.</strong> Global State Management</a></li><li class="chapter-item expanded "><a href="../router/index.html"><strong aria-hidden="true">9.</strong> Router</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../router/16_routes.html"><strong aria-hidden="true">9.1.</strong> Defining &lt;Routes/&gt;</a></li><li class="chapter-item expanded "><a href="../router/17_nested_routing.html"><strong aria-hidden="true">9.2.</strong> Nested Routing</a></li><li class="chapter-item expanded "><a href="../router/18_params_and_queries.html"><strong aria-hidden="true">9.3.</strong> Params and Queries</a></li><li class="chapter-item expanded "><a href="../router/19_a.html"><strong aria-hidden="true">9.4.</strong> &lt;A/&gt;</a></li><li class="chapter-item expanded "><a href="../router/20_form.html"><strong aria-hidden="true">9.5.</strong> &lt;Form/&gt;</a></li></ol></li><li class="chapter-item expanded "><a href="../interlude_styling.html"><strong aria-hidden="true">10.</strong> Interlude: Styling</a></li><li class="chapter-item expanded "><a href="../metadata.html"><strong aria-hidden="true">11.</strong> Metadata</a></li><li class="chapter-item expanded "><a href="../csr_wrapping_up.html"><strong aria-hidden="true">12.</strong> Client-Side Rendering: Wrapping Up</a></li><li class="chapter-item expanded "><a href="../ssr/index.html"><strong aria-hidden="true">13.</strong> Part 2: Server Side Rendering</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../ssr/21_cargo_leptos.html"><strong aria-hidden="true">13.1.</strong> cargo-leptos</a></li><li class="chapter-item expanded "><a href="../ssr/22_life_cycle.html"><strong aria-hidden="true">13.2.</strong> The Life of a Page Load</a></li><li class="chapter-item expanded "><a href="../ssr/23_ssr_modes.html" class="active"><strong aria-hidden="true">13.3.</strong> Async Rendering and SSR “Modes”</a></li><li class="chapter-item expanded "><a href="../ssr/24_hydration_bugs.html"><strong aria-hidden="true">13.4.</strong> Hydration Bugs</a></li></ol></li><li class="chapter-item expanded "><a href="../server/index.html"><strong aria-hidden="true">14.</strong> Working with the Server</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../server/25_server_functions.html"><strong aria-hidden="true">14.1.</strong> Server Functions</a></li><li class="chapter-item expanded "><a href="../server/26_extractors.html"><strong aria-hidden="true">14.2.</strong> Extractors</a></li><li class="chapter-item expanded "><a href="../server/27_response.html"><strong aria-hidden="true">14.3.</strong> Responses and Redirects</a></li></ol></li><li class="chapter-item expanded "><a href="../progressive_enhancement/index.html"><strong aria-hidden="true">15.</strong> Progressive Enhancement and Graceful Degradation</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../progressive_enhancement/action_form.html"><strong aria-hidden="true">15.1.</strong> &lt;ActionForm/&gt;s</a></li></ol></li><li class="chapter-item expanded "><a href="../deployment/index.html"><strong aria-hidden="true">16.</strong> Deployment</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../deployment/csr.html"><strong aria-hidden="true">16.1.</strong> Deploying CSR Apps</a></li><li class="chapter-item expanded "><a href="../deployment/ssr.html"><strong aria-hidden="true">16.2.</strong> Deploying SSR Apps</a></li><li class="chapter-item expanded "><a href="../deployment/binary_size.html"><strong aria-hidden="true">16.3.</strong> Optimizing WASM Binary Size</a></li></ol></li><li class="chapter-item expanded "><a href="../islands.html"><strong aria-hidden="true">17.</strong> Guide: Islands</a></li><li class="chapter-item expanded "><a href="../appendix_reactive_graph.html"><strong aria-hidden="true">18.</strong> Appendix: How Does the Reactive System Work?</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title"></h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="async-rendering-and-ssr-modes"><a class="header" href="#async-rendering-and-ssr-modes">Async Rendering and SSR “Modes”</a></h1>
+<p>Server-rendering a page that uses only synchronous data is pretty simple: You just walk down the component tree, rendering each element to an HTML string. But this is a pretty big caveat: it doesn’t answer the question of what we should do with pages that includes asynchronous data, i.e., the sort of stuff that would be rendered under a <code>&lt;Suspense/&gt;</code> node on the client.</p>
+<p>When a page loads async data that it needs to render, what should we do? Should we wait for all the async data to load, and then render everything at once? (Let’s call this “async” rendering) Should we go all the way in the opposite direction, just sending the HTML we have immediately down to the client and letting the client load the resources and fill them in? (Let’s call this “synchronous” rendering) Or is there some middle-ground solution that somehow beats them both? (Hint: There is.)</p>
+<p>If you’ve ever listened to streaming music or watched a video online, I’m sure you realize that HTTP supports streaming, allowing a single connection to send chunks of data one after another without waiting for the full content to load. You may not realize that browsers are also really good at rendering partial HTML pages. Taken together, this means that you can actually enhance your users’ experience by <strong>streaming HTML</strong>: and this is something that Leptos supports out of the box, with no configuration at all. And there’s actually more than one way to stream HTML: you can stream the chunks of HTML that make up your page in order, like frames of a video, or you can stream them... well, out of order.</p>
+<p>Let me say a little more about what I mean.</p>
+<p>Leptos supports all the major ways of rendering HTML that includes asynchronous data:</p>
+<ol>
+<li><a href="#synchronous-rendering">Synchronous Rendering</a></li>
+<li><a href="#async-rendering">Async Rendering</a></li>
+<li><a href="#in-order-streaming">In-Order streaming</a></li>
+<li><a href="#out-of-order-streaming">Out-of-Order Streaming</a> (and a partially-blocked variant)</li>
+</ol>
+<h2 id="synchronous-rendering"><a class="header" href="#synchronous-rendering">Synchronous Rendering</a></h2>
+<ol>
+<li><strong>Synchronous</strong>: Serve an HTML shell that includes <code>fallback</code> for any <code>&lt;Suspense/&gt;</code>. Load data on the client using <code>create_local_resource</code>, replacing <code>fallback</code> once resources are loaded.</li>
+</ol>
+<ul>
+<li><em>Pros</em>: App shell appears very quickly: great TTFB (time to first byte).</li>
+<li><em>Cons</em>
+<ul>
+<li>Resources load relatively slowly; you need to wait for JS + WASM to load before even making a request.</li>
+<li>No ability to include data from async resources in the <code>&lt;title&gt;</code> or other <code>&lt;meta&gt;</code> tags, hurting SEO and things like social media link previews.</li>
+</ul>
+</li>
+</ul>
+<p>If you’re using server-side rendering, the synchronous mode is almost never what you actually want, from a performance perspective. This is because it misses out on an important optimization. If you’re loading async resources during server rendering, you can actually begin loading the data on the server. Rather than waiting for the client to receive the HTML response, then loading its JS + WASM, <em>then</em> realize it needs the resources and begin loading them, server rendering can actually begin loading the resources when the client first makes the response. In this sense, during server rendering an async resource is like a <code>Future</code> that begins loading on the server and resolves on the client. As long as the resources are actually serializable, this will always lead to a faster total load time.</p>
+<blockquote>
+<p>This is why <a href="https://docs.rs/leptos/latest/leptos/fn.create_resource.html"><code>create_resource</code></a> requires resources data to be serializable by default, and why you need to explicitly use <a href="https://docs.rs/leptos/latest/leptos/fn.create_local_resource.html"><code>create_local_resource</code></a> for any async data that is not serializable and should therefore only be loaded in the browser itself. Creating a local resource when you could create a serializable resource is always a deoptimization.</p>
+</blockquote>
+<h2 id="async-rendering"><a class="header" href="#async-rendering">Async Rendering</a></h2>
+<video controls>
+	<source src="https://github.com/leptos-rs/leptos/blob/main/docs/video/async.mov?raw=true" type="video/mp4">
+</video>
+<ol start="2">
+<li><strong><code>async</code></strong>: Load all resources on the server. Wait until all data are loaded, and render HTML in one sweep.</li>
+</ol>
+<ul>
+<li><em>Pros</em>: Better handling for meta tags (because you know async data even before you render the <code>&lt;head&gt;</code>). Faster complete load than <strong>synchronous</strong> because async resources begin loading on server.</li>
+<li><em>Cons</em>: Slower load time/TTFB: you need to wait for all async resources to load before displaying anything on the client. The page is totally blank until everything is loaded.</li>
+</ul>
+<h2 id="in-order-streaming"><a class="header" href="#in-order-streaming">In-Order Streaming</a></h2>
+<video controls>
+	<source src="https://github.com/leptos-rs/leptos/blob/main/docs/video/in-order.mov?raw=true" type="video/mp4">
+</video>
+<ol start="3">
+<li><strong>In-order streaming</strong>: Walk through the component tree, rendering HTML until you hit a <code>&lt;Suspense/&gt;</code>. Send down all the HTML you’ve got so far as a chunk in the stream, wait for all the resources accessed under the <code>&lt;Suspense/&gt;</code> to load, then render it to HTML and keep walking until you hit another <code>&lt;Suspense/&gt;</code> or the end of the page.</li>
+</ol>
+<ul>
+<li><em>Pros</em>: Rather than a blank screen, shows at least <em>something</em> before the data are ready.</li>
+<li><em>Cons</em>
+<ul>
+<li>Loads the shell more slowly than synchronous rendering (or out-of-order streaming) because it needs to pause at every <code>&lt;Suspense/&gt;</code>.</li>
+<li>Unable to show fallback states for <code>&lt;Suspense/&gt;</code>.</li>
+<li>Can’t begin hydration until the entire page has loaded, so earlier pieces of the page will not be interactive until the suspended chunks have loaded.</li>
+</ul>
+</li>
+</ul>
+<h2 id="out-of-order-streaming"><a class="header" href="#out-of-order-streaming">Out-of-Order Streaming</a></h2>
+<video controls>
+	<source src="https://github.com/leptos-rs/leptos/blob/main/docs/video/out-of-order.mov?raw=true" type="video/mp4">
+</video>
+<ol start="4">
+<li><strong>Out-of-order streaming</strong>: Like synchronous rendering, serve an HTML shell that includes <code>fallback</code> for any <code>&lt;Suspense/&gt;</code>. But load data on the <strong>server</strong>, streaming it down to the client as it resolves, and streaming down HTML for <code>&lt;Suspense/&gt;</code> nodes, which is swapped in to replace the fallback.</li>
+</ol>
+<ul>
+<li><em>Pros</em>: Combines the best of <strong>synchronous</strong> and <strong><code>async</code></strong>.
+<ul>
+<li>Fast initial response/TTFB because it immediately sends the whole synchronous shell</li>
+<li>Fast total time because resources begin loading on the server.</li>
+<li>Able to show the fallback loading state and dynamically replace it, instead of showing blank sections for un-loaded data.</li>
+</ul>
+</li>
+<li><em>Cons</em>: Requires JavaScript to be enabled for suspended fragments to appear in correct order. (This small chunk of JS streamed down in a <code>&lt;script&gt;</code> tag alongside the <code>&lt;template&gt;</code> tag that contains the rendered <code>&lt;Suspense/&gt;</code> fragment, so it does not need to load any additional JS files.)</li>
+</ul>
+<ol start="5">
+<li><strong>Partially-blocked streaming</strong>: “Partially-blocked” streaming is useful when you have multiple separate <code>&lt;Suspense/&gt;</code> components on the page.  It is triggered by setting <code>ssr=SsrMode::PartiallyBlocked</code> on a route, and depending on blocking resources within the view.   If one of the <code>&lt;Suspense/&gt;</code> components reads from one or more “blocking resources” (see below), the fallback will not be sent; rather, the server will wait until that <code>&lt;Suspense/&gt;</code> has resolved and then replace the fallback with the resolved fragment on the server, which means that it is included in the initial HTML response and appears even if JavaScript is disabled or not supported. Other <code>&lt;Suspense/&gt;</code> stream in out of order, similar to the <code>SsrMode::OutOfOrder</code> default.</li>
+</ol>
+<p>This is useful when you have multiple <code>&lt;Suspense/&gt;</code> on the page, and one is more important than the other: think of a blog post and comments, or product information and reviews. It is <em>not</em> useful if there’s only one <code>&lt;Suspense/&gt;</code>, or if every <code>&lt;Suspense/&gt;</code> reads from blocking resources. In those cases it is a slower form of <code>async</code> rendering.</p>
+<ul>
+<li><em>Pros</em>: Works if JavaScript is disabled or not supported on the user’s device.</li>
+<li><em>Cons</em>
+<ul>
+<li>Slower initial response time than out-of-order.</li>
+<li>Marginally overall response due to additional work on the server.</li>
+<li>No fallback state shown.</li>
+</ul>
+</li>
+</ul>
+<h2 id="using-ssr-modes"><a class="header" href="#using-ssr-modes">Using SSR Modes</a></h2>
+<p>Because it offers the best blend of performance characteristics, Leptos defaults to out-of-order streaming. But it’s really simple to opt into these different modes. You do it by adding an <code>ssr</code> property onto one or more of your <code>&lt;Route/&gt;</code> components, like in the <a href="https://github.com/leptos-rs/leptos/blob/main/examples/ssr_modes/src/app.rs"><code>ssr_modes</code> example</a>.</p>
+<pre><code class="language-rust">&lt;Routes&gt;
+	// We’ll load the home page with out-of-order streaming and &lt;Suspense/&gt;
+	&lt;Route path=&quot;&quot; view=HomePage/&gt;
+
+	// We'll load the posts with async rendering, so they can set
+	// the title and metadata *after* loading the data
+	&lt;Route
+		path=&quot;/post/:id&quot;
+		view=Post
+		ssr=SsrMode::Async
+	/&gt;
+&lt;/Routes&gt;</code></pre>
+<p>For a path that includes multiple nested routes, the most restrictive mode will be used: i.e., if even a single nested route asks for <code>async</code> rendering, the whole initial request will be rendered <code>async</code>. <code>async</code> is the most restricted requirement, followed by in-order, and then out-of-order. (This probably makes sense if you think about it for a few minutes.)</p>
+<h2 id="blocking-resources"><a class="header" href="#blocking-resources">Blocking Resources</a></h2>
+<p>Any Leptos versions later than <code>0.2.5</code> (i.e., git main and <code>0.3.x</code> or later) introduce a new resource primitive with <code>create_blocking_resource</code>. A blocking resource still loads asynchronously like any other <code>async</code>/<code>.await</code> in Rust; it doesn’t block a server thread or anything. Instead, reading from a blocking resource under a <code>&lt;Suspense/&gt;</code> blocks the HTML <em>stream</em> from returning anything, including its initial synchronous shell, until that <code>&lt;Suspense/&gt;</code> has resolved.</p>
+<p>Now from a performance perspective, this is not ideal. None of the synchronous shell for your page will load until that resource is ready. However, rendering nothing means that you can do things like set the <code>&lt;title&gt;</code> or <code>&lt;meta&gt;</code> tags in your <code>&lt;head&gt;</code> in actual HTML. This sounds a lot like <code>async</code> rendering, but there’s one big difference: if you have multiple <code>&lt;Suspense/&gt;</code> sections, you can block on <em>one</em> of them but still render a placeholder and then stream in the other.</p>
+<p>For example, think about a blog post. For SEO and for social sharing, I definitely want my blog post’s title and metadata in the initial HTML <code>&lt;head&gt;</code>. But I really don’t care whether comments have loaded yet or not; I’d like to load those as lazily as possible.</p>
+<p>With blocking resources, I can do something like this:</p>
+<pre><code class="language-rust">#[component]
+pub fn BlogPost() -&gt; impl IntoView {
+	let post_data = create_blocking_resource(/* load blog post */);
+	let comment_data = create_resource(/* load blog post */);
+	view! {
+		&lt;Suspense fallback=|| ()&gt;
+			{move || {
+				post_data.with(|data| {
+					view! {
+						&lt;Title text=data.title/&gt;
+						&lt;Meta name=&quot;description&quot; content=data.excerpt/&gt;
+						&lt;article&gt;
+							/* render the post content */
+						&lt;/article&gt;
+					}
+				})
+			}}
+		&lt;/Suspense&gt;
+		&lt;Suspense fallback=|| &quot;Loading comments...&quot;&gt;
+			/* render comment data here */
+		&lt;/Suspense&gt;
+	}
+}</code></pre>
+<p>The first <code>&lt;Suspense/&gt;</code>, with the body of the blog post, will block my HTML stream, because it reads from a blocking resource.  Meta tags and other head elements awaiting the blocking resource will be rendered before the stream is sent.</p>
+<p>Combined with the following route definition, which uses <code>SsrMode::PartiallyBlocked</code>, the blocking resource will be fully rendered on the server side, making it accessible to users who disable WebAssembly or JavaScript.</p>
+<pre><code class="language-rust">&lt;Routes&gt;
+	// We’ll load the home page with out-of-order streaming and &lt;Suspense/&gt;
+	&lt;Route path=&quot;&quot; view=HomePage/&gt;
+
+	// We'll load the posts with async rendering, so they can set
+	// the title and metadata *after* loading the data
+	&lt;Route
+		path=&quot;/post/:id&quot;
+		view=Post
+		ssr=SsrMode::PartiallyBlocked
+	/&gt;
+&lt;/Routes&gt;</code></pre>
+<p>The second <code>&lt;Suspense/&gt;</code>, with the comments, will not block the stream. Blocking resources gave me exactly the power and granularity I needed to optimize my page for SEO and user experience.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../ssr/22_life_cycle.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../ssr/24_hydration_bugs.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../ssr/22_life_cycle.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../ssr/24_hydration_bugs.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

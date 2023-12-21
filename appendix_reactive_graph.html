@@ -1,0 +1,394 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Appendix: How Does the Reactive System Work?</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="./mdbook-admonish.css">
+
+    </head>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('light')
+            html.classList.add(theme);
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="01_introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="getting_started/index.html"><strong aria-hidden="true">2.</strong> Getting Started</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="getting_started/leptos_dx.html"><strong aria-hidden="true">2.1.</strong> Leptos DX</a></li><li class="chapter-item expanded "><a href="getting_started/community_crates.html"><strong aria-hidden="true">2.2.</strong> The Leptos Community and leptos-* Crates</a></li></ol></li><li class="chapter-item expanded "><a href="view/index.html"><strong aria-hidden="true">3.</strong> Part 1: Building User Interfaces</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="view/01_basic_component.html"><strong aria-hidden="true">3.1.</strong> A Basic Component</a></li><li class="chapter-item expanded "><a href="view/02_dynamic_attributes.html"><strong aria-hidden="true">3.2.</strong> Dynamic Attributes</a></li><li class="chapter-item expanded "><a href="view/03_components.html"><strong aria-hidden="true">3.3.</strong> Components and Props</a></li><li class="chapter-item expanded "><a href="view/04_iteration.html"><strong aria-hidden="true">3.4.</strong> Iteration</a></li><li class="chapter-item expanded "><a href="view/04b_iteration.html"><strong aria-hidden="true">3.5.</strong> Iterating over More Complex Data</a></li><li class="chapter-item expanded "><a href="view/05_forms.html"><strong aria-hidden="true">3.6.</strong> Forms and Inputs</a></li><li class="chapter-item expanded "><a href="view/06_control_flow.html"><strong aria-hidden="true">3.7.</strong> Control Flow</a></li><li class="chapter-item expanded "><a href="view/07_errors.html"><strong aria-hidden="true">3.8.</strong> Error Handling</a></li><li class="chapter-item expanded "><a href="view/08_parent_child.html"><strong aria-hidden="true">3.9.</strong> Parent-Child Communication</a></li><li class="chapter-item expanded "><a href="view/09_component_children.html"><strong aria-hidden="true">3.10.</strong> Passing Children to Components</a></li><li class="chapter-item expanded "><a href="view/builder.html"><strong aria-hidden="true">3.11.</strong> No Macros: The View Builder Syntax</a></li></ol></li><li class="chapter-item expanded "><a href="reactivity/index.html"><strong aria-hidden="true">4.</strong> Reactivity</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="reactivity/working_with_signals.html"><strong aria-hidden="true">4.1.</strong> Working with Signals</a></li><li class="chapter-item expanded "><a href="reactivity/14_create_effect.html"><strong aria-hidden="true">4.2.</strong> Responding to Changes with create_effect</a></li><li class="chapter-item expanded "><a href="reactivity/interlude_functions.html"><strong aria-hidden="true">4.3.</strong> Interlude: Reactivity and Functions</a></li></ol></li><li class="chapter-item expanded "><a href="testing.html"><strong aria-hidden="true">5.</strong> Testing</a></li><li class="chapter-item expanded "><a href="async/index.html"><strong aria-hidden="true">6.</strong> Async</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="async/10_resources.html"><strong aria-hidden="true">6.1.</strong> Loading Data with Resources</a></li><li class="chapter-item expanded "><a href="async/11_suspense.html"><strong aria-hidden="true">6.2.</strong> Suspense</a></li><li class="chapter-item expanded "><a href="async/12_transition.html"><strong aria-hidden="true">6.3.</strong> Transition</a></li><li class="chapter-item expanded "><a href="async/13_actions.html"><strong aria-hidden="true">6.4.</strong> Actions</a></li></ol></li><li class="chapter-item expanded "><a href="interlude_projecting_children.html"><strong aria-hidden="true">7.</strong> Interlude: Projecting Children</a></li><li class="chapter-item expanded "><a href="15_global_state.html"><strong aria-hidden="true">8.</strong> Global State Management</a></li><li class="chapter-item expanded "><a href="router/index.html"><strong aria-hidden="true">9.</strong> Router</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="router/16_routes.html"><strong aria-hidden="true">9.1.</strong> Defining &lt;Routes/&gt;</a></li><li class="chapter-item expanded "><a href="router/17_nested_routing.html"><strong aria-hidden="true">9.2.</strong> Nested Routing</a></li><li class="chapter-item expanded "><a href="router/18_params_and_queries.html"><strong aria-hidden="true">9.3.</strong> Params and Queries</a></li><li class="chapter-item expanded "><a href="router/19_a.html"><strong aria-hidden="true">9.4.</strong> &lt;A/&gt;</a></li><li class="chapter-item expanded "><a href="router/20_form.html"><strong aria-hidden="true">9.5.</strong> &lt;Form/&gt;</a></li></ol></li><li class="chapter-item expanded "><a href="interlude_styling.html"><strong aria-hidden="true">10.</strong> Interlude: Styling</a></li><li class="chapter-item expanded "><a href="metadata.html"><strong aria-hidden="true">11.</strong> Metadata</a></li><li class="chapter-item expanded "><a href="csr_wrapping_up.html"><strong aria-hidden="true">12.</strong> Client-Side Rendering: Wrapping Up</a></li><li class="chapter-item expanded "><a href="ssr/index.html"><strong aria-hidden="true">13.</strong> Part 2: Server Side Rendering</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ssr/21_cargo_leptos.html"><strong aria-hidden="true">13.1.</strong> cargo-leptos</a></li><li class="chapter-item expanded "><a href="ssr/22_life_cycle.html"><strong aria-hidden="true">13.2.</strong> The Life of a Page Load</a></li><li class="chapter-item expanded "><a href="ssr/23_ssr_modes.html"><strong aria-hidden="true">13.3.</strong> Async Rendering and SSR “Modes”</a></li><li class="chapter-item expanded "><a href="ssr/24_hydration_bugs.html"><strong aria-hidden="true">13.4.</strong> Hydration Bugs</a></li></ol></li><li class="chapter-item expanded "><a href="server/index.html"><strong aria-hidden="true">14.</strong> Working with the Server</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="server/25_server_functions.html"><strong aria-hidden="true">14.1.</strong> Server Functions</a></li><li class="chapter-item expanded "><a href="server/26_extractors.html"><strong aria-hidden="true">14.2.</strong> Extractors</a></li><li class="chapter-item expanded "><a href="server/27_response.html"><strong aria-hidden="true">14.3.</strong> Responses and Redirects</a></li></ol></li><li class="chapter-item expanded "><a href="progressive_enhancement/index.html"><strong aria-hidden="true">15.</strong> Progressive Enhancement and Graceful Degradation</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="progressive_enhancement/action_form.html"><strong aria-hidden="true">15.1.</strong> &lt;ActionForm/&gt;s</a></li></ol></li><li class="chapter-item expanded "><a href="deployment/index.html"><strong aria-hidden="true">16.</strong> Deployment</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="deployment/csr.html"><strong aria-hidden="true">16.1.</strong> Deploying CSR Apps</a></li><li class="chapter-item expanded "><a href="deployment/ssr.html"><strong aria-hidden="true">16.2.</strong> Deploying SSR Apps</a></li><li class="chapter-item expanded "><a href="deployment/binary_size.html"><strong aria-hidden="true">16.3.</strong> Optimizing WASM Binary Size</a></li></ol></li><li class="chapter-item expanded "><a href="islands.html"><strong aria-hidden="true">17.</strong> Guide: Islands</a></li><li class="chapter-item expanded "><a href="appendix_reactive_graph.html" class="active"><strong aria-hidden="true">18.</strong> Appendix: How Does the Reactive System Work?</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title"></h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="appendix-how-does-the-reactive-system-work"><a class="header" href="#appendix-how-does-the-reactive-system-work">Appendix: How does the Reactive System Work?</a></h1>
+<p>You don’t need to know very much about how the reactive system actually works in order to use the library successfully. But it’s always useful to understand what’s going on behind the scenes once you start working with the framework at an advanced level.</p>
+<p>The reactive primitives you use are divided into three sets:</p>
+<ul>
+<li><strong>Signals</strong> (<code>ReadSignal</code>/<code>WriteSignal</code>, <code>RwSignal</code>, <code>Resource</code>, <code>Trigger</code>) Values you can actively change to trigger reactive updates.</li>
+<li><strong>Computations</strong> (<code>Memo</code>s) Values that depend on signals (or other computations) and derive a new reactive value through some pure computation.</li>
+<li><strong>Effects</strong> Observers that listen to changes in some signals or computations and run a function, causing some side effect.</li>
+</ul>
+<p>Derived signals are a kind of non-primitve computation: as plain closures, they simply allow you to refactor some repeated signal-based computation into a reusable function that can be called in multiple places, but they are not represented in the reactive system itself.</p>
+<p>All the other primitives actually exist in the reactive system as nodes in a reactive graph.</p>
+<p>Most of the work of the reactive system consists of propagating changes from signals to effects, possibly through some intervening memos.</p>
+<p>The assumption of the reactive system is that effects (like rendering to the DOM or making a network request) are orders of magnitude more expensive than things like updating a Rust data structure inside your app.</p>
+<p>So the <strong>primary goal</strong> of the reactive system is to <strong>run effects as infrequently as possible</strong>.</p>
+<p>Leptos does this through the construction of a reactive graph.</p>
+<blockquote>
+<p>Leptos’s current reactive system is based heavily on the <a href="https://github.com/modderme123/reactively">Reactively</a> library for JavaScript. You can read Milo’s article “<a href="https://dev.to/modderme123/super-charging-fine-grained-reactive-performance-47ph">Super-Charging Fine-Grained Reactivity</a>” for an excellent account of its algorithm, as well as fine-grained reactivity in general—including some beautiful diagrams!</p>
+</blockquote>
+<h2 id="the-reactive-graph"><a class="header" href="#the-reactive-graph">The Reactive Graph</a></h2>
+<p>Signals, memos, and effects all share three characteristics:</p>
+<ul>
+<li><strong>Value</strong> They have a current value: either the signal’s value, or (for memos and effects) the value returned by the previous run, if any.</li>
+<li><strong>Sources</strong> Any other reactive primitives they depend on. (For signals, this is an empty set.)</li>
+<li><strong>Subscribers</strong> Any other reactive primitives that depend on them. (For effects, this is an empty set.)</li>
+</ul>
+<p>In reality then, signals, memos, and effects are just conventional names for one generic concept of a “node” in a reactive graph. Signals are always “root nodes,” with no sources/parents. Effects are always “leaf nodes,” with no subscribers. Memos typically have both sources and subscribers.</p>
+<h3 id="simple-dependencies"><a class="header" href="#simple-dependencies">Simple Dependencies</a></h3>
+<p>So imagine the following code:</p>
+<pre><code class="language-rust">// A
+let (name, set_name) = create_signal(&quot;Alice&quot;);
+
+// B
+let name_upper = create_memo(move |_| name.with(|n| n.to_uppercase()));
+
+// C
+create_effect(move |_| {
+	log!(&quot;{}&quot;, name_upper());
+});
+
+set_name(&quot;Bob&quot;);</code></pre>
+<p>You can easily imagine the reactive graph here: <code>name</code> is the only signal/origin node, the <code>create_effect</code> is the only effect/terminal node, and there’s one intervening memo.</p>
+<pre><code>A   (name)
+|
+B   (name_upper)
+|
+C   (the effect)
+</code></pre>
+<h3 id="splitting-branches"><a class="header" href="#splitting-branches">Splitting Branches</a></h3>
+<p>Let’s make it a little more complex.</p>
+<pre><code class="language-rust">// A
+let (name, set_name) = create_signal(&quot;Alice&quot;);
+
+// B
+let name_upper = create_memo(move |_| name.with(|n| n.to_uppercase()));
+
+// C
+let name_len = create_memo(move |_| name.len());
+
+// D
+create_effect(move |_| {
+	log!(&quot;len = {}&quot;, name_len());
+});
+
+// E
+create_effect(move |_| {
+	log!(&quot;name = {}&quot;, name_upper());
+});</code></pre>
+<p>This is also pretty straightforward: a signal source signal (<code>name</code>/<code>A</code>) divides into two parallel tracks: <code>name_upper</code>/<code>B</code> and <code>name_len</code>/<code>C</code>, each of which has an effect that depends on it.</p>
+<pre><code> __A__
+|     |
+B     C
+|     |
+D     E
+</code></pre>
+<p>Now let’s update the signal.</p>
+<pre><code class="language-rust">set_name(&quot;Bob&quot;);</code></pre>
+<p>We immediately log</p>
+<pre><code>len = 3
+name = BOB
+</code></pre>
+<p>Let’s do it again.</p>
+<pre><code class="language-rust">set_name(&quot;Tim&quot;);</code></pre>
+<p>The log should shows</p>
+<pre><code>name = TIM
+</code></pre>
+<p><code>len = 3</code> does not log again.</p>
+<p>Remember: the goal of the reactive system is to run effects as infrequently as possible. Changing <code>name</code> from <code>&quot;Bob&quot;</code> to <code>&quot;Tim&quot;</code> will cause each of the memos to re-run. But they will only notify their subscribers if their value has actually changed. <code>&quot;BOB&quot;</code> and <code>&quot;TIM&quot;</code> are different, so that effect runs again. But both names have the length <code>3</code>, so they do not run again.</p>
+<h3 id="reuniting-branches"><a class="header" href="#reuniting-branches">Reuniting Branches</a></h3>
+<p>One more example, of what’s sometimes called <strong>the diamond problem</strong>.</p>
+<pre><code class="language-rust">// A
+let (name, set_name) = create_signal(&quot;Alice&quot;);
+
+// B
+let name_upper = create_memo(move |_| name.with(|n| n.to_uppercase()));
+
+// C
+let name_len = create_memo(move |_| name.len());
+
+// D
+create_effect(move |_| {
+	log!(&quot;{} is {} characters long&quot;, name_upper(), name_len());
+});</code></pre>
+<p>What does the graph look like for this?</p>
+<pre><code> __A__
+|     |
+B     C
+|     |
+|__D__|
+</code></pre>
+<p>You can see why it's called the “diamond problem.” If I’d connected the nodes with straight lines instead of bad ASCII art, it would form a diamond: two memos, each of which depend on a signal, which feed into the same effect.</p>
+<p>A naive, push-based reactive implementation would cause this effect to run twice, which would be bad. (Remember, our goal is to run effects as infrequently as we can.) For example, you could implement a reactive system such that signals and memos immediately propagate their changes all the way down the graph, through each dependency, essentially traversing the graph depth-first. In other words, updating <code>A</code> would notify <code>B</code>, which would notify <code>D</code>; then <code>A</code> would notify <code>C</code>, which would notify <code>D</code> again. This is both inefficient (<code>D</code> runs twice) and glitchy (<code>D</code> actually runs with the incorrect value for the second memo during its first run.)</p>
+<h2 id="solving-the-diamond-problem"><a class="header" href="#solving-the-diamond-problem">Solving the Diamond Problem</a></h2>
+<p>Any reactive implementation worth its salt is dedicated to solving this issue. There are a number of different approaches (again, <a href="https://dev.to/modderme123/super-charging-fine-grained-reactive-performance-47ph">see Milo’s article</a> for an excellent overview).</p>
+<p>Here’s how ours works, in brief.</p>
+<p>A reactive node is always in one of three states:</p>
+<ul>
+<li><code>Clean</code>: it is known not to have changed</li>
+<li><code>Check</code>: it is possible it has changed</li>
+<li><code>Dirty</code>: it has definitely changed</li>
+</ul>
+<p>Updating a signal <code>Dirty</code> marks that signal <code>Dirty</code>, and marks all its descendants <code>Check</code>, recursively. Any of its descendants that are effects are added to a queue to be re-run.</p>
+<pre><code>    ____A (DIRTY)___
+   |               |
+B (CHECK)    C (CHECK)
+   |               |
+   |____D (CHECK)__|
+</code></pre>
+<p>Now those effects are run. (All of the effects will be marked <code>Check</code> at this point.) Before re-running its computation, the effect checks its parents to see if they are dirty. So</p>
+<ul>
+<li>So <code>D</code> goes to <code>B</code> and checks if it is <code>Dirty</code>.</li>
+<li>But <code>B</code> is also marked <code>Check</code>. So <code>B</code> does the same thing:
+<ul>
+<li><code>B</code> goes to <code>A</code>, and finds that it is <code>Dirty</code>.</li>
+<li>This means <code>B</code> needs to re-run, because one of its sources has changed.</li>
+<li><code>B</code> re-runs, generating a new value, and marks itself <code>Clean</code></li>
+<li>Because <code>B</code> is a memo, it then checks its prior value against the new value.</li>
+<li>If they are the same, <code>B</code> returns &quot;no change.&quot; Otherwise, it returns &quot;yes, I changed.&quot;</li>
+</ul>
+</li>
+<li>If <code>B</code> returned “yes, I changed,” <code>D</code> knows that it definitely needs to run and re-runs immediately before checking any other sources.</li>
+<li>If <code>B</code> returned “no, I didn’t change,” <code>D</code> continues on to check <code>C</code> (see process above for <code>B</code>.)</li>
+<li>If neither <code>B</code> nor <code>C</code> has changed, the effect does not need to re-run.</li>
+<li>If either <code>B</code> or <code>C</code> did change, the effect now re-runs.</li>
+</ul>
+<p>Because the effect is only marked <code>Check</code> once and only queued once, it only runs once.</p>
+<p>If the naive version was a “push-based” reactive system, simply pushing reactive changes all the way down the graph and therefore running the effect twice, this version could be called “push-pull.” It pushes the <code>Check</code> status all the way down the graph, but then “pulls” its way back up. In fact, for large graphs it may end up bouncing back up and down and left and right on the graph as it tries to determine exactly which nodes need to re-run.</p>
+<p><strong>Note this important trade-off</strong>: Push-based reactivity propagates signal changes more quickly, at the expense of over-re-running memos and effects. Remember: the reactive system is designed to minimize how often you re-run effects, on the (accurate) assumption that side effects are orders of magnitude more expensive than this kind of cache-friendly graph traversal happening entirely inside the library’s Rust code. The measurement of a good reactive system is not how quickly it propagates changes, but how quickly it propagates changes <em>without over-notifying</em>.</p>
+<h2 id="memos-vs-signals"><a class="header" href="#memos-vs-signals">Memos vs. Signals</a></h2>
+<p>Note that signals always notify their children; i.e., a signal is always marked <code>Dirty</code> when it updates, even if its new value is the same as the old value. Otherwise, we’d have to require <code>PartialEq</code> on signals, and this is actually quite an expensive check on some types. (For example, add an unnecessary equality check to something like <code>some_vec_signal.update(|n| n.pop())</code> when it’s clear that it has in fact changed.)</p>
+<p>Memos, on the other hand, check whether they change before notifying their children. They only run their calculation once, no matter how many times you <code>.get()</code> the result, but they run whenever their signal sources change. This means that if the memo’s computation is <em>very</em> expensive, you may actually want to memoize its inputs as well, so that the memo only re-calculates when it is sure its inputs have changed.</p>
+<h2 id="memos-vs-derived-signals"><a class="header" href="#memos-vs-derived-signals">Memos vs. Derived Signals</a></h2>
+<p>All of this is cool, and memos are pretty great. But most actual applications have reactive graphs that are quite shallow and quite wide: you might have 100 source signals and 500 effects, but no memos or, in rare case, three or four memos between the signal and the effect. Memos are extremely good at what they do: limiting how often they notify their subscribers that they have changed. But as this description of the reactive system should show, they come with overhead in two forms:</p>
+<ol>
+<li>A <code>PartialEq</code> check, which may or may not be expensive.</li>
+<li>Added memory cost of storing another node in the reactive system.</li>
+<li>Added computational cost of reactive graph traversal.</li>
+</ol>
+<p>In cases in which the computation itself is cheaper than this reactive work, you should avoid “over-wrapping” with memos and simply use derived signals. Here’s a great example in which you should never use a memo:</p>
+<pre><code class="language-rust">let (a, set_a) = create_signal(1);
+// none of these make sense as memos
+let b = move || a() + 2;
+let c = move || b() % 2 == 0;
+let d = move || if c() { &quot;even&quot; } else { &quot;odd&quot; };
+
+set_a(2);
+set_a(3);
+set_a(5);</code></pre>
+<p>Even though memoizing would technically save an extra calculation of <code>d</code> between setting <code>a</code> to <code>3</code> and <code>5</code>, these calculations are themselves cheaper than the reactive algorithm.</p>
+<p>At the very most, you might consider memoizing the final node before running some expensive side effect:</p>
+<pre><code class="language-rust">let text = create_memo(move |_| {
+    d()
+});
+create_effect(move |_| {
+    engrave_text_into_bar_of_gold(&amp;text());
+});</code></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="islands.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="islands.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>
