@@ -1,11 +1,9 @@
-# To get started with mdBook see: https://rust-lang.github.io/mdBook/index.html
-#
 name: Deploy Leptos Book to Github Pages
 
 on:
   # Runs on pushes targeting the default branch
   push:
-    branches: ["main", "fix-gh-pages"]
+    branches: ["main"]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -24,8 +22,8 @@ concurrency:
 
 jobs:
 
-  # Build job
-  build:
+  # Job: Build and Deploy to Pages
+  build-and-deploy:
 
     environment:
       name: github-pages
@@ -59,14 +57,6 @@ jobs:
         with:
           path: ./book
 
-  # Deployment job
-  # deploy:
-    # environment:
-    #   name: github-pages
-    #   url: ${{ steps.deployment.outputs.page_url }}
-    # runs-on: ubuntu-latest
-    # needs: build
-    # steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v3
