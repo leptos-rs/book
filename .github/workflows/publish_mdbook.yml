@@ -1,6 +1,6 @@
 # To get started with mdBook see: https://rust-lang.github.io/mdBook/index.html
 #
-name: Deploy mdBook site to Github Pages
+name: Deploy Leptos Book to Github Pages
 
 on:
   # Runs on pushes targeting the default branch
@@ -40,14 +40,14 @@ jobs:
         run: |
           cargo install mdbook-admonish --vers "1.14.0" --locked
           mdbook-admonish install ./
-      
+
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v4
-        
+
       - name: Build with mdBook
         run: mdbook build
-        
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
