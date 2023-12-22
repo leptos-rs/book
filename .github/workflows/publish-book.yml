@@ -2,8 +2,8 @@ name: Deploy book
 on:
   push:
     paths: ["**"]
-    branches:
-      - main
+    # branches:
+      # - main
 
 jobs:
   deploy:
