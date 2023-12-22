@@ -232,6 +232,25 @@ fn ProgressBar<F: Fn() -> i32 + 'static>(
 
 > Note that generic component props _can’t_ be specified with an `impl` yet (`progress: impl Fn() -> i32 + 'static,`), in part because they’re actually used to generate a `struct ProgressBarProps`, and struct fields cannot be `impl` types. The `#[component]` macro may be further improved in the future to allow inline `impl` generic props.
 
+Generics need to be used somewhere in the component props. This is because props are built into a struct, so all generic types must be used somewhere in the struct. This is often easily accomplished using an optional `PhantomData` prop. You can then specify a generic in the view using the syntax for expressing types: `<Component<T>/>` (not with the turbofish-style `<Component::<T>/>`).
+
+```rust
+#[component]
+fn SizeOf<T: Sized>(#[prop(optional)] _ty: PhantomData<T>) -> impl IntoView {
+    std::mem::size_of::<T>()
+}
+
+#[component]
+pub fn App() -> impl IntoView {
+    view! {
+        <SizeOf<usize>/>
+        <SizeOf<String>/>
+    }
+}
+```
+
+> Note that there are some limitations. For example, our view macro parser can’t handle nested generics like `<SizeOf<Vec<T>>/>`.
+
 ### `into` Props
 
 There’s one more way we could implement this, and it would be to use `#[prop(into)]`.
@@ -318,10 +337,7 @@ xx |         <ProgressBar::<F>/>
    |                     +++++
 ```
 
-There are just two problems:
-
-1. Leptos’s view macro doesn’t support specifying a generic on a component with this turbofish syntax.
-2. Even if you could, specifying the correct type here is not possible; closures and functions in general are unnameable types. The compiler can display them with a shorthand, but you can’t specify them.
+You can specify generics on components with a `<ProgressBar<F>/>` syntax (no turbofish in the `view` macro). Specifying the correct type here is not possible; closures and functions in general are unnameable types. The compiler can display them with a shorthand, but you can’t specify them.
 
 However, you can get around this by providing a concrete type using `Box<dyn _>` or `&dyn _`:
 
