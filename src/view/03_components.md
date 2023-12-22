@@ -102,7 +102,7 @@ You’ll notice that throughout this example, `progress` takes a reactive
 
 Component props have no special meaning attached to them. A component is simply
 a function that runs once to set up the user interface. The only way to tell the
-interface to respond to changing is to pass it a signal type. So if you have a
+interface to respond to changes is to pass it a signal type. So if you have a
 component property that will change over time, like our `progress`, it should
 be a signal.
 
@@ -415,7 +415,7 @@ and see the power of the `#[component]` macro combined with rust-analyzer here.
 use leptos::*;
 
 // Composing different components together is how we build
-// user interfaces. Here, we'll define a resuable <ProgressBar/>.
+// user interfaces. Here, we'll define a reusable <ProgressBar/>.
 // You'll see how doc comments can be used to document components
 // and their properties.
 
