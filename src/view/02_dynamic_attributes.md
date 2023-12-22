@@ -227,7 +227,8 @@ fn App() -> impl IntoView {
 
             // passing a function to an attribute
             // reactively sets that attribute
-            // signals are functions, so this <=> `move || count.get()`
+            // signals are functions, so `value=count` and `value=move || count.get()`
+            // are interchangeable.
             value=count
         ></progress>
         <br/>
@@ -237,7 +238,7 @@ fn App() -> impl IntoView {
         <progress
             max="50"
             // derived signals are functions, so they can also
-            // reactive update the DOM
+            // reactively update the DOM
             value=double_count
         ></progress>
         <p>"Count: " {count}</p>
