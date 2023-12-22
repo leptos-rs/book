@@ -63,11 +63,24 @@ If `use_last` is `true`, effect should rerun whenever `first`, `last`, or `use_l
 
 ## To `create_effect`, or not to `create_effect`?
 
-Effects are intended to run _side-effects_ of the system, not to synchronize state _within_ the system. In other words: don’t write to signals within effects.
+Effects are intended to synchronize the reactive system with the non-reactive world outside, not to synchronize between different reactive values. In other words: using an effect to read a value from one signal and set it in another is always sub-optimal.
 
-If you need to define a signal that depends on the value of other signals, use a derived signal or [`create_memo`](https://docs.rs/leptos_reactive/latest/leptos_reactive/fn.create_memo.html).
+If you need to define a signal that depends on the value of other signals, use a derived signal or [`create_memo`](https://docs.rs/leptos_reactive/latest/leptos_reactive/fn.create_memo.html). Writing to a signal inside an effect isn’t the end of the world, and it won’t cause your computer to light on fire, but a derived signal or memo is always better—not only because the dataflow is clear, but because the performance is better.
 
-If you need to synchronize some reactive value with the non-reactive world outside—like a web API, the console, the filesystem, or the DOM—create an effect.
+```rust
+let (a, set_a) = create_signal(0);
+
+// ⚠️ not great
+let (b, set_b) = create_signal(0);
+create_effect(move |_| {
+    set_b(a() * 2);
+});
+
+// ✅ woo-hoo!
+let b = move || a() * 2;
+```
+
+If you need to synchronize some reactive value with the non-reactive world outside—like a web API, the console, the filesystem, or the DOM—writing to a signal in an effect is a fine way to do that. In many cases, though, you’ll find that you’re really writing to a signa inside an event listener or something else, not inside an effect. In these cases, you should check out [`leptos-use`](https://leptos-use.rs/) to see if it already provides a reactive wrapping primitive to do that!
 
 > If you’re curious for more information about when you should and shouldn’t use `create_effect`, [check out this video](https://www.youtube.com/watch?v=aQOFJQ2JkvQ) for a more in-depth consideration!
 
