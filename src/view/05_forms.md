@@ -176,12 +176,55 @@ in Leptos (or vanilla JavaScript) it won’t work.
 Instead, use the `selected` field:
 
 ```rust
+let (value, set_value) = create_signal("B".to_string());
 view! {
-    <select>
-        <option selected=move || count.get() == 0>"0"</option>
-        <option selected=move || count.get() == 1>"1"</option>
-        <option selected=move || count.get() == 2>"2"</option>
+    <select on:change=move |ev| {
+        let new_value = event_target_value(&ev);
+        set_value(new_value);
+    }>
+        <option
+            value="A"
+            selected=move || value() == "A"
+        >
+            "A"
+        </option>
+        <option
+            value="B"
+            selected=move || value() == "B"
+        >
+            "B"
+        </option>
     </select>
+}
+```
+
+That's somewhat repetitive, but can easily be refactored:
+```rust
+#[component]
+pub fn App() -> impl IntoView {
+    let (value, set_value) = create_signal("B".to_string());
+    view! {
+        <select on:change=move |ev| {
+            let new_value = event_target_value(&ev);
+            set_value(new_value);
+        }>
+            <SelectOption value is="A"/>
+            <SelectOption value is="B"/>
+            <SelectOption value is="C"/>
+        </select>
+    }
+}
+
+#[component]
+pub fn SelectOption(is: &'static str, value: ReadSignal<String>) -> impl IntoView {
+    view! {
+        <option
+            value=is
+            selected=move || value() == is
+        >
+            {is}
+        </option>
+    }
 }
 ```
 
