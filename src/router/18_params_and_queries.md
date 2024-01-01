@@ -12,7 +12,7 @@ Because of the way URLs are built, you can access the query from _any_ `<Route/>
 Accessing params and queries is pretty simple with a couple of hooks:
 
 - [`use_query`](https://docs.rs/leptos_router/latest/leptos_router/fn.use_query.html) or [`use_query_map`](https://docs.rs/leptos_router/latest/leptos_router/fn.use_query_map.html)
-- [`use_params`](https://docs.rs/leptos_router/latest/leptos_router/fn.use_params.html) or [`use_params_map`](https://docs.rs/leptos_router/latest/leptos_router/fn.use_query_map.html)
+- [`use_params`](https://docs.rs/leptos_router/latest/leptos_router/fn.use_params.html) or [`use_params_map`](https://docs.rs/leptos_router/latest/leptos_router/fn.use_params_map.html)
 
 Each of these comes with a typed option (`use_query` and `use_params`) and an untyped option (`use_query_map` and `use_params_map`).
 
