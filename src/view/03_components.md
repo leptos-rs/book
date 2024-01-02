@@ -130,8 +130,8 @@ fn ProgressBar(
 }
 ```
 
-Now, we can use `<ProgressBar max=50 value=count/>`, or we can omit `max`
-to use the default value (i.e., `<ProgressBar value=count/>`). The default value
+Now, we can use `<ProgressBar max=50 progress=count/>`, or we can omit `max`
+to use the default value (i.e., `<ProgressBar progress=count/>`). The default value
 on an `optional` is its `Default::default()` value, which for a `u16` is going to
 be `0`. In the case of a progress bar, a max value of `0` is not very useful.
 
