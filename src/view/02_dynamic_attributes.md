@@ -186,9 +186,9 @@ for expensive calculations.
 >
 > [Click here for the full `view` macros docs](https://docs.rs/leptos/latest/leptos/macro.view.html).
 
-[Click to open CodeSandbox.](https://codesandbox.io/p/sandbox/2-dynamic-attributes-0-5-lwdrpm?file=%2Fsrc%2Fmain.rs%3A1%2C1)
+[Click to open CodeSandbox.](https://codesandbox.io/p/devbox/2-dynamic-attributes-0-5-forked-6zrss7?file=%2Fsrc%2Fmain.rs%3A7%2C68)
 
-<iframe src="https://codesandbox.io/p/sandbox/2-dynamic-attributes-0-5-lwdrpm?file=%2Fsrc%2Fmain.rs%3A1%2C1" width="100%" height="1000px" style="max-height: 100vh"></iframe>
+<iframe src="https://codesandbox.io/p/devbox/2-dynamic-attributes-0-5-forked-6zrss7?file=%2Fsrc%2Fmain.rs%3A7%2C68" width="100%" height="1000px" style="max-height: 100vh"></iframe>
 
 <details>
 <summary>CodeSandbox Source</summary>
