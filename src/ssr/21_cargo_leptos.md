@@ -30,6 +30,9 @@ Now `cd` into the directory you’ve created and run
 cargo leptos watch
 ```
 
+> **Note**: Remember that Leptos has a `nightly` feature, which each of these starters use. If you're using the stable Rust compiler,
+> that’s fine; just remove the `nightly` feature from each of the Leptos dependencies in your new `Cargo.toml` and you should be all set. 
+
 Once your app has compiled you can open up your browser to [`http://localhost:3000`](http://localhost:3000) to see it.
 
 `cargo-leptos` has lots of additional features and built in tools. You can learn more [in its `README`](https://github.com/leptos-rs/cargo-leptos/blob/main/README.md).
