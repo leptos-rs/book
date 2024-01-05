@@ -102,7 +102,8 @@ This works because the framework essentially creates an effect wrapping this upd
 let (count, set_count) = create_signal(0);
 
 // create a DOM element
-let p = create_element("p");
+let document = leptos::document();
+let p = document.create_element("p").unwrap();
 
 // create an effect to reactively update the text
 create_effect(move |prev_value| {
