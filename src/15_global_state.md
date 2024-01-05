@@ -129,7 +129,7 @@ But there’s a problem: because our whole state is wrapped in one signal, updat
 ```rust
 let state = expect_context::<RwSignal<GlobalState>>();
 view! {
-    <button on:click=move |_| state.update(|n| *n += 1)>"+1"</button>
+    <button on:click=move |_| state.update(|state| state.count += 1)>"+1"</button>
     <p>{move || state.with(|state| state.name.clone())}</p>
 }
 ```
