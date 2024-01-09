@@ -351,7 +351,7 @@ And let’s modify the `Tab` island to use that context to show or hide itself:
 fn Tab(children: Children) -> impl IntoView {
     let selected = expect_context::<ReadSignal<usize>>();
     view! {
-        <div style:display=move || if selected() {
+        <div style:display=move || if selected() == index {
             "block"
         } else {
             "none"
