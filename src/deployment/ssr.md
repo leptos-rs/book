@@ -14,6 +14,8 @@ There are a multitude of different deployment setups and hosting services, and i
 
 The most popular way for people to deploy full-stack apps built with `cargo-leptos` is to use a cloud hosting service that supports deployment via a Podman or Docker build. Here’s a sample `Containerfile` / `Dockerfile`, which is based on the one we use to deploy the Leptos website.
 
+
+### Debian
 ```dockerfile
 # Get started with a build env with Rust nightly
 FROM rustlang/rust:nightly-bullseye as builder
@@ -63,7 +65,40 @@ EXPOSE 8080
 # Run the server
 CMD ["/app/leptos_start"]
 ```
+### Alpine
+```dockerfile
+# Get started with a build env with Rust nightly
+FROM rustlang/rust:nightly-alpine as builder
 
+RUN apk update && \
+    apk add --no-cache bash curl npm libc-dev binaryen
+    # protoc openssl-dev protobuf-dev gcc git g++ libc-dev make binaryen
+
+RUN npm install -g sass
+
+RUN curl --proto '=https' --tlsv1.2 -LsSf https://github.com/leptos-rs/cargo-leptos/releases/download/0.2.5/cargo-leptos-installer.sh | sh
+
+# Add the WASM target
+RUN rustup target add wasm32-unknown-unknown
+
+WORKDIR /work
+COPY . .
+
+RUN cargo leptos build --release -vv
+
+FROM rustlang/rust:nightly-alpine as runner
+
+WORKDIR /app
+
+COPY --from=builder /work/target/release/leptos_start /app/
+COPY --from=builder /work/target/site /app/site
+COPY --from=builder /work/Cargo.toml /app/
+
+EXPOSE $PORT
+ENV LEPTOS_SITE_ROOT=./site
+
+CMD ["/app/leptos_start"]
+```
 > Read more: [`gnu` and `musl` build files for Leptos apps](https://github.com/leptos-rs/leptos/issues/1152#issuecomment-1634916088).
 
 
@@ -149,6 +184,20 @@ On the next commit to your Github `main` branch, your project will automatically
 
 See [the example repo here](https://github.com/diversable/fly-io-leptos-ssr-test-deploy).
 
+### Railway
+
+Another provider for cloud deployments is [Railway](https://railway.app/).
+Railway integrates with GitHub to automatically deploy your code.
+
+There is an opinionated community template that gets you started quickly:
+
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/pduaM5?referralCode=fZ-SY1)
+
+The template has renovate setup to keep dependencies up to date and supports GitHub Actions to test your code before a deploy happens.
+
+Railway has a free tier that does not require a credit card, and with how little resources Leptos needs that free tier should last a long time.
+
+See [the example repo here](https://github.com/marvin-bitterlich/leptos-railway).
 
 ## Deploy to Serverless Runtimes
 
