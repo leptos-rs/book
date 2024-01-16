@@ -2,7 +2,6 @@ FROM debian:bookworm
 
 # Locked versions
 ARG RUST_VERSION_FULL=1.75.0 \
-    CARGO_WATCH_VERSION=8.* \
     MDBOOK_VERSION=0.4.* \
     MDBOOK_ADMONISH_VERSION=1.*
 
@@ -46,7 +45,6 @@ RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master
 ENV PATH="/root/.cargo/bin:${PATH}"
 RUN curl https://sh.rustup.rs -sSf | sh -s -- -y --default-toolchain ${RUST_VERSION_FULL} && \
     rustup component add rustfmt clippy && \
-    cargo install cargo-watch --version ${CARGO_WATCH_VERSION} && \
     cargo install mdbook --version ${MDBOOK_VERSION} && \
     cargo install mdbook-admonish --version ${MDBOOK_ADMONISH_VERSION}
 

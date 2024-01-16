@@ -22,7 +22,9 @@
         "rust-lang.rust-analyzer",
         "vadimcn.vscode-lldb",
         // TOML Highlighting
-        "tamasfe.even-better-toml"
+        "tamasfe.even-better-toml",
+        // Markdown Tools
+        "yzhang.markdown-all-in-one"
       ],
       "settings": {
         "editor.defaultFormatter": "esbenp.prettier-vscode",
