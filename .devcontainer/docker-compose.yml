@@ -1,0 +1,24 @@
+version: "3.8"
+
+name: leptos-book
+
+services:
+  devcontainer:
+    build:
+      context: ./..
+      dockerfile: .devcontainer/Dockerfile
+    volumes:
+      - ./..:/repository
+    # VSCode needs a second to be able to attach to the container
+    command: /bin/sh -c "while sleep 1000; do :; done"
+
+  book:
+    build:
+      context: ./../
+      dockerfile: .devcontainer/Dockerfile
+    volumes:
+      - ./..:/repository
+    expose:
+      - 3000
+    # Run the book
+    command: .devcontainer/book.sh
