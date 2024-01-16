@@ -151,7 +151,7 @@ inserts a comment marker node. This can cause incorrect `<textarea>` rendering (
 during hydration) if you try to use it to show dynamic content.
 
 Instead, you can pass a non-reactive initial value as a child, and use `prop:value` to
-set its current value. (`<textarea>` doesn’t support the `value` attribut, but _does_
+set its current value. (`<textarea>` doesn’t support the `value` attribute, but _does_
 support the `value` property...)
 
 ```rust
