@@ -18,7 +18,7 @@ You can find the live version of this book on the [Leptos Website](https://book.
 
 ### VSCode Dev Container
 
-The easiest way to build the book is to use the included [VSCode Dev Container](https://code.visualstudio.com/docs/devcontainers/containers). This will automatically install all dependencies, build the book, and serve it at [`http://localhost:3000`](http://localhost:3000) with live reloading for your convinience.
+The easiest way to build the book is to use the included [VSCode Dev Container](https://code.visualstudio.com/docs/devcontainers/containers). This will automatically install all dependencies, build the book, and serve it at [`http://localhost:3000`](http://localhost:3000) with live reloading for your convenience.
 
 Simply open the repository in VSCode and click the "Reopen in Container" button in the bottom right corner of the window when VSCode loads. You will need to have [Docker](https://www.docker.com/) installed for this to work and you will also need to install the official [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) extension.
 
