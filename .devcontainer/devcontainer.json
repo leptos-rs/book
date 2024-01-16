@@ -17,7 +17,12 @@
         // Github
         "github.vscode-pull-request-github",
         // Prettier
-        "esbenp.prettier-vscode"
+        "esbenp.prettier-vscode",
+        // Rust
+        "rust-lang.rust-analyzer",
+        "vadimcn.vscode-lldb",
+        // TOML Highlighting
+        "tamasfe.even-better-toml"
       ],
       "settings": {
         "editor.defaultFormatter": "esbenp.prettier-vscode",
