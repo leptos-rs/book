@@ -87,19 +87,6 @@ The WASM version of your app, running in the browser, expects to find three item
 
 It’s pretty rare that you do this intentionally, but it could happen from somehow running different logic on the server and in the browser. If you’re seeing warnings like this and you don’t think it’s your fault, it’s much more likely that it’s a bug with `<Suspense/>` or something. Feel free to go ahead and open an [issue](https://github.com/leptos-rs/leptos/issues) or [discussion](https://github.com/leptos-rs/leptos/discussions) on GitHub for help.
 
-#### Solution
-
-You can simply tell the effect to wait a tick before updating the signal, by using something like `request_animation_frame`, which will set a short timeout and then update the signal before the next frame.
-
-```rust
-create_effect(move |_| {
-    // do something like reading from localStorage
-    request_animation_frame(move || set_loaded(true));
-});
-```
-
-This allows the browser to hydrate with the correct, matching state (`loaded` is `false` when it reaches the view), then immediately update it to `true` once hydration is complete.
-
 ### Not all client code can run on the server
 
 Imagine you happily import a dependency like `gloo-net` that you’ve been used to using to make requests in the browser, and use it in a `create_resource` in a server-rendered app.
