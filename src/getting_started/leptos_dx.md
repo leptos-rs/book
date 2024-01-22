@@ -3,7 +3,21 @@
 
 There are a couple of things you can do to improve your experience of developing websites and apps with Leptos. You may want to take a few minutes and set up your environment to optimize your development experience, especially if you want to code along with the examples in this book.
 
-## 1) Editor Autocompletion inside `#[component]` and `#[server]`
+## 1) Set up `console_error_panic_hook`
+
+By default, panics that happen while running your WASM code in the browser just throw an error in the browser with an unhelpful message like `Unreachable executed` and a stack trace that points into your WASM binary.
+
+With `console_error_panic_hook`, you get an actual Rust stack trace that includes a line in your Rust source code.
+
+It's very easy to set up:
+1. Run `cargo add console_error_panic_hook` in your project
+2. In your main function, add `console_error_panic_hook::set_once();`
+
+> If this is unclear, [click here for an example](https://github.com/leptos-rs/leptos/blob/main/examples/counter/src/main.rs#L4-L15).
+
+Now you should have much better panic messages in the browser console!
+
+## 2) Editor Autocompletion inside `#[component]` and `#[server]`
 
 Because of the nature of macros (they can expand from anything to anything, but only if the input is exactly correct at that instant) it can be hard for rust-analyzer to do proper autocompletion and other support.
 
@@ -74,7 +88,7 @@ The `intellij-rust` plugin got deprecated in favor of RustRover at the same time
 support request was made to integrate the contents of this PR.
 ```
 
-## 2) Set up `leptosfmt` With Rust Analyzer (optional)
+## 3) Set up `leptosfmt` With Rust Analyzer (optional)
 
 "leptosfmt" is a formatter for the Leptos `view!` macro (inside of which you'll typically write your UI code). Because the view! macro enables an 'RSX' (like JSX) style of writing your UI's, cargo-fmt has a harder time auto-formatting your code that's inside the view! macro. leptosfmt is a crate that solves your formattting issues and keeps your RSX-style UI code looking nice and tidy!
 
