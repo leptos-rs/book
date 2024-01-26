@@ -32,7 +32,7 @@ fn App() -> impl IntoView {
             }
         >
             "Click me: "
-            {move || count.get()}
+            {move || count()}
         </button>
     }
 }
