@@ -71,7 +71,7 @@ This inversion of the flow of control makes it easier to add or remove individua
 
 ## `<Await/>`
 
-In you’re simply trying to wait for some `Future` to resolve before rendering, you may find the `<Await/>` component helpful in reducing boilerplate. `<Await/>` essentially combines a resource with the source argument `|| ()` with a `<Suspense/>` with no fallback.
+If you’re simply trying to wait for some `Future` to resolve before rendering, you may find the `<Await/>` component helpful in reducing boilerplate. `<Await/>` essentially combines a resource with the source argument `|| ()` with a `<Suspense/>` with no fallback.
 
 In other words:
 
