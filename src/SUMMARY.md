@@ -52,6 +52,8 @@
   - [Deploying CSR Apps](./deployment/csr.md)
   - [Deploying SSR Apps](./deployment/ssr.md)
   - [Optimizing WASM Binary Size](./deployment/binary_size.md)
+- [Advanced Topics](./advanced/README.md)
+  - [`web_sys` and `HtmlElement`](./advanced/web_sys.md)
 - [Guide: Islands](./islands.md)
 
 - [Appendix: How Does the Reactive System Work?](./appendix_reactive_graph.md)
