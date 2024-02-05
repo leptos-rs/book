@@ -21,42 +21,44 @@ Leptos provides `extract` helper functions to let you use these extractors direc
 The [`extract` function in `leptos_actix`](https://docs.rs/leptos_actix/latest/leptos_actix/fn.extract.html) takes a handler function as its argument. The handler follows similar rules to an Actix handler: it is an async function that receives arguments that will be extracted from the request and returns some value. The handler function receives that extracted data as its arguments, and can do further `async` work on them inside the body of the `async move` block. It returns whatever value you return back out into the server function.
 
 ```rust
+use serde::Deserialize;
 
-#[server(ActixExtract, "/api")]
+#[derive(Deserialize, Debug)]
+struct MyQuery {
+    foo: String,
+}
+
+#[server]
 pub async fn actix_extract() -> Result<String, ServerFnError> {
-	use leptos_actix::extract;
     use actix_web::dev::ConnectionInfo;
     use actix_web::web::{Data, Query};
+    use leptos_actix::extract;
 
-    extract(
-        |search: Query<Search>, connection: ConnectionInfo| async move {
-            format!(
-                "search = {}\nconnection = {:?}",
-                search.q,
-                connection
-            )
-        },
-    )
-    .await
+    let (Query(search), connection): (Query<MyQuery>, ConnectionInfo) = extract().await?;
+    Ok(format!("search = {search:?}\nconnection = {connection:?}",))
 }
 ```
 
 ## Axum Extractors
 
-The syntax for the [`leptos_axum::extract`](https://docs.rs/leptos_axum/latest/leptos_axum/fn.extract.html) function is very similar. (**Note**: This is available on the git main branch, but has not been released as of writing.) Note that Axum extractors return a `Result`, so you’ll need to add something to handle the error case.
+The syntax for the [`leptos_axum::extract`](https://docs.rs/leptos_axum/latest/leptos_axum/fn.extract.html) function is very similar. 
 
 ```rust
-#[server(AxumExtract, "/api")]
+use serde::Deserialize;
+
+#[derive(Deserialize, Debug)]
+struct MyQuery {
+    foo: String,
+}
+
+#[server]
 pub async fn axum_extract() -> Result<String, ServerFnError> {
     use axum::{extract::Query, http::Method};
     use leptos_axum::extract;
 
-    extract(|method: Method, res: Query<MyQuery>| async move {
-            format!("{method:?} and {}", res.q)
-        },
-    )
-    .await
-    .map_err(|e| ServerFnError::ServerError("Could not extract method and query...".to_string()))
+    let (method, query): (Method, Query<MyQuery>) = extract().await?;
+
+    Ok(format!("{method:?} and {query:?}"))
 }
 ```
 

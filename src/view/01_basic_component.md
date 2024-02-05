@@ -28,11 +28,13 @@ fn App() -> impl IntoView {
     view! {
         <button
             on:click=move |_| {
+                // on stable, this is set_count.set(3);
                 set_count(3);
             }
         >
             "Click me: "
-            {move || count.get()}
+            // on stable, this is move || count.get();
+            {move || count()}
         </button>
     }
 }
@@ -88,14 +90,13 @@ view! {
     <button
         // define an event listener with on:
         on:click=move |_| {
-            // on stable, this is set_count.set(3);
             set_count(3);
         }
     >
         // text nodes are wrapped in quotation marks
         "Click me: "
         // blocks can include Rust code
-        {move || count.get()}
+        {move || count()}
     </button>
 }
 ```
@@ -105,7 +106,7 @@ This should mostly be easy to understand: it looks like HTML, with a special
 a Rust string, and then...
 
 ```rust
-{move || count.get()}
+{move || count()}
 ```
 
 whatever that is.
@@ -115,7 +116,7 @@ than they’ve ever used in their lives. And fair enough. Basically, passing a f
 into the view tells the framework: “Hey, this is something that might change.”
 
 When we click the button and call `set_count`, the `count` signal is updated. This
-`move || count.get()` closure, whose value depends on the value of `count`, reruns,
+`move || count()` closure, whose value depends on the value of `count`, reruns,
 and the framework makes a targeted update to that one specific text node, touching
 nothing else in your application. This is what allows for extremely efficient updates
 to the DOM.
@@ -129,7 +130,7 @@ As a result, you can write a simpler view:
 view! {
     <button /* ... */>
         "Click me: "
-        // identical to {move || count.get()}
+        // identical to {move || count()}
         {count}
     </button>
 }
@@ -199,7 +200,7 @@ fn App() -> impl IntoView {
             // you can insert Rust expressions as values in the DOM
             // by wrapping them in curly braces
             // if you pass in a function, it will reactively update
-            {move || count.get()}
+            {move || count()}
         </p>
         <p>
             <strong>"Reactive shorthand: "</strong>
