@@ -92,7 +92,7 @@ However, some methods have the same name, such as [`leptos::HtmlElement::style`]
 
 If you want to have even more control over which type you are calling a method from, `AsRef<T>` is implemented for all types that are part of the deref chain, so you can explicitly state which type you want.
 
-*See also: [The `wasm-bindgen` Guide: Inheritance in `web-sys`](https://rustwasm.github.io/wasm-bindgen/web-sys/inheritance.html?highlight=cast#accessing-child-clases-using-jscast).*
+*See also: [The `wasm-bindgen` Guide: Inheritance in `web-sys`](https://rustwasm.github.io/wasm-bindgen/web-sys/inheritance.html).*
 
 ### Clones
 
