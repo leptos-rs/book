@@ -38,7 +38,7 @@ Event listeners can be added with [`.on()`](https://docs.rs/leptos/latest/leptos
 
 ```rust
 button()
-    .on(ev::click, move |_| set_count.update(|count| count.clear()))
+    .on(ev::click, move |_| set_count.update(|count| *count = 0))
     .child("Clear")
 ```
 
@@ -51,27 +51,21 @@ All of this adds up to a very Rusty syntax to build full-featured views, if you 
 // A component is really just a function call: it runs once to create the DOM and reactive system
 pub fn counter(initial_value: i32, step: u32) -> impl IntoView {
     let (count, set_count) = create_signal(0);
-
-    div()
-        .child((
-            button()
-                // typed events found in leptos::ev
-                // 1) prevent typos in event names
-                // 2) allow for correct type inference in callbacks
-                .on(ev::click, move |_| set_count.update(|count| count.clear()))
-                .child("Clear"),
-            button()
-                .on(ev::click, move |_| {
-                    set_count.update(|count| count.decrease())
-                })
-                .child("-1"),
-            span().child(("Value: ", move || count.get().value(), "!")),
-            button()
-                .on(ev::click, move |_| {
-                    set_count.update(|count| count.increase())
-                })
-                .child("+1"),
-        ))
+    div().child((
+        button()
+            // typed events found in leptos::ev
+            // 1) prevent typos in event names
+            // 2) allow for correct type inference in callbacks
+            .on(ev::click, move |_| set_count.update(|count| *count = 0))
+            .child("Clear"),
+        button()
+            .on(ev::click, move |_| set_count.update(|count| *count -= 1))
+            .child("-1"),
+        span().child(("Value: ", move || count.get(), "!")),
+        button()
+            .on(ev::click, move |_| set_count.update(|count| *count += 1))
+            .child("+1"),
+    ))
 }
 ```
 
