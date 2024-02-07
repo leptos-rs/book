@@ -15,6 +15,7 @@
   - [Error Handling](./view/07_errors.md)
   - [Parent-Child Communication](./view/08_parent_child.md)
   - [Passing Children to Components](./view/09_component_children.md)
+  - [Using `web_sys` and `HtmlElement`](./view/web_sys.md)
   - [No Macros: The View Builder Syntax](./view/builder.md)
 - [Reactivity](./reactivity/README.md)
   - [Working with Signals](./reactivity/working_with_signals.md)
@@ -52,8 +53,6 @@
   - [Deploying CSR Apps](./deployment/csr.md)
   - [Deploying SSR Apps](./deployment/ssr.md)
   - [Optimizing WASM Binary Size](./deployment/binary_size.md)
-- [Advanced Topics](./advanced/README.md)
-  - [`web_sys` and `HtmlElement`](./advanced/web_sys.md)
 - [Guide: Islands](./islands.md)
 
 - [Appendix: How Does the Reactive System Work?](./appendix_reactive_graph.md)
