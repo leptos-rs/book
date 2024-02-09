@@ -137,7 +137,7 @@ let on_click = |ev: MouseEvent| {
 ### `leptos::HtmlElement`
 
 The [`leptos::HtmlElement`](https://docs.rs/leptos/latest/leptos/struct.HtmlElement.html) adds some extra convenience methods to make it easier to manipulate common attributes.
-These methods were built for the [builder syntax](./builder.md), so it takes and returns `self`.
+These methods were built for the [builder syntax](./view/builder.md), so it takes and returns `self`.
 You can just do `_ = element.clone().<method>()` to ignore the element it returns - it'll still affect the original element, even though it doesn't look like it (see previous section on [Clones](#clones))!
 
 Here are some of the common methods you may want to use, for example in event listeners or `use:` directives.
@@ -146,7 +146,7 @@ Here are some of the common methods you may want to use, for example in event li
     You can specify multiple classes with a space-separated string.
     You can also use [`class`](https://docs.rs/leptos/latest/leptos/struct.HtmlElement.html#method.class) to conditionally add a *single* class: do not add multiple with this method.
 - [`attr`](https://docs.rs/leptos/latest/leptos/struct.HtmlElement.html#method.attr): sets a `key=value` attribute to the element.
-- [`prop`](https://docs.rs/leptos/latest/leptos/struct.HtmlElement.html#method.prop): sets a *property* on the element: see the distinction between [properties and attributes here](./05_forms.md#why-do-you-need-propvalue).
+- [`prop`](https://docs.rs/leptos/latest/leptos/struct.HtmlElement.html#method.prop): sets a *property* on the element: see the distinction between [properties and attributes here](./view/05_forms.md#why-do-you-need-propvalue).
 - [`on`](https://docs.rs/leptos/latest/leptos/struct.HtmlElement.html#method.on): adds an event listener to the element.
     Specify the event type through one of [`leptos::ev::*`](https://docs.rs/leptos/latest/leptos/ev/index.html) (it's the ones in all lowercase).
 - [`child`](https://docs.rs/leptos/latest/leptos/struct.HtmlElement.html#method.child): adds an element as the last child of the element.
