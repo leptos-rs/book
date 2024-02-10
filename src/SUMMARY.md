@@ -36,6 +36,7 @@
   - [`<Form/>`](./router/20_form.md)
 - [Interlude: Styling](./interlude_styling.md)
 - [Metadata](./metadata.md)
+- [Using `web_sys` and `HtmlElement`](./web_sys.md)
 - [Client-Side Rendering: Wrapping Up](./csr_wrapping_up.md)
 - [Part 2: Server Side Rendering](./ssr/README.md)
   - [`cargo-leptos`](./ssr/21_cargo_leptos.md)
