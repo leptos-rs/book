@@ -91,7 +91,7 @@ Instead, you can use the `with!` macro to get references to all the signals at t
 let name = move || with!(|first, middle, last| format!("{first} {middle} {last}"));
 ```
 
-This expands to the same thing as above. Take a look at the `with!` docs for more info, and the corresponding macros `update!`, `with_value!` and `update_value!`.
+This expands to the same thing as above. Take a look at the [`with!`](https://docs.rs/leptos/latest/leptos/macro.with.html) docs for more info, and the corresponding macros [`update!`](https://docs.rs/leptos/latest/leptos/macro.update.html), [`with_value!`](https://docs.rs/leptos/latest/leptos/macro.with_value.html) and [`update_value!`](https://docs.rs/leptos/latest/leptos/macro.update_value.html).
 
 ## Making signals depend on each other
 
