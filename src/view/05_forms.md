@@ -109,7 +109,7 @@ The view should be pretty self-explanatory by now. Note two things:
 underlying DOM node. Its value will be set when the element is rendered.
 
 ```rust
-let on_submit = move |ev: SubmitEvent| {
+let on_submit = move |ev: leptos::ev::SubmitEvent| {
     // stop the page from reloading!
     ev.prevent_default();
 
