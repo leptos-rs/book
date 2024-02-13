@@ -1,4 +1,4 @@
-FROM rust:1.75.0
+FROM rust:1
 
 # Install MDBook and other CLI tools
 RUN rustup component add rustfmt clippy && \
