@@ -75,50 +75,18 @@ view! {
 In an "uncontrolled input," the browser controls the state of the input element.
 Rather than continuously updating a signal to hold its value, we use a
 [`NodeRef`](https://docs.rs/leptos/latest/leptos/struct.NodeRef.html) to access
-the input once when we want to get its value.
+the input when we want to get its value.
 
-In this example, we only notify the framework when the `<form>` fires a `submit`
-event.
+In this example, we only notify the framework when the `<form>` fires a `submit` event.
+Note the use of the [`leptos::html`](https://docs.rs/leptos/latest/leptos/html/index.html#) module, which provides a bunch of types for every HTML element.
 
 ```rust
 let (name, set_name) = create_signal("Uncontrolled".to_string());
 
-let input_element: NodeRef<Input> = create_node_ref();
-```
+let input_element: NodeRef<html::Input> = create_node_ref();
 
-`NodeRef` is a kind of reactive smart pointer: we can use it to access the
-underlying DOM node. Its value will be set when the element is rendered.
-
-```rust
-let on_submit = move |ev: SubmitEvent| {
-    // stop the page from reloading!
-    ev.prevent_default();
-
-    // here, we'll extract the value from the input
-    let value = input_element()
-        // event handlers can only fire after the view
-        // is mounted to the DOM, so the `NodeRef` will be `Some`
-        .expect("<input> to exist")
-        // `NodeRef` implements `Deref` for the DOM element type
-        // this means we can call`HtmlInputElement::value()`
-        // to get the current value of the input
-        .value();
-    set_name(value);
-};
-```
-
-Our `on_submit` handler will access the input’s value and use it to call `set_name`.
-To access the DOM node stored in the `NodeRef`, we can simply call it as a function
-(or using `.get()`). This will return `Option<web_sys::HtmlInputElement>`, but we
-know it will already have been filled when we rendered the view, so it’s safe to
-unwrap here.
-
-We can then call `.value()` to get the value out of the input, because `NodeRef`
-gives us access to a correctly-typed HTML element.
-
-```rust
 view! {
-    <form on:submit=on_submit>
+    <form on:submit=on_submit> // on_submit defined below
         <input type="text"
             value=name
             node_ref=input_element
@@ -134,8 +102,42 @@ The view should be pretty self-explanatory by now. Note two things:
 1. Unlike in the controlled input example, we use `value` (not `prop:value`).
    This is because we’re just setting the initial value of the input, and letting
    the browser control its state. (We could use `prop:value` instead.)
-2. We use `node_ref` to fill the `NodeRef`. (Older examples sometimes use `_ref`.
+2. We use `node_ref=...` to fill the `NodeRef`. (Older examples sometimes use `_ref`.
    They are the same thing, but `node_ref` has better rust-analyzer support.)
+
+`NodeRef` is a kind of reactive smart pointer: we can use it to access the
+underlying DOM node. Its value will be set when the element is rendered.
+
+```rust
+let on_submit = move |ev: leptos::ev::SubmitEvent| {
+    // stop the page from reloading!
+    ev.prevent_default();
+
+    // here, we'll extract the value from the input
+    let value = input_element()
+        // event handlers can only fire after the view
+        // is mounted to the DOM, so the `NodeRef` will be `Some`
+        .expect("<input> should be mounted")
+        // `leptos::HtmlElement<html::Input>` implements `Deref`
+        // to a `web_sys::HtmlInputElement`.
+        // this means we can call`HtmlInputElement::value()`
+        // to get the current value of the input
+        .value();
+    set_name(value);
+};
+```
+
+Our `on_submit` handler will access the input’s value and use it to call `set_name`.
+To access the DOM node stored in the `NodeRef`, we can simply call it as a function
+(or using `.get()`). This will return `Option<leptos::HtmlElement<html::Input>>`, but we
+know that the element has already been mounted (how else did you fire this event!), so
+it's safe to unwrap here.
+
+We can then call `.value()` to get the value out of the input, because `NodeRef`
+gives us access to a correctly-typed HTML element.
+
+Take a look at [`web_sys` and `HtmlElement`](../web_sys.md) to learn more about using a `leptos::HtmlElement`.
+Also see the full CodeSandbox example at the end of this page.
 
 ## Special Cases: `<textarea>` and `<select>`
 
@@ -144,15 +146,15 @@ Two form elements tend to cause some confusion, in different ways.
 ### `<textarea>`
 
 Unlike `<input>`, the `<textarea>` element does not support a `value` attribute.
-Instead, it receives its value as a plain text node in its HTML children,
+Instead, it receives its value as a plain text node in its HTML children.
 
-In the current version of Leptos (in fact in Leptos 0.1-0.5), creating a dynamic child
+In the current version of Leptos (in fact in Leptos 0.1-0.6), creating a dynamic child
 inserts a comment marker node. This can cause incorrect `<textarea>` rendering (and issues
 during hydration) if you try to use it to show dynamic content.
 
 Instead, you can pass a non-reactive initial value as a child, and use `prop:value` to
-set its current value. (`<textarea>` doesn’t support the `value` attribute, but _does_
-support the `value` property...)
+set its current value. (`<textarea>` doesn’t support the `value` **attribute**, but _does_
+support the `value` **property**...)
 
 ```rust
 view! {
@@ -160,20 +162,20 @@ view! {
         prop:value=move || some_value.get()
         on:input=/* etc */
     >
-        /* untracked, plain-text initial value */
-        {untrack(move || some_value.get())}
+        /* plain-text initial value, does not change if the signal changes */
+        {move || some_value.get_untracked()}
     </textarea>
 }
 ```
 
 ### `<select>`
 
-The `<select>` element also does not have a `value` attribute, _or_ a `value` property.
+The `<select>` element also does not have a `value` attribute, _nor_ a `value` property.
 Instead, its value is determined by the `selected` attribute of its `<option>`
 fields. Some frameworks obscure this with a `value` field on `<select>`; if you try this
 in Leptos (or vanilla JavaScript) it won’t work.
 
-Instead, use the `selected` field:
+To use the `selected` field:
 
 ```rust
 let (value, set_value) = create_signal("B".to_string());
@@ -199,6 +201,7 @@ view! {
 ```
 
 That's somewhat repetitive, but can easily be refactored:
+
 ```rust
 #[component]
 pub fn App() -> impl IntoView {
@@ -227,6 +230,13 @@ pub fn SelectOption(is: &'static str, value: ReadSignal<String>) -> impl IntoVie
     }
 }
 ```
+
+> Tip: the single `value` attribute in the component is equivalent to `value=value`.
+> This is only the case for _components_: in HTML elements, a single `value` attribute is equivalent to `value=true`.
+> This is expected to be made consistent in the next major version of Leptos; see [this issue](https://github.com/leptos-rs/leptos/issues/2196)
+> for more details.
+
+**Controlled vs uncontrolled forms CodeSandbox:**
 
 [Click to open CodeSandbox.](https://codesandbox.io/p/sandbox/5-forms-0-5-rf2t7c?file=%2Fsrc%2Fmain.rs%3A1%2C1)
 
