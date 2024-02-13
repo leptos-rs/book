@@ -3,10 +3,7 @@
 - [Leptos Book](#leptos-book)
   - [Introduction](#introduction)
   - [Building the Book](#building-the-book)
-    - [VSCode Dev Container](#vscode-dev-container)
-    - [Manual Build](#manual-build)
-      - [Installing Dependencies](#installing-dependencies)
-      - [Building the Book](#building-the-book-1)
+  - [Optional: VSCode Dev Container](#vscode-dev-container)
 
 ## Introduction
 
