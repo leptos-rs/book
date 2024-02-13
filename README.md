@@ -33,3 +33,13 @@ mdbook serve
 ```
 
 It should now be available at [`http://localhost:3000`](http://localhost:3000).
+
+## Optional: VSCode Dev Container
+
+You can optionally build and run it in the example [VSCode Dev Container](https://code.visualstudio.com/docs/devcontainers/containers), which will automatically install all dependencies, build the book, and serve it at [`http://localhost:3000`](http://localhost:3000) with live reloading.
+
+Install Docker and the official [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) extension, then open the project in VSCode and "Reopen in dev container" when prompted.
+
+For more info, see: https://code.visualstudio.com/remote/advancedcontainers/use-docker-kubernetes
+
+To run Docker commands inside the dev container, see: https://code.visualstudio.com/remote/advancedcontainers/use-docker-kubernetes
