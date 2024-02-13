@@ -1,0 +1,40 @@
+{
+  "name": "Leptos Book",
+  "dockerComposeFile": ["docker-compose.yml"],
+  "service": "devcontainer",
+  "workspaceFolder": "/repository",
+  "shutdownAction": "stopCompose",
+  "initializeCommand": "echo 'Starting devcontainer...'",
+  "forwardPorts": ["book:3000"],
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        // Docker
+        "ms-azuretools.vscode-docker",
+        // Copilot
+        "github.copilot",
+        "github.copilot-chat",
+        // Github
+        "github.vscode-pull-request-github",
+        // Prettier
+        "esbenp.prettier-vscode",
+        // Rust
+        "rust-lang.rust-analyzer",
+        "vadimcn.vscode-lldb",
+        // TOML Highlighting
+        "tamasfe.even-better-toml",
+        // Markdown Tools
+        "yzhang.markdown-all-in-one"
+      ],
+      "settings": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true,
+        "editor.formatOnPaste": true,
+        "editor.tabSize": 4
+      }
+    }
+  },
+  "mounts": [
+    "source=/var/run/docker.sock,target=/var/run/docker-host.sock,type=bind"
+  ]
+}
