@@ -38,7 +38,7 @@ cargo install mdbook-admonish --version 1.*
 ```
 
 
-You can now build the book with live reloading by running the following command in the root of the repository.
+and then run the book with
 
 ```sh
 mdbook serve
