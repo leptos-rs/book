@@ -37,7 +37,6 @@ This book also uses an mdbook preprocessor called [`mdbook-admonish`](https://cr
 cargo install mdbook-admonish --version 1.*
 ```
 
-#### Building the Book
 
 You can now build the book with live reloading by running the following command in the root of the repository.
 
