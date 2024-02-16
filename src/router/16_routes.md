@@ -4,7 +4,10 @@
 
 It’s easy to get started with the router.
 
-First things first, make sure you’ve added the `leptos_router` package to your dependencies.
+First things first, make sure you’ve added the `leptos_router` package to your dependencies. Like `leptos`, the router relies on activating a `csr`, `hydrate`, or `ssr` feature. For example, if you’re adding the router to a client-side rendered app, you’ll want to run 
+```sh 
+cargo add leptos_router --features=csr 
+```
 
 > It’s important that the router is a separate package from `leptos` itself. This means that everything in the router can be defined in user-land code. If you want to create your own router, or use no router, you’re completely free to do that!
 
