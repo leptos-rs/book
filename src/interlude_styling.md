@@ -85,6 +85,30 @@ pub fn App() -> impl IntoView {
 }
 ```
 
+## Stylance: Scoped CSS Written in CSS Files 
+
+Stylers lets you write CSS inline in your Rust code, extracts it at compile time, and scopes it. [Stylance](https://github.com/basro/stylance-rs) allows you to write your CSS in CSS files alongside your components, import those files into your components, and scope the CSS classes to your components.
+
+This works well with the live-reloading features of `trunk` and `cargo-leptos` because edited CSS files can be updated immediately in the browser.
+
+```rust 
+import_style!(style, "app.module.scss");
+
+#[component]
+fn HomePage() -> impl IntoView {
+    view! {
+        <div class=style::jumbotron/>
+    }
+}
+```
+
+You can edit the CSS directly without causing a Rust recompile.
+```css 
+.jumbotron {
+    background: blue;
+}
+```
+
 ## Styled: Runtime CSS Scoping
 
 [Styled](https://github.com/eboody/styled) is a runtime scoped CSS library that integrates well with Leptos. It lets you declare scoped CSS in the body of your component function, and then applies those styles at runtime.
