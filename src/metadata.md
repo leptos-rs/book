@@ -46,4 +46,4 @@ Now, some of this is useful in any scenario, but some of it is especially import
 
 This is exactly what `leptos_meta` is for. And in fact, during server rendering, this is exactly what it does: collect all the `<head>` content you’ve declared by using its components throughout your application, and then inject it into the actual `<head>`.
 
-But I’m getting ahead of myself. We haven’t actually talked about server-side rendering yet. As a matter of fact... Let’s do that next!
+But I’m getting ahead of myself. We haven’t actually talked about server-side rendering yet. The next chapter will talk about integrating with JavaScript libraries. Then we’ll wrap up the discussion of the client side, and move onto server side rendering. 
