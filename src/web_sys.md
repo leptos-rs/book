@@ -31,7 +31,7 @@ particular JS framework like React may be hard to integrated. Libraries that man
 rich text editors) should also be used with care: both Leptos and the JS library will probably assume that they are 
 the ultimate source of truth for the app’s state, so you should be careful to separate their responsibilities.
 
-## Acccessing Web APIs with `web-sys`
+## Accessing Web APIs with `web-sys`
 
 If you just need to access some browser APIs without pulling in a separate JS library, you can do so using the 
 [`web_sys`](https://docs.rs/web-sys/latest/web_sys/) crate. This provides bindings for all of the Web APIs provided by 

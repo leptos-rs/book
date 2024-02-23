@@ -8,7 +8,7 @@ The reactive primitives you use are divided into three sets:
 - **Computations** (`Memo`s) Values that depend on signals (or other computations) and derive a new reactive value through some pure computation.
 - **Effects** Observers that listen to changes in some signals or computations and run a function, causing some side effect.
 
-Derived signals are a kind of non-primitve computation: as plain closures, they simply allow you to refactor some repeated signal-based computation into a reusable function that can be called in multiple places, but they are not represented in the reactive system itself.
+Derived signals are a kind of non-primitive computation: as plain closures, they simply allow you to refactor some repeated signal-based computation into a reusable function that can be called in multiple places, but they are not represented in the reactive system itself.
 
 All the other primitives actually exist in the reactive system as nodes in a reactive graph.
 

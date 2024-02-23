@@ -22,7 +22,7 @@ The effect function is called with an argument containing whatever value it retu
 
 By default, effects **do not run on the server**. This means you can call browser-specific APIs within the effect function without causing issues. If you need an effect to run on the server, use [`create_isomorphic_effect`](https://docs.rs/leptos_reactive/latest/leptos_reactive/fn.create_isomorphic_effect.html).
 
-## Autotracking and Dynamic Dependencies
+## Auto-tracking and Dynamic Dependencies
 
 If you’re familiar with a framework like React, you might notice one key difference. React and similar frameworks typically require you to pass a “dependency array,” an explicit set of variables that determine when the effect should rerun.
 
