@@ -1,7 +1,7 @@
 # Error Handling
 
 [In the last chapter](./06_control_flow.md), we saw that you can render `Option<T>`:
-in the `None` case, it will render nothing, and in the `T` case, it will render `T`
+in the `None` case, it will render nothing, and in the `Some(T)` case, it will render `T`
 (that is, if `T` implements `IntoView`). You can actually do something very similar
 with a `Result<T, E>`. In the `Err(_)` case, it will render nothing. In the `Ok(T)`
 case, it will render the `T`.
