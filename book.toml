@@ -1,5 +1,6 @@
 [output.html]
 additional-css = ["./mdbook-admonish.css"]
+git-repository-url = "https://github.com/leptos-rs/book"
 [output.html.playground]
 runnable = false
 
