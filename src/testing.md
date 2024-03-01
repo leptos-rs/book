@@ -139,7 +139,7 @@ fn should_increase_the_total_count() {
 
 ### [Playwright with `counters_stable`](https://github.com/leptos-rs/leptos/tree/main/examples/counters_stable/e2e)
 
-These tests use the common JavaScript testing tool Playwright to run end-to-end tests on the same example, using a library and testing approach familiar to may who have done frontend development before.
+These tests use the common JavaScript testing tool Playwright to run end-to-end tests on the same example, using a library and testing approach familiar to many who have done frontend development before.
 
 #### Sample Test
 
