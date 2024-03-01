@@ -114,7 +114,7 @@ In other words, you have two choices:
 >
 > The reason we use `POST` or `GET` with URL-encoded data by default is the `<form>` support. For better or for worse, HTML forms don’t support `PUT` or `DELETE`, and they don’t support sending JSON. This means that if you use anything but a `GET` or `POST` request with URL-encoded data, it can only work once WASM has loaded. As we’ll see [in a later chapter](../progressive_enhancement), this isn’t always a great idea.
 >
-> The CBOR encoding is suported for historical reasons; an earlier version of server functions used a URL encoding that didn’t support nested objects like structs or vectors as server function arguments, which CBOR did. But note that the CBOR forms encounter the same issue as `PUT`, `DELETE`, or JSON: they do not degrade gracefully if the WASM version of your app is not available.
+> The CBOR encoding is supported for historical reasons; an earlier version of server functions used a URL encoding that didn’t support nested objects like structs or vectors as server function arguments, which CBOR did. But note that the CBOR forms encounter the same issue as `PUT`, `DELETE`, or JSON: they do not degrade gracefully if the WASM version of your app is not available.
 
 
 ## Server Functions Endpoint Paths

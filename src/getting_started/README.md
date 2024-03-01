@@ -12,7 +12,7 @@ The advantages of taking the SSR route with Leptos include helping you get the b
 By the end of the book, you should have a good idea of which trade-offs to make and which route to take - CSR or SSR - depending on your project's requirements.
 
 
-In Part 1 of this book, we'll start with client-side rendering Leptos sites and building reactive UI's using `Trunk` to serve our JS and WASM bundle to the browser.
+In Part 1 of this book, we'll start with client-side rendering Leptos sites and building reactive UIs using `Trunk` to serve our JS and WASM bundle to the browser.
 
 We’ll introduce `cargo-leptos` in Part 2 of this book, which is all about working with the full power of Leptos in its full-stack, SSR mode.
 

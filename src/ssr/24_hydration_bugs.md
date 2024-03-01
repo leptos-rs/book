@@ -105,7 +105,7 @@ But of course this makes sense. We’ve just said that your app needs to run on 
 
 There are a few ways to avoid this:
 
-1. Only use libraries that can run on both the server and the client. `reqwest`, for example, works for making HTTP requests in both settings.
+1. Only use libraries that can run on both the server and the client. [`reqwest`](https://docs.rs/reqwest/latest/reqwest/), for example, works for making HTTP requests in both settings.
 2. Use different libraries on the server and the client, and gate them using the `#[cfg]` macro. ([Click here for an example](https://github.com/leptos-rs/leptos/blob/main/examples/hackernews/src/api.rs).)
 3. Wrap client-only code in `create_effect`. Because `create_effect` only runs on the client, this can be an effective way to access browser APIs that are not needed for initial rendering.
 
