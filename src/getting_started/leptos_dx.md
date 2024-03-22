@@ -38,6 +38,18 @@ VSCode `settings.json`:
 }
 ```
 
+VSCode with cargo-leptos `settings.json`:
+```json
+"rust-analyzer.procMacro.ignored": {
+	"leptos_macro": [
+        // optional:
+		// "component",
+		"server"
+	],
+},
+"rust-analyzer.cargo.features": ["ssr"]
+```
+
 neovim with lspconfig:
 
 ```lua
