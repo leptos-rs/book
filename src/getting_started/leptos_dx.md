@@ -67,13 +67,11 @@ Helix, in `.helix/languages.toml`:
 name = "rust"
 
 [language-server.rust-analyzer]
-config = { procMacro = { ignored =
-    { leptos_macro =
-        [
-          # Optional:
-          # "component",
-          "server"
-        ] } } }
+config = { procMacro = { ignored = { leptos_macro = [
+	# Optional:
+	# "component",
+	"server"
+] } } }
 ```
 
 ## 3) Set up `leptosfmt` With Rust Analyzer (optional)
