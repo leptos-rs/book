@@ -47,6 +47,10 @@ VSCode with cargo-leptos `settings.json`:
 		"server"
 	],
 },
+// if code that is cfg-gated for the `ssr` feature is shown as inactive,
+// you may want to tell rust-analyzer to enable the `ssr` feature by default
+//
+// you can also use `rust-analyzer.cargo.allFeatures` to enable all features
 "rust-analyzer.cargo.features": ["ssr"]
 ```
 
