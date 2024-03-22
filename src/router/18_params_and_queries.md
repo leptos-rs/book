@@ -24,12 +24,12 @@ The untyped versions hold a simple key-value map. To use the typed versions, der
 use leptos::*;
 use leptos_router::*;
 
-#[derive(Params)]
+#[derive(Params, PartialEq)]
 struct ContactParams {
 	id: usize
 }
 
-#[derive(Params)]
+#[derive(Params, PartialEq)]
 struct ContactSearch {
 	q: String
 }
