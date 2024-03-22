@@ -93,7 +93,7 @@ This is also pretty straightforward: a signal source signal (`name`/`A`) divides
 |     |
 B     C
 |     |
-D     E
+E     D
 ```
 
 Now let’s update the signal.
