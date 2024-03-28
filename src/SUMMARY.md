@@ -56,4 +56,5 @@
 - [Guide: Islands](./islands.md)
 
 - [Appendix: How Does the Reactive System Work?](./appendix_reactive_graph.md)
+- [Appendix: The Life Cycle of a Signal](./appendix_life_cycle.md)
 
