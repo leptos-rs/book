@@ -133,7 +133,7 @@ will generate a server function endpoint at `/api/hello` that accepts a POST req
 
 ## An Important Note on Security
 
-Server functions are a cool technology, but it’s very important to remember. **Server functions are not magic; they’re syntax sugar for defining a public API.** The _body_ of a server function is never made public; it’s just part of your server binary. But the server function is a publicly accessible API endpoint, and it’s return value is just a JSON or similar blob. You should _never_ return something sensitive from a server function unless the access is authenticated by the server function _and_ TLS is ensured.
+Server functions are a cool technology, but it’s very important to remember. **Server functions are not magic; they’re syntax sugar for defining a public API.** The _body_ of a server function is never made public; it’s just part of your server binary. But the server function is a publicly accessible API endpoint, and its return value is just a JSON or similar blob. Do not return information from a server function unless it is public, or you've implemented proper security procedures. These procedures might include authenticating incoming requests, ensuring proper encryption, rate limiting access, and more.
 
 ## Integrating Server Functions with Leptos
 
