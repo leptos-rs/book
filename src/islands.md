@@ -66,6 +66,12 @@ Nothing happens!
 
 Perfect.
 
+```admonish note
+The starter templates include `use app::*;` in their `hydrate()` function definitions. Once you've switched over to islands mode, you are no longer using the imported main `App` function, so you might think you can delete this. (And in fact, Rust lint tools might issue warnings if you don't!)
+
+However, this can cause issues if you are using a workspace setup. We use `wasm-bindgen` to independently export an entrypoint for each function. In my experience, if you are using a workspace setup and nothing in your `frontend` crate actually uses the `app` crate, those bindings will not be generated correctly. [See this discussion for more](https://github.com/leptos-rs/leptos/issues/2083#issuecomment-1868053733).
+```
+
 ## Using Islands
 
 Nothing happens because we’ve just totally inverted the mental model of our app. Rather than being interactive by default and hydrating everything, the app is now plain HTML by default, and we need to opt into interactivity.

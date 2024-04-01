@@ -38,6 +38,22 @@ VSCode `settings.json`:
 }
 ```
 
+VSCode with cargo-leptos `settings.json`:
+```json
+"rust-analyzer.procMacro.ignored": {
+	"leptos_macro": [
+        // optional:
+		// "component",
+		"server"
+	],
+},
+// if code that is cfg-gated for the `ssr` feature is shown as inactive,
+// you may want to tell rust-analyzer to enable the `ssr` feature by default
+//
+// you can also use `rust-analyzer.cargo.allFeatures` to enable all features
+"rust-analyzer.cargo.features": ["ssr"]
+```
+
 neovim with lspconfig:
 
 ```lua
@@ -67,13 +83,11 @@ Helix, in `.helix/languages.toml`:
 name = "rust"
 
 [language-server.rust-analyzer]
-config = { procMacro = { ignored =
-    { leptos_macro =
-        [
-          # Optional:
-          # "component",
-          "server"
-        ] } } }
+config = { procMacro = { ignored = { leptos_macro = [
+	# Optional:
+	# "component",
+	"server"
+] } } }
 ```
 
 ## 3) Set up `leptosfmt` With Rust Analyzer (optional)

@@ -14,7 +14,7 @@ When the JS and WASM have loaded, Leptos will render your app into the `<body>`.
 
 These downsides apply across the web ecosystem, but especially to WASM apps.
 
-However, depending the on the requirements of your project, you may be fine with these limitations.
+However, depending on the requirements of your project, you may be fine with these limitations.
 
 If you just want to deploy your Client-Side Rendered website, skip ahead to the chapter on ["Deployment"](https://leptos-rs.github.io/leptos/deployment/index.html) - there, you'll find directions on how best to deploy your Leptos CSR site.
 
