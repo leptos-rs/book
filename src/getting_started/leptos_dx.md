@@ -90,6 +90,40 @@ config = { procMacro = { ignored = { leptos_macro = [
 ] } } }
 ```
 
+Zed, in `settings.json`:
+
+```json
+{
+  -- Other Settings ...
+  "lsp": {
+    "rust-analyzer": {
+      "procMacro": {
+        "ignored": [
+          // optional:
+          // "component",
+          "server"
+        ]
+      }
+    }
+  }
+}
+```
+
+SublimeText 3, under `LSP-rust-analyzer.sublime-settings` in `Goto Anything...` menu:
+
+```json
+// Settings in here override those in "LSP-rust-analyzer/LSP-rust-analyzer.sublime-settings"
+{
+  "rust-analyzer.procMacro.ignored": {
+    "leptos_macro": [
+      // optional:
+      // "component",
+      "server"
+    ],
+  },
+}
+```
+
 ## 3) Set up `leptosfmt` With Rust Analyzer (optional)
 
 `leptosfmt` is a formatter for the Leptos `view!` macro (inside of which you'll typically write your UI code). Because the `view!` macro enables an 'RSX' (like JSX) style of writing your UI's, cargo-fmt has a harder time auto-formatting your code that's inside the `view!` macro. `leptosfmt` is a crate that solves your formatting issues and keeps your RSX-style UI code looking nice and tidy!
