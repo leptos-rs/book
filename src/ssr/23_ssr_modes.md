@@ -11,9 +11,9 @@ Let me say a little more about what I mean.
 Leptos supports all the major ways of rendering HTML that includes asynchronous data:
 
 1. [Synchronous Rendering](#synchronous-rendering)
-1. [Async Rendering](#async-rendering)
-1. [In-Order streaming](#in-order-streaming)
-1. [Out-of-Order Streaming](#out-of-order-streaming) (and a partially-blocked variant)
+2. [Async Rendering](#async-rendering)
+3. [In-Order streaming](#in-order-streaming)
+4. [Out-of-Order Streaming](#out-of-order-streaming) (and a partially-blocked variant)
 
 ## Synchronous Rendering
 
