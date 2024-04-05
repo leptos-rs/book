@@ -112,7 +112,7 @@ With blocking resources, I can do something like this:
 #[component]
 pub fn BlogPost() -> impl IntoView {
 	let post_data = create_blocking_resource(/* load blog post */);
-	let comment_data = create_resource(/* load blog post */);
+	let comments_data = create_resource(/* load blog comments */);
 	view! {
 		<Suspense fallback=|| ()>
 			{move || {
@@ -128,7 +128,7 @@ pub fn BlogPost() -> impl IntoView {
 			}}
 		</Suspense>
 		<Suspense fallback=|| "Loading comments...">
-			/* render comment data here */
+			/* render comments data here */
 		</Suspense>
 	}
 }
