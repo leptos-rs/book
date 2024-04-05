@@ -120,7 +120,7 @@ create_effect(move |prev_value| {
 });
 ```
 
-Every time `count` is updated, this effect wil rerun. This is what allows reactive, fine-grained updates to the DOM.
+Every time `count` is updated, this effect will rerun. This is what allows reactive, fine-grained updates to the DOM.
 
 ## Explicit, Cancelable Tracking with `watch`
 
