@@ -39,7 +39,7 @@ pub async fn actix_extract() -> Result<String, ServerFnError> {
 }
 ```
 
-## Axum Extractors
+### Axum Extractors
 
 The syntax for the [`leptos_axum::extract`](https://docs.rs/leptos_axum/latest/leptos_axum/fn.extract.html) function is very similar. 
 
@@ -79,6 +79,62 @@ pub struct AppState{
 ```
 
 [Click here for an example of providing context in custom handlers](https://github.com/leptos-rs/leptos/blob/19ea6fae6aec2a493d79cc86612622d219e6eebb/examples/session_auth_axum/src/main.rs#L24-L44).
+
+#### Axum State
+
+Axum's typical pattern for dependency injection is to provide a `State`, which can then be extracted in your route handler. Leptos provides its own method of dependency injection via context. Context can often be used instead of `State` to provide shared server data (for example, a database connection pool).
+
+```rust
+let connection_pool = /* some shared state here */;
+
+let app = Router::new()
+    .leptos_routes_with_context(
+        &app_state,
+        routes,
+        move || provide_context(connection_pool.clone()),
+        App,
+    )
+    // etc.
+```
+
+This context can then be accessed with a simple `use_context::<T>()` inside your server functions.
+
+If you *need* to use `State` in a server function—for example, if you have an existing Axum extractor that requires `State`, that is also possible using Axum's [`FromRef`](https://docs.rs/axum/latest/axum/extract/derive.FromRef.html) pattern and [`extract_with_state`](https://docs.rs/leptos_axum/latest/leptos_axum/fn.extract_with_state.html). Essentially you'll need to provide the state both via context and via Axum router state:
+
+```rust
+#[derive(FromRef, Debug, Clone, Copy)]
+pub struct MyData {
+    pub value: usize,
+    pub leptos_options: LeptosOptions,
+}
+
+let app_state = MyData {
+    value: 42,
+    leptos_options,
+};
+
+// build our application with a route
+let app = Router::new()
+    .leptos_routes_with_context(
+        &app_state,
+        routes,
+        {
+            let app_state = app_state.clone();
+            move || provide_context(app_state.clone());
+        },
+        App,
+    )
+    .fallback(file_and_error_handler)
+    .with_state(app_state);
+
+// ... 
+#[server] 
+pub async fn uses_state() -> Result<(), ServerFnError> {
+    let state = expect_context::<AppState>();
+    let SomeStateExtractor(data) = extract_with_state(&state).await?;
+    // todo
+}
+```
 
 ## A Note about Data-Loading Patterns
 
