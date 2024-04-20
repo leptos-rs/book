@@ -119,6 +119,11 @@ live-reload the page.
 
 Welcome to the world of UI development with Rust and WebAssembly (WASM), powered by Leptos and Trunk!
 
+```admonish note
+If you are using Windows, note that `trunk serve --open` may not work. If you have issues with `--open`,
+simply use `trunk serve` and open a browser tab manually.
+```
+
 ---
 
 Now before we get started building your first real UI's with Leptos, there are a couple of things you might want to know to help make your experience with Leptos just a little bit easier.
