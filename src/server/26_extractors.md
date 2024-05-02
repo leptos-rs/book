@@ -102,7 +102,7 @@ This context can then be accessed with a simple `use_context::<T>()` inside your
 If you *need* to use `State` in a server function—for example, if you have an existing Axum extractor that requires `State`, that is also possible using Axum's [`FromRef`](https://docs.rs/axum/latest/axum/extract/derive.FromRef.html) pattern and [`extract_with_state`](https://docs.rs/leptos_axum/latest/leptos_axum/fn.extract_with_state.html). Essentially you'll need to provide the state both via context and via Axum router state:
 
 ```rust
-#[derive(FromRef, Debug, Clone, Copy)]
+#[derive(FromRef, Debug, Clone)]
 pub struct MyData {
     pub value: usize,
     pub leptos_options: LeptosOptions,
