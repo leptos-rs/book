@@ -1,5 +1,10 @@
 [output.html]
-additional-css = ["./mdbook-admonish.css"]
+additional-css = [
+    "./mdbook-admonish.css",
+    "./mdbook-admonish-custom.css",
+    "./sandbox.css",
+]
+additional-js = ["./sandbox.js"]
 git-repository-url = "https://github.com/leptos-rs/book"
 edit-url-template = "https://github.com/leptos-rs/book/edit/main/{path}"
 [output.html.playground]
@@ -9,4 +14,9 @@ runnable = false
 
 [preprocessor.admonish]
 command = "mdbook-admonish"
-assets_version = "3.0.1" # do not edit: managed by `mdbook-admonish install`
+assets_version = "3.0.1"    # do not edit: managed by `mdbook-admonish install`
+
+[[preprocessor.admonish.custom]]
+directive = "sandbox"
+color = "#DCFF50"
+icon = "./CodeSandbox-Square-Logo.svg"

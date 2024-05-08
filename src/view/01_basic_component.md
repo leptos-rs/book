@@ -157,9 +157,19 @@ You can see here that while `set_count` just sets the value, `set_count.update()
 Other Previews > 8080.` Hover over any of the variables to show Rust-Analyzer details
 > and docs for what’s going on. Feel free to fork the examples to play with them yourself!
 
+```admonish sandbox title="Live example" collapsible=true
+
 [Click to open CodeSandbox.](https://codesandbox.io/p/sandbox/1-basic-component-3d74p3?file=%2Fsrc%2Fmain.rs%3A1%2C1)
 
-<iframe src="https://codesandbox.io/p/sandbox/1-basic-component-3d74p3?file=%2Fsrc%2Fmain.rs%3A1%2C1" width="100%" height="1000px" style="max-height: 100vh"></iframe>
+<noscript>
+  Please enable JavaScript to view examples.
+</noscript>
+
+<template>
+  <iframe src="https://codesandbox.io/p/sandbox/1-basic-component-3d74p3?file=%2Fsrc%2Fmain.rs%3A1%2C1" width="100%" height="1000px" style="max-height: 100vh"></iframe>
+</template>
+
+```
 
 <details>
 <summary>CodeSandbox Source</summary>

@@ -1,0 +1,20 @@
+:root {
+  --md-admonition-icon--admonish-sandbox: url("data:image/svg+xml;charset=utf-8,<svg width='600' height='600' viewBox='0 0 600 600' fill='none' xmlns='http://www.w3.org/2000/svg'><path fill-rule='evenodd' clip-rule='evenodd' d='M150 150L449.832 150V450H150V150ZM419.168 180.682V419.318H180.665V180.682H419.168Z' fill='%23151515'/></svg>");
+}
+
+:is(.admonition):is(.admonish-sandbox) {
+  border-color: #dcff50;
+}
+
+:is(.admonish-sandbox) > :is(.admonition-title, summary.admonition-title) {
+  background-color: rgba(220, 255, 80, 0.1);
+}
+:is(.admonish-sandbox) > :is(.admonition-title, summary.admonition-title)::before {
+  background-color: #dcff50;
+  mask-image: var(--md-admonition-icon--admonish-sandbox);
+  -webkit-mask-image: var(--md-admonition-icon--admonish-sandbox);
+  mask-repeat: no-repeat;
+  -webkit-mask-repeat: no-repeat;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+}
