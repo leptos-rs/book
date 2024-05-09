@@ -3,9 +3,8 @@
 That “Hello, world!” was a _very_ simple example. Let’s move on to something a
 little more like an ordinary app.
 
-> Throughout this tutorial, we’ll use CodeSandbox to show interactive examples. To
-> show the browser in the sandbox, you may need to click `Add DevTools >
-Other Previews > 8080.` Hover over any of the variables to show Rust-Analyzer details
+> Throughout this tutorial, we’ll use CodeSandbox to show interactive examples.
+> Hover over any of the variables to show Rust-Analyzer details
 > and docs for what’s going on. Feel free to fork the examples to play with them yourself!
 
 ```admonish sandbox title="Live example" collapsible=true
@@ -15,6 +14,11 @@ Other Previews > 8080.` Hover over any of the variables to show Rust-Analyzer de
 <noscript>
   Please enable JavaScript to view examples.
 </noscript>
+
+
+> To show the browser in the sandbox, you may need to click `Add DevTools >
+Other Previews > 8080.`
+
 
 <template>
   <iframe src="https://codesandbox.io/p/sandbox/1-basic-component-3d74p3?file=%2Fsrc%2Fmain.rs%3A1%2C1" width="100%" height="1000px" style="max-height: 100vh"></iframe>
