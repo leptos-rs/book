@@ -1,5 +1,19 @@
 # `<Suspense/>`
 
+```admonish sandbox title="Live example" collapsible=true
+
+[Click to open CodeSandbox.](https://codesandbox.io/p/sandbox/11-suspense-0-5-qzpgqs?file=%2Fsrc%2Fmain.rs%3A1%2C1)
+
+<noscript>
+  Please enable JavaScript to view examples.
+</noscript>
+
+<template>
+  <iframe src="https://codesandbox.io/p/sandbox/11-suspense-0-5-qzpgqs?file=%2Fsrc%2Fmain.rs%3A1%2C1" width="100%" height="1000px" style="max-height: 100vh"></iframe>
+</template>
+
+```
+
 In the previous chapter, we showed how you can create a simple loading screen to show some fallback while a resource is loading.
 
 ```rust
@@ -96,10 +110,6 @@ view! {
     </Await>
 }
 ```
-
-[Click to open CodeSandbox.](https://codesandbox.io/p/sandbox/11-suspense-0-5-qzpgqs?file=%2Fsrc%2Fmain.rs%3A1%2C1)
-
-<iframe src="https://codesandbox.io/p/sandbox/11-suspense-0-5-qzpgqs?file=%2Fsrc%2Fmain.rs%3A1%2C1" width="100%" height="1000px" style="max-height: 100vh"></iframe>
 
 <details>
 <summary>CodeSandbox Source</summary>

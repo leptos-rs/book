@@ -1,5 +1,19 @@
 # Mutating Data with Actions
 
+```admonish sandbox title="Live example" collapsible=true
+
+[Click to open CodeSandbox.](https://codesandbox.io/p/sandbox/13-actions-0-5-8xk35v?file=%2Fsrc%2Fmain.rs%3A1%2C1)
+
+<noscript>
+  Please enable JavaScript to view examples.
+</noscript>
+
+<template>
+  <iframe src="https://codesandbox.io/p/sandbox/13-actions-0-5-8xk35v?file=%2Fsrc%2Fmain.rs%3A1%2C1" width="100%" height="1000px" style="max-height: 100vh"></iframe>
+</template>
+
+```
+
 We’ve talked about how to load `async` data with resources. Resources immediately load data and work closely with `<Suspense/>` and `<Transition/>` components to show whether data is loading in your app. But what if you just want to call some arbitrary `async` function and keep track of what it’s doing?
 
 Well, you could always use [`spawn_local`](https://docs.rs/leptos/latest/leptos/fn.spawn_local.html). This allows you to just spawn an `async` task in a synchronous environment by handing the `Future` off to the browser (or, on the server, Tokio or whatever other runtime you’re using). But how do you know if it’s still pending? Well, you could just set a signal to show whether it’s loading, and another one to show the result...
@@ -90,10 +104,6 @@ view! {
 ```
 
 Now, there’s a chance this all seems a little over-complicated, or maybe too restricted. I wanted to include actions here, alongside resources, as the missing piece of the puzzle. In a real Leptos app, you’ll actually most often use actions alongside server functions, [`create_server_action`](https://docs.rs/leptos/latest/leptos/fn.create_server_action.html), and the [`<ActionForm/>`](https://docs.rs/leptos_router/latest/leptos_router/fn.ActionForm.html) component to create really powerful progressively-enhanced forms. So if this primitive seems useless to you... Don’t worry! Maybe it will make sense later. (Or check out our [`todo_app_sqlite`](https://github.com/leptos-rs/leptos/blob/main/examples/todo_app_sqlite/src/todo.rs) example now.)
-
-[Click to open CodeSandbox.](https://codesandbox.io/p/sandbox/13-actions-0-5-8xk35v?file=%2Fsrc%2Fmain.rs%3A1%2C1)
-
-<iframe src="https://codesandbox.io/p/sandbox/13-actions-0-5-8xk35v?file=%2Fsrc%2Fmain.rs%3A1%2C1" width="100%" height="1000px" style="max-height: 100vh"></iframe>
 
 <details>
 <summary>CodeSandbox Source</summary>

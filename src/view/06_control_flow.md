@@ -4,6 +4,20 @@ In most applications, you sometimes need to make a decision: Should I render thi
 part of the view, or not? Should I render `<ButtonA/>` or `<WidgetB/>`? This is
 **control flow**.
 
+```admonish sandbox title="Live example" collapsible=true
+
+[Click to open CodeSandbox.](https://codesandbox.io/p/sandbox/6-control-flow-0-5-4yn7qz?file=%2Fsrc%2Fmain.rs%3A1%2C1)
+
+<noscript>
+  Please enable JavaScript to view examples.
+</noscript>
+
+<template>
+  <iframe src="https://codesandbox.io/p/sandbox/6-control-flow-0-5-4yn7qz?file=%2Fsrc%2Fmain.rs%3A1%2C1" width="100%" height="1000px" style="max-height: 100vh"></iframe>
+</template>
+
+```
+
 ## A Few Tips
 
 When thinking about how to do this with Leptos, it’s important to remember a few
@@ -282,10 +296,6 @@ view! {
     </main>
 }
 ```
-
-[Click to open CodeSandbox.](https://codesandbox.io/p/sandbox/6-control-flow-0-5-4yn7qz?file=%2Fsrc%2Fmain.rs%3A1%2C1)
-
-<iframe src="https://codesandbox.io/p/sandbox/6-control-flow-0-5-4yn7qz?file=%2Fsrc%2Fmain.rs%3A1%2C1" width="100%" height="1000px" style="max-height: 100vh"></iframe>
 
 <details>
 <summary>CodeSandbox Source</summary>

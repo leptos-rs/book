@@ -15,10 +15,8 @@ little more like an ordinary app.
   Please enable JavaScript to view examples.
 </noscript>
 
-
 > To show the browser in the sandbox, you may need to click `Add DevTools >
 Other Previews > 8080.`
-
 
 <template>
   <iframe src="https://codesandbox.io/p/sandbox/1-basic-component-3d74p3?file=%2Fsrc%2Fmain.rs%3A1%2C1" width="100%" height="1000px" style="max-height: 100vh"></iframe>

@@ -1,5 +1,18 @@
 # Error Handling
 
+```admonish sandbox title="Live example" collapsible=true
+
+[Click to open CodeSandbox.](https://codesandbox.io/p/sandbox/7-errors-0-5-5mptv9?file=%2Fsrc%2Fmain.rs%3A1%2C1)
+
+<noscript>
+  Please enable JavaScript to view examples.
+</noscript>
+
+<template>
+  <iframe src="https://codesandbox.io/p/sandbox/7-errors-0-5-5mptv9?file=%2Fsrc%2Fmain.rs%3A1%2C1" width="100%" height="1000px" style="max-height: 100vh"></iframe>
+</template>
+```
+
 [In the last chapter](./06_control_flow.md), we saw that you can render `Option<T>`:
 in the `None` case, it will render nothing, and in the `Some(T)` case, it will render `T`
 (that is, if `T` implements `IntoView`). You can actually do something very similar
@@ -109,10 +122,6 @@ Not a number! Errors:
 
 If you fix the error, the error message will disappear and the content you’re wrapping in
 an `<ErrorBoundary/>` will appear again.
-
-[Click to open CodeSandbox.](https://codesandbox.io/p/sandbox/7-errors-0-5-5mptv9?file=%2Fsrc%2Fmain.rs%3A1%2C1)
-
-<iframe src="https://codesandbox.io/p/sandbox/7-errors-0-5-5mptv9?file=%2Fsrc%2Fmain.rs%3A1%2C1" width="100%" height="1000px" style="max-height: 100vh"></iframe>
 
 <details>
 <summary>CodeSandbox Source</summary>

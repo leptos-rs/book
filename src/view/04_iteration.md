@@ -1,5 +1,19 @@
 # Iteration
 
+```admonish sandbox title="Live example" collapsible=true
+
+[Click to open CodeSandbox.](https://codesandbox.io/p/sandbox/4-iteration-0-5-pwdn2y?file=%2Fsrc%2Fmain.rs%3A1%2C1)
+
+<noscript>
+  Please enable JavaScript to view examples.
+</noscript>
+
+<template>
+  <iframe src="https://codesandbox.io/p/sandbox/4-iteration-0-5-pwdn2y?file=%2Fsrc%2Fmain.rs%3A1%2C1" width="100%" height="1000px" style="max-height: 100vh"></iframe>
+</template>
+
+```
+
 Whether you’re listing todos, displaying a table, or showing product images,
 iterating over a list of items is a common task in web applications. Reconciling
 the differences between changing sets of items can also be one of the trickiest
@@ -103,10 +117,6 @@ But it’s a great idea to do something like generating a unique ID for each row
 it is generated, and using that as an ID for the key function.
 
 Check out the `<DynamicList/>` component below for an example.
-
-[Click to open CodeSandbox.](https://codesandbox.io/p/sandbox/4-iteration-0-5-pwdn2y?file=%2Fsrc%2Fmain.rs%3A1%2C1)
-
-<iframe src="https://codesandbox.io/p/sandbox/4-iteration-0-5-pwdn2y?file=%2Fsrc%2Fmain.rs%3A1%2C1" width="100%" height="1000px" style="max-height: 100vh"></iframe>
 
 <details>
 <summary>CodeSandbox Source</summary>
