@@ -1,19 +1,5 @@
 # Params and Queries
 
-```admonish sandbox title="Live example" collapsible=true
-
-[Click to open CodeSandbox.](https://codesandbox.io/p/sandbox/16-router-0-5-4xp4zz?file=%2Fsrc%2Fmain.rs%3A102%2C2)
-
-<noscript>
-  Please enable JavaScript to view examples.
-</noscript>
-
-<template>
-  <iframe src="https://codesandbox.io/p/sandbox/16-router-0-5-4xp4zz?file=%2Fsrc%2Fmain.rs%3A102%2C2" width="100%" height="1000px" style="max-height: 100vh"></iframe>
-</template>
-
-```
-
 Static paths are useful for distinguishing between different pages, but almost every application wants to pass data through the URL at some point.
 
 There are two ways you can do this:
@@ -95,6 +81,20 @@ This can get a little messy: deriving a signal that wraps an `Option<_>` or `Res
 2. It’s performant. Specifically, when you navigate between different paths that match the same `<Route/>` with only params or the query changing, you can get fine-grained updates to different parts of your app without rerendering. For example, navigating between different contacts in our contact-list example does a targeted update to the name field (and eventually contact info) without needing to replace or rerender the wrapping `<Contact/>`. This is what fine-grained reactivity is for.
 
 > This is the same example from the previous section. The router is such an integrated system that it makes sense to provide a single example highlighting multiple features, even if we haven’t explained them all yet.
+
+```admonish sandbox title="Live example" collapsible=true
+
+[Click to open CodeSandbox.](https://codesandbox.io/p/sandbox/16-router-0-5-4xp4zz?file=%2Fsrc%2Fmain.rs%3A102%2C2)
+
+<noscript>
+  Please enable JavaScript to view examples.
+</noscript>
+
+<template>
+  <iframe src="https://codesandbox.io/p/sandbox/16-router-0-5-4xp4zz?file=%2Fsrc%2Fmain.rs%3A102%2C2" width="100%" height="1000px" style="max-height: 100vh"></iframe>
+</template>
+
+```
 
 <details>
 <summary>CodeSandbox Source</summary>

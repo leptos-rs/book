@@ -1,19 +1,5 @@
 # Global State Management
 
-```admonish sandbox title="Live example" collapsible=true
-
-[Click to open CodeSandbox.](https://codesandbox.io/p/sandbox/15-global-state-0-5-8c2ff6?file=%2Fsrc%2Fmain.rs%3A1%2C2)
-
-<noscript>
-  Please enable JavaScript to view examples.
-</noscript>
-
-<template>
-  <iframe src="https://codesandbox.io/p/sandbox/15-global-state-0-5-8c2ff6?file=%2Fsrc%2Fmain.rs%3A1%2C2" width="100%" height="1000px" style="max-height: 100vh"></iframe>
-</template>
-
-```
-
 So far, we've only been working with local state in components, and we’ve seen how to coordinate state between parent and child components. On occasion, there are times where people look for a more general solution for global state management that can work throughout an application.
 
 In general, **you do not need this chapter.** The typical pattern is to compose your application out of components, each of which manages its own local state, not to store all state in a global structure. However, there are some cases (like theming, saving user settings, or sharing data between components in different parts of your UI) in which you may want to use some kind of global state management.
@@ -193,6 +179,20 @@ that other slice to update. This allows you to combine the benefits of a top-dow
 data flow and of fine-grained reactive updates.
 
 > **Note**: There are some significant drawbacks to this approach. Both signals and memos need to own their values, so a memo will need to clone the field’s value on every change. The most natural way to manage state in a framework like Leptos is always to provide signals that are as locally-scoped and fine-grained as they can be, not to hoist everything up into global state. But when you _do_ need some kind of global state, `create_slice` can be a useful tool.
+
+```admonish sandbox title="Live example" collapsible=true
+
+[Click to open CodeSandbox.](https://codesandbox.io/p/sandbox/15-global-state-0-5-8c2ff6?file=%2Fsrc%2Fmain.rs%3A1%2C2)
+
+<noscript>
+  Please enable JavaScript to view examples.
+</noscript>
+
+<template>
+  <iframe src="https://codesandbox.io/p/sandbox/15-global-state-0-5-8c2ff6?file=%2Fsrc%2Fmain.rs%3A1%2C2" width="100%" height="1000px" style="max-height: 100vh"></iframe>
+</template>
+
+```
 
 <details>
 <summary>CodeSandbox Source</summary>

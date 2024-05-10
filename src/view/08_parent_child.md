@@ -1,19 +1,5 @@
 # Parent-Child Communication
 
-```admonish sandbox title="Live example" collapsible=true
-
-[Click to open CodeSandbox.](https://codesandbox.io/p/sandbox/8-parent-child-0-5-7rz7qd?file=%2Fsrc%2Fmain.rs%3A1%2C2)
-
-<noscript>
-  Please enable JavaScript to view examples.
-</noscript>
-
-<template>
-  <iframe src="https://codesandbox.io/p/sandbox/8-parent-child-0-5-7rz7qd?file=%2Fsrc%2Fmain.rs%3A1%2C2" width="100%" height="1000px" style="max-height: 100vh"></iframe>
-</template>
-
-```
-
 You can think of your application as a nested tree of components. Each component
 handles its own local state and manages a section of the user interface, so
 components tend to be relatively self-contained.
@@ -332,6 +318,20 @@ fine-grained reactivity—you are communicating directly between a button click
 in `<ButtonD/>` and a single text node in `<App/>`. It’s as if the components
 themselves don’t exist at all. And, well... at runtime, they don’t. It’s just
 signals and effects, all the way down.
+
+```admonish sandbox title="Live example" collapsible=true
+
+[Click to open CodeSandbox.](https://codesandbox.io/p/sandbox/8-parent-child-0-5-7rz7qd?file=%2Fsrc%2Fmain.rs%3A1%2C2)
+
+<noscript>
+  Please enable JavaScript to view examples.
+</noscript>
+
+<template>
+  <iframe src="https://codesandbox.io/p/sandbox/8-parent-child-0-5-7rz7qd?file=%2Fsrc%2Fmain.rs%3A1%2C2" width="100%" height="1000px" style="max-height: 100vh"></iframe>
+</template>
+
+```
 
 <details>
 <summary>CodeSandbox Source</summary>

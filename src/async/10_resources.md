@@ -1,19 +1,5 @@
 # Loading Data with Resources
 
-```admonish sandbox title="Live example" collapsible=true
-
-[Click to open CodeSandbox.](https://codesandbox.io/p/sandbox/10-resources-0-5-x6h5j6?file=%2Fsrc%2Fmain.rs%3A2%2C3)
-
-<noscript>
-  Please enable JavaScript to view examples.
-</noscript>
-
-<template>
-  <iframe src="https://codesandbox.io/p/sandbox/10-resources-0-5-9jq86q?file=%2Fsrc%2Fmain.rs%3A2%2C3" width="100%" height="1000px" style="max-height: 100vh"></iframe>
-</template>
-
-```
-
 A [Resource](https://docs.rs/leptos/latest/leptos/struct.Resource.html) is a reactive data structure that reflects the current state of an asynchronous task, allowing you to integrate asynchronous `Future`s into the synchronous reactive system. Rather than waiting for its data to load with `.await`, you transform the `Future` into a signal that returns `Some(T)` if it has resolved, and `None` if it’s still pending.
 
 You do this by using the [`create_resource`](https://docs.rs/leptos/latest/leptos/fn.create_resource.html) function. This takes two arguments:
@@ -60,6 +46,20 @@ view! {
 ```
 
 Resources also provide a `refetch()` method that allows you to manually reload the data (for example, in response to a button click) and a `loading()` method that returns a `ReadSignal<bool>` indicating whether the resource is currently loading or not.
+
+```admonish sandbox title="Live example" collapsible=true
+
+[Click to open CodeSandbox.](https://codesandbox.io/p/sandbox/10-resources-0-5-x6h5j6?file=%2Fsrc%2Fmain.rs%3A2%2C3)
+
+<noscript>
+  Please enable JavaScript to view examples.
+</noscript>
+
+<template>
+  <iframe src="https://codesandbox.io/p/sandbox/10-resources-0-5-9jq86q?file=%2Fsrc%2Fmain.rs%3A2%2C3" width="100%" height="1000px" style="max-height: 100vh"></iframe>
+</template>
+
+```
 
 <details>
 <summary>CodeSandbox Source</summary>

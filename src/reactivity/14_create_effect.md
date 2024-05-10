@@ -1,19 +1,5 @@
 # Responding to Changes with `create_effect`
 
-```admonish sandbox title="Live example" collapsible=true
-
-[Click to open CodeSandbox.](https://codesandbox.io/p/sandbox/14-effect-0-5-d6hkch?file=%2Fsrc%2Fmain.rs%3A1%2C1)
-
-<noscript>
-  Please enable JavaScript to view examples.
-</noscript>
-
-<template>
-  <iframe src="https://codesandbox.io/p/sandbox/14-effect-0-5-d6hkch?file=%2Fsrc%2Fmain.rs%3A1%2C1" width="100%" height="1000px" style="max-height: 100vh"></iframe>
-</template>
-
-```
-
 We’ve made it this far without having mentioned half of the reactive system: effects.
 
 Reactivity works in two halves: updating individual reactive values (“signals”) notifies the pieces of code that depend on them (“effects”) that they need to run again. These two halves of the reactive system are inter-dependent. Without effects, signals can change within the reactive system but never be observed in a way that interacts with the outside world. Without signals, effects run once but never again, as there’s no observable value to subscribe to. Effects are quite literally “side effects” of the reactive system: they exist to synchronize the reactive system with the non-reactive world outside it.
@@ -161,6 +147,20 @@ set_num.set(1); // > "Number: 1; Prev: Some(0)"
 stop(); // stop watching
 
 set_num.set(2); // (nothing happens)
+```
+
+```admonish sandbox title="Live example" collapsible=true
+
+[Click to open CodeSandbox.](https://codesandbox.io/p/sandbox/14-effect-0-5-d6hkch?file=%2Fsrc%2Fmain.rs%3A1%2C1)
+
+<noscript>
+  Please enable JavaScript to view examples.
+</noscript>
+
+<template>
+  <iframe src="https://codesandbox.io/p/sandbox/14-effect-0-5-d6hkch?file=%2Fsrc%2Fmain.rs%3A1%2C1" width="100%" height="1000px" style="max-height: 100vh"></iframe>
+</template>
+
 ```
 
 <details>

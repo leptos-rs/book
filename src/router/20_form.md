@@ -1,19 +1,5 @@
 # The `<Form/>` Component
 
-```admonish sandbox title="Live example" collapsible=true
-
-[Click to open CodeSandbox.](https://codesandbox.io/p/sandbox/20-form-0-5-9g7v9p?file=%2Fsrc%2Fmain.rs%3A1%2C1)
-
-<noscript>
-  Please enable JavaScript to view examples.
-</noscript>
-
-<template>
-  <iframe src="https://codesandbox.io/p/sandbox/20-form-0-5-9g7v9p?file=%2Fsrc%2Fmain.rs%3A1%2C1" width="100%" height="1000px" style="max-height: 100vh"></iframe>
-</template>
-
-```
-
 Links and forms sometimes seem completely unrelated. But, in fact, they work in very similar ways.
 
 In plain HTML, there are three ways to navigate to another page:
@@ -75,6 +61,20 @@ view! {
 ```
 
 You’ll notice that this version drops the `Submit` button. Instead, we add an `oninput` attribute to the input. Note that this is _not_ `on:input`, which would listen for the `input` event and run some Rust code. Without the colon, `oninput` is the plain HTML attribute. So the string is actually a JavaScript string. `this.form` gives us the form the input is attached to. `requestSubmit()` fires the `submit` event on the `<form>`, which is caught by `<Form/>` just as if we had clicked a `Submit` button. Now the form will “navigate” on every keystroke or input to keep the URL (and therefore the search) perfectly in sync with the user’s input as they type.
+
+```admonish sandbox title="Live example" collapsible=true
+
+[Click to open CodeSandbox.](https://codesandbox.io/p/sandbox/20-form-0-5-9g7v9p?file=%2Fsrc%2Fmain.rs%3A1%2C1)
+
+<noscript>
+  Please enable JavaScript to view examples.
+</noscript>
+
+<template>
+  <iframe src="https://codesandbox.io/p/sandbox/20-form-0-5-9g7v9p?file=%2Fsrc%2Fmain.rs%3A1%2C1" width="100%" height="1000px" style="max-height: 100vh"></iframe>
+</template>
+
+```
 
 <details>
 <summary>CodeSandbox Source</summary>

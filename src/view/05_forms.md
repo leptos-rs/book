@@ -5,20 +5,6 @@ basic patterns for interacting with inputs in Leptos, which you may recognize
 if you’re familiar with React, SolidJS, or a similar framework: using **controlled**
 or **uncontrolled** inputs.
 
-```admonish sandbox title="Controlled vs uncontrolled forms CodeSandbox" collapsible=true
-
-[Click to open CodeSandbox.](https://codesandbox.io/p/sandbox/5-forms-0-5-rf2t7c?file=%2Fsrc%2Fmain.rs%3A1%2C1)
-
-<noscript>
-  Please enable JavaScript to view examples.
-</noscript>
-
-<template>
-  <iframe src="https://codesandbox.io/p/sandbox/5-forms-0-5-rf2t7c?file=%2Fsrc%2Fmain.rs%3A1%2C1" width="100%" height="1000px" style="max-height: 100vh"></iframe>
-</template>
-
-```
-
 ## Controlled Inputs
 
 In a "controlled input," the framework controls the state of the input
@@ -249,6 +235,20 @@ pub fn SelectOption(is: &'static str, value: ReadSignal<String>) -> impl IntoVie
 > This is only the case for _components_: in HTML elements, a single `value` attribute is equivalent to `value=true`.
 > This is expected to be made consistent in the next major version of Leptos; see [this issue](https://github.com/leptos-rs/leptos/issues/2196)
 > for more details.
+
+```admonish sandbox title="Controlled vs uncontrolled forms CodeSandbox" collapsible=true
+
+[Click to open CodeSandbox.](https://codesandbox.io/p/sandbox/5-forms-0-5-rf2t7c?file=%2Fsrc%2Fmain.rs%3A1%2C1)
+
+<noscript>
+  Please enable JavaScript to view examples.
+</noscript>
+
+<template>
+  <iframe src="https://codesandbox.io/p/sandbox/5-forms-0-5-rf2t7c?file=%2Fsrc%2Fmain.rs%3A1%2C1" width="100%" height="1000px" style="max-height: 100vh"></iframe>
+</template>
+
+```
 
 <details>
 <summary>CodeSandbox Source</summary>
