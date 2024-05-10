@@ -16,7 +16,7 @@
         );
 
         width: var(--sandbox-width);
-        margin-left: calc(calc(var(--sandbox-width) - 100%) / 2 * -1 + 4px);
+        margin-left: calc(calc(min(var(--sandbox-width), 1380px) - 100%) / 2 * -1 + 4px);
         z-index: 10;
     }
 
