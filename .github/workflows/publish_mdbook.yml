@@ -42,7 +42,7 @@ jobs:
 
       - name: Install mdbook-admonish
         run: |
-          cargo install mdbook-admonish --vers "1.14.0" --locked
+          cargo install mdbook-admonish --vers "1.15.0" --locked
           mdbook-admonish install ./
 
       - name: Setup Pages
