@@ -91,7 +91,7 @@ are real trade-offs, not a simple right-or-wrong choice.
 > Note the way we use the `Callback<In, Out>` type. This is basically a
 > wrapper around a closure `Fn(In) -> Out` that is also `Copy` and makes it
 > easy to pass around.
-> 
+>
 > We also used the `#[prop(into)]` attribute so we can pass a normal closure into
 > `on_click`. Please see the [chapter "`into` Props"](./03_components.md#into-props) for more details.
 
@@ -129,7 +129,6 @@ closure might require some cloning compared to using a `Callback`.
 > Note the way we declare the generic type `F` here for the callback. If you’re
 > confused, look back at the [generic props](./03_components.html#generic-props) section
 > of the chapter on components.
-
 
 ## 3. Use an Event Listener
 
@@ -320,9 +319,19 @@ in `<ButtonD/>` and a single text node in `<App/>`. It’s as if the components
 themselves don’t exist at all. And, well... at runtime, they don’t. It’s just
 signals and effects, all the way down.
 
+```admonish sandbox title="Live example" collapsible=true
+
 [Click to open CodeSandbox.](https://codesandbox.io/p/sandbox/8-parent-child-0-5-7rz7qd?file=%2Fsrc%2Fmain.rs%3A1%2C2)
 
-<iframe src="https://codesandbox.io/p/sandbox/8-parent-child-0-5-7rz7qd?file=%2Fsrc%2Fmain.rs%3A1%2C2" width="100%" height="1000px" style="max-height: 100vh"></iframe>
+<noscript>
+  Please enable JavaScript to view examples.
+</noscript>
+
+<template>
+  <iframe src="https://codesandbox.io/p/sandbox/8-parent-child-0-5-7rz7qd?file=%2Fsrc%2Fmain.rs%3A1%2C2" width="100%" height="1000px" style="max-height: 100vh"></iframe>
+</template>
+
+```
 
 <details>
 <summary>CodeSandbox Source</summary>

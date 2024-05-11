@@ -1,0 +1,43 @@
+:is(.admonition):is(.admonish-sandbox) {
+    transition-property: width, margin-left;
+    transition-duration: 300ms;
+    transition-timing-function: ease-out;
+    margin-left: 0;
+    position: relative;
+    box-sizing: border-box;
+    max-width: 1380px;
+}
+
+@media only screen and (min-width: 1081px) {
+    :is(.admonition):is(.admonish-sandbox):is([open]) {
+        --sandbox-width: calc(
+            100vw - var(--sidebar-width) - calc(var(--page-padding) + 1.2rem) *
+                2 - 6px - 4px
+        );
+
+        width: var(--sandbox-width);
+        margin-left: calc(calc(min(var(--sandbox-width), 1380px) - 100%) / 2 * -1 + 4px);
+        z-index: 10;
+    }
+
+    body.sidebar-hidden :is(.admonition):is(.admonish-sandbox):is([open]) {
+        --sandbox-width: calc(
+            100vw - calc(var(--page-padding) + 1.2rem) * 2 - 4px
+        );
+    }
+}
+
+@media only screen and (min-width: 1380px) {
+    :is(.admonition):is(.admonish-sandbox):is([open]) {
+        --sandbox-width: calc(
+            100vw - var(--sidebar-width) -
+                calc(var(--page-padding) + 1.2rem + 90px) * 2 - 6px - 4px
+        );
+    }
+
+    body.sidebar-hidden :is(.admonition):is(.admonish-sandbox):is([open]) {
+        --sandbox-width: calc(
+            100vw - calc(var(--page-padding) + 1.2rem + 90px) * 2 - 4px
+        );
+    }
+}

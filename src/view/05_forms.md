@@ -236,11 +236,19 @@ pub fn SelectOption(is: &'static str, value: ReadSignal<String>) -> impl IntoVie
 > This is expected to be made consistent in the next major version of Leptos; see [this issue](https://github.com/leptos-rs/leptos/issues/2196)
 > for more details.
 
-**Controlled vs uncontrolled forms CodeSandbox:**
+```admonish sandbox title="Controlled vs uncontrolled forms CodeSandbox" collapsible=true
 
 [Click to open CodeSandbox.](https://codesandbox.io/p/sandbox/5-forms-0-5-rf2t7c?file=%2Fsrc%2Fmain.rs%3A1%2C1)
 
-<iframe src="https://codesandbox.io/p/sandbox/5-forms-0-5-rf2t7c?file=%2Fsrc%2Fmain.rs%3A1%2C1" width="100%" height="1000px" style="max-height: 100vh"></iframe>
+<noscript>
+  Please enable JavaScript to view examples.
+</noscript>
+
+<template>
+  <iframe src="https://codesandbox.io/p/sandbox/5-forms-0-5-rf2t7c?file=%2Fsrc%2Fmain.rs%3A1%2C1" width="100%" height="1000px" style="max-height: 100vh"></iframe>
+</template>
+
+```
 
 <details>
 <summary>CodeSandbox Source</summary>

@@ -152,14 +152,26 @@ move |_| {
 
 You can see here that while `set_count` just sets the value, `set_count.update()` gives us a mutable reference and mutates the value in place. Either one will trigger a reactive update in our UI.
 
-> Throughout this tutorial, we’ll use CodeSandbox to show interactive examples. To
-> show the browser in the sandbox, you may need to click `Add DevTools >
-Other Previews > 8080.` Hover over any of the variables to show Rust-Analyzer details
+> Throughout this tutorial, we’ll use CodeSandbox to show interactive examples.
+> Hover over any of the variables to show Rust-Analyzer details
 > and docs for what’s going on. Feel free to fork the examples to play with them yourself!
+
+```admonish sandbox title="Live example" collapsible=true
 
 [Click to open CodeSandbox.](https://codesandbox.io/p/sandbox/1-basic-component-3d74p3?file=%2Fsrc%2Fmain.rs%3A1%2C1)
 
-<iframe src="https://codesandbox.io/p/sandbox/1-basic-component-3d74p3?file=%2Fsrc%2Fmain.rs%3A1%2C1" width="100%" height="1000px" style="max-height: 100vh"></iframe>
+<noscript>
+  Please enable JavaScript to view examples.
+</noscript>
+
+> To show the browser in the sandbox, you may need to click `Add DevTools >
+Other Previews > 8080.`
+
+<template>
+  <iframe src="https://codesandbox.io/p/sandbox/1-basic-component-3d74p3?file=%2Fsrc%2Fmain.rs%3A1%2C1" width="100%" height="1000px" style="max-height: 100vh"></iframe>
+</template>
+
+```
 
 <details>
 <summary>CodeSandbox Source</summary>
