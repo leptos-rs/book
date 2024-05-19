@@ -95,8 +95,8 @@ Individual CSS properties can be directly updated with a similar `style:` syntax
                 // set the `style` attribute
                 style="position: absolute"
                 // and toggle individual CSS properties with `style:`
-                style:left=move || format!("{}px", x() + 100)
-                style:background-color=move || format!("rgb({}, {}, 100)", x(), 100)
+                style:left=move || format!("{}px", x.get() + 100)
+                style:background-color=move || format!("rgb({}, {}, 100)", x.get(), 100)
                 style:max-width="400px"
                 // Set a CSS variable for stylesheet use
                 style=("--columns", x)
