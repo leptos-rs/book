@@ -24,6 +24,11 @@ or
 cargo leptos new --git leptos-rs/start-axum
 ```
 
+Make sure you've added the wasm32-unknown-unknown target so that Rust can compile your code to WebAssembly to run in the browser.
+```bash
+rustup target add wasm32-unknown-unknown
+```
+
 Now `cd` into the directory you’ve created and run
 
 ```bash
