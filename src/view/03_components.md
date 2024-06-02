@@ -193,14 +193,11 @@ implement the trait `Fn() -> i32`. So you could use a generic component:
 
 ```rust
 #[component]
-fn ProgressBar<F>(
+fn ProgressBar(
     #[prop(default = 100)]
     max: u16,
-    progress: F
-) -> impl IntoView
-where
-    F: Fn() -> i32 + 'static,
-{
+    progress: impl Fn() -> i32 + 'static
+) -> impl IntoView {
     view! {
         <progress
             max=max
@@ -213,24 +210,7 @@ where
 This is a perfectly reasonable way to write this component: `progress` now takes
 any value that implements this `Fn()` trait.
 
-This generic can also be specified inline:
-
-```rust
-#[component]
-fn ProgressBar<F: Fn() -> i32 + 'static>(
-    #[prop(default = 100)] max: u16,
-    progress: F,
-) -> impl IntoView {
-    view! {
-        <progress
-            max=max
-            value=progress
-        />
-    }
-}
-```
-
-> Note that generic component props _can’t_ be specified with an `impl` yet (`progress: impl Fn() -> i32 + 'static,`), in part because they’re actually used to generate a `struct ProgressBarProps`, and struct fields cannot be `impl` types. The `#[component]` macro may be further improved in the future to allow inline `impl` generic props.
+> Generic props can also be specified using a `where` clause, or using inline generics like `ProgressBar<F: Fn() -> i32 + 'static>`. Note that support for `impl Trait` syntax was released in 0.6.12; if you receive an error message you may need to `cargo update` to ensure that you are on the latest version.
 
 Generics need to be used somewhere in the component props. This is because props are built into a struct, so all generic types must be used somewhere in the struct. This is often easily accomplished using an optional `PhantomData` prop. You can then specify a generic in the view using the syntax for expressing types: `<Component<T>/>` (not with the turbofish-style `<Component::<T>/>`).
 
