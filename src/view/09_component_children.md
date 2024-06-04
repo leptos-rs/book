@@ -6,7 +6,7 @@ that enhances an HTML `<form>`. I need some way to pass all its inputs.
 
 ```rust
 view! {
-    <Form>
+    <form>
         <fieldset>
             <label>
                 "Some Input"
@@ -14,7 +14,7 @@ view! {
             </label>
         </fieldset>
         <button>"Submit"</button>
-    </Form>
+    </form>
 }
 ```
 
