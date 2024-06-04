@@ -206,7 +206,7 @@ view! {
 }
 ```
 
-`<Show/>` memoizes the `when` condition, so it only renders its `<Small/>` once,
+`<Show/>` memorizes the `when` condition, so it only renders its `<Small/>` once,
 continuing to show the same component until `value` is greater than five;
 then it renders `<Big/>` once, continuing to show it indefinitely or until `value`
 goes below five and then renders `<Small/>` again.
