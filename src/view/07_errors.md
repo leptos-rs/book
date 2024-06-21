@@ -18,7 +18,7 @@ fn NumericInput() -> impl IntoView {
 
     view! {
         <label>
-            "Type a number (or not!)"
+            "Type an integer (or not!)"
             <input type="number" on:input=on_input/>
             <p>
                 "You entered "
@@ -37,7 +37,7 @@ type the number `42`, the UI will display
 You entered 42
 ```
 
-But if you type the string`foo`, it will display
+But if you type the string `foo`, it will display
 
 ```
 You entered
@@ -48,6 +48,15 @@ much nicer if we could catch the error and do something with it.
 
 You can do that, with the [`<ErrorBoundary/>`](https://docs.rs/leptos/latest/leptos/fn.ErrorBoundary.html)
 component.
+
+```admonish note
+People often try to point out that `<input type="number>` prevents you from typing a string 
+like `foo`, or anything else that's not a number. This is true in some browsers, but not in all!
+Moreover, there are a variety of things that can be typed into a plain number input that are not an
+`i32`: a floating-point number, a larger-than-32-bit number, the letter `e`, and so on. The browser
+can be told to uphold some of these invariants, but browser behavior still varies: Parsing for yourself
+is important!
+```
 
 ## `<ErrorBoundary/>`
 
