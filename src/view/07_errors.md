@@ -69,7 +69,7 @@ fn NumericInput() -> impl IntoView {
         <h1>"Error Handling"</h1>
         <label>
             "Type a number (or something that's not a number!)"
-            <input type="number" on:input=on_input/>
+            <input type="text" on:input=on_input/>
             <ErrorBoundary
                 // the fallback receives a signal containing current errors
                 fallback=|errors| view! {
@@ -140,7 +140,7 @@ fn App() -> impl IntoView {
         <h1>"Error Handling"</h1>
         <label>
             "Type a number (or something that's not a number!)"
-            <input type="number" on:input=on_input/>
+            <input type="text" on:input=on_input/>
             // If an `Err(_) had been rendered inside the <ErrorBoundary/>,
             // the fallback will be displayed. Otherwise, the children of the
             // <ErrorBoundary/> will be displayed.
