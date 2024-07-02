@@ -203,6 +203,8 @@ fn ProgressBar(
             max=max
             value=progress
         />
+        // Add a line-break to avoid overlap
+        <br/>
     }
 }
 ```
@@ -258,6 +260,7 @@ fn ProgressBar(
             max=max
             value=progress
         />
+        <br/>
     }
 }
 
@@ -293,6 +296,7 @@ fn ProgressBar<F: Fn() -> i32 + 'static>(
                 max=100
                 value=progress
             />
+            <br/>
         }
     })
 }
@@ -332,6 +336,7 @@ fn ProgressBar(
                 max=100
                 value=progress
             />
+            <br/>
         }
     })
 }
