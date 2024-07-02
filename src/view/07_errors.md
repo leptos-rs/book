@@ -50,7 +50,7 @@ You can do that, with the [`<ErrorBoundary/>`](https://docs.rs/leptos/latest/lep
 component.
 
 ```admonish note
-People often try to point out that `<input type="number>` prevents you from typing a string 
+People often try to point out that `<input type="number">` prevents you from typing a string 
 like `foo`, or anything else that's not a number. This is true in some browsers, but not in all!
 Moreover, there are a variety of things that can be typed into a plain number input that are not an
 `i32`: a floating-point number, a larger-than-32-bit number, the letter `e`, and so on. The browser
