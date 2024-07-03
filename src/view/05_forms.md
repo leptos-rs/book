@@ -170,71 +170,35 @@ view! {
 
 ### `<select>`
 
-The `<select>` element also does not have a `value` attribute, _nor_ a `value` property.
-Instead, its value is determined by the `selected` attribute of its `<option>`
-fields. Some frameworks obscure this with a `value` field on `<select>`; if you try this
-in Leptos (or vanilla JavaScript) it won’t work.
-
-To use the `selected` field:
+The `<select>` element can likewise be controlled via a `value` property on the `<select>` itself,
+which will select whichever `<option>` has that value.
 
 ```rust
-let (value, set_value) = create_signal("B".to_string());
+let (value, set_value) = create_signal(0i32);
 view! {
-    <select on:change=move |ev| {
-        let new_value = event_target_value(&ev);
-        set_value(new_value);
-    }>
-        <option
-            value="A"
-            selected=move || value() == "A"
-        >
-            "A"
-        </option>
-        <option
-            value="B"
-            selected=move || value() == "B"
-        >
-            "B"
-        </option>
-    </select>
+  <select
+    on:change=move |ev| {
+      let new_value = event_target_value(&ev);
+      set_value(new_value.parse().unwrap());
+    }
+    prop:value=move || value.get().to_string()
+  >
+    <option value="0">"0"</option>
+    <option value="1">"1"</option>
+    <option value="2">"2"</option>
+  </select>
+  // a button that will cycle through the options
+  <button on:click=move |_| set_value.update(|n| {
+    if *n == 2 {
+      *n = 0;
+    } else {
+      *n += 1;
+    }
+  })>
+    "Next Option"
+  </button>
 }
 ```
-
-That's somewhat repetitive, but can easily be refactored:
-
-```rust
-#[component]
-pub fn App() -> impl IntoView {
-    let (value, set_value) = create_signal("B".to_string());
-    view! {
-        <select on:change=move |ev| {
-            let new_value = event_target_value(&ev);
-            set_value(new_value);
-        }>
-            <SelectOption value is="A"/>
-            <SelectOption value is="B"/>
-            <SelectOption value is="C"/>
-        </select>
-    }
-}
-
-#[component]
-pub fn SelectOption(is: &'static str, value: ReadSignal<String>) -> impl IntoView {
-    view! {
-        <option
-            value=is
-            selected=move || value() == is
-        >
-            {is}
-        </option>
-    }
-}
-```
-
-> Tip: the single `value` attribute in the component is equivalent to `value=value`.
-> This is only the case for _components_: in HTML elements, a single `value` attribute is equivalent to `value=true`.
-> This is expected to be made consistent in the next major version of Leptos; see [this issue](https://github.com/leptos-rs/leptos/issues/2196)
-> for more details.
 
 ```admonish sandbox title="Controlled vs uncontrolled forms CodeSandbox" collapsible=true
 
