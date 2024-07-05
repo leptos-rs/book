@@ -13,7 +13,7 @@ It's very easy to set up:
 1. Run `cargo add console_error_panic_hook` in your project
 2. In your main function, add `console_error_panic_hook::set_once();`
 
-> If this is unclear, [click here for an example](https://github.com/leptos-rs/leptos/blob/main/examples/counter/src/main.rs#L4-L15).
+> If this is unclear, [click here for an example](https://github.com/leptos-rs/leptos/blob/main/examples/counter/src/main.rs#L6).
 
 Now you should have much better panic messages in the browser console!
 
