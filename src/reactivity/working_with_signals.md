@@ -102,9 +102,9 @@ Often people ask about situations in which some signal needs to change based on 
 **1) B is a function of A.** Create a signal for A and a derived signal or memo for B.
 
 ```rust
-let (count, set_count) = create_signal(1);
-let derived_signal_double_count = move || count() * 2;
-let memoized_double_count = create_memo(move |_| count() * 2);
+let (count, set_count) = create_signal(1); // A
+let derived_signal_double_count = move || count() * 2; // B is a function of A
+let memoized_double_count = create_memo(move |_| count() * 2); // B is a function of A  
 ```
 
 > For guidance on whether to use a derived signal or a memo, see the docs for [`create_memo`](https://docs.rs/leptos/latest/leptos/fn.create_memo.html)
@@ -112,18 +112,19 @@ let memoized_double_count = create_memo(move |_| count() * 2);
 **2) C is a function of A and some other thing B.** Create signals for A and B and a derived signal or memo for C.
 
 ```rust
-let (first_name, set_first_name) = create_signal("Bridget".to_string());
-let (last_name, set_last_name) = create_signal("Jones".to_string());
-let full_name = move || with!(|first_name, last_name| format!("{first_name} {last_name}"));
+let (first_name, set_first_name) = create_signal("Bridget".to_string()); // A
+let (last_name, set_last_name) = create_signal("Jones".to_string()); // B
+let full_name = move || with!(|first_name, last_name| format!("{first_name} {last_name}")); // C is a function of A and B
 ```
 
 **3) A and B are independent signals, but sometimes updated at the same time.** When you make the call to update A, make a separate call to update B.
 
 ```rust
-let (age, set_age) = create_signal(32);
-let (favorite_number, set_favorite_number) = create_signal(42);
+let (age, set_age) = create_signal(32); // A
+let (favorite_number, set_favorite_number) = create_signal(42); // B
 // use this to handle a click on a `Clear` button
 let clear_handler = move |_| {
+  // update both A and B
   set_age(0);
   set_favorite_number(0);
 };
