@@ -324,7 +324,7 @@ Refresh the page and you should see the content in the browser. Edit the files a
 
 You can pass server-only content from a `#[component]` into the children of an `#[island]`, without the island needing to know anything about how to access that data or render that content.
 
-**This is really important.** Passing server `children` to islands means that you can keep islands small. Ideally, you don’t want to slap and `#[island]` around a whole chunk of your page. You want to break that chunk out into an interactive piece, which can be an `#[island]`, and a bunch of additional server content that can be passed to that island as `children`, so that the non-interactive subsections of an interactive part of the page can be kept out of the WASM binary.
+**This is really important.** Passing server `children` to islands means that you can keep islands small. Ideally, you don’t want to slap an `#[island]` around a whole chunk of your page. You want to break that chunk out into an interactive piece, which can be an `#[island]`, and a bunch of additional server content that can be passed to that island as `children`, so that the non-interactive subsections of an interactive part of the page can be kept out of the WASM binary.
 
 ## Passing Context Between Islands
 
