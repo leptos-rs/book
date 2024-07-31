@@ -27,7 +27,7 @@ If there is a JavaScript library that you want to call from Rust, you should ref
 easy to import individual functions, classes, or values from JavaScript to use in your Rust app.
 
 It is not always easy to integrate JS libraries into your app directly. In particular, any library that depends on a 
-particular JS framework like React may be hard to integrated. Libraries that manipulate DOM state in some way (for example, 
+particular JS framework like React may be hard to integrate. Libraries that manipulate DOM state in some way (for example, 
 rich text editors) should also be used with care: both Leptos and the JS library will probably assume that they are 
 the ultimate source of truth for the app’s state, so you should be careful to separate their responsibilities.
 
