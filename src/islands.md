@@ -395,7 +395,7 @@ There are other, larger architectural changes that I’m [not sold on yet](https
 
 ## Additional Information
 
-Check out the [islands PR](https://github.com/leptos-rs/leptos/pull/1660), [roadmap](https://github.com/leptos-rs/leptos/issues/1830), and [Hackernews demo](https://github.com/leptos-rs/leptos/tree/main/examples/hackernews_islands_axum) for additional discussion.
+Check out the [islands PR](https://github.com/leptos-rs/leptos/pull/1660), [roadmap](https://github.com/leptos-rs/leptos/issues/1830), and [Hackernews demo](https://github.com/leptos-rs/leptos/tree/leptos_0.6/examples/hackernews_islands_axum) for additional discussion.
 
 ## Demo Code
 

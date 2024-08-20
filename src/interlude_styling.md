@@ -36,7 +36,7 @@ fn Home() -> impl IntoView {
 }
 ```
 
-It can be a little complicated to set up the Tailwind integration at first, but you can check out our two examples of how to use Tailwind with a [client-side-rendered `trunk` application](https://github.com/leptos-rs/leptos/tree/main/examples/tailwind_csr) or with a [server-rendered `cargo-leptos` application](https://github.com/leptos-rs/leptos/tree/main/examples/tailwind_actix). `cargo-leptos` also has some [built-in Tailwind support](https://github.com/leptos-rs/cargo-leptos#site-parameters) that you can use as an alternative to Tailwind’s CLI.
+It can be a little complicated to set up the Tailwind integration at first, but you can check out our two examples of how to use Tailwind with a [client-side-rendered `trunk` application](https://github.com/leptos-rs/leptos/tree/leptos_0.6/examples/tailwind_csr) or with a [server-rendered `cargo-leptos` application](https://github.com/leptos-rs/leptos/tree/leptos_0.6/examples/tailwind_actix). `cargo-leptos` also has some [built-in Tailwind support](https://github.com/leptos-rs/cargo-leptos#site-parameters) that you can use as an alternative to Tailwind’s CLI.
 
 ## Stylers: Compile-time CSS Extraction
 
@@ -85,13 +85,13 @@ pub fn App() -> impl IntoView {
 }
 ```
 
-## Stylance: Scoped CSS Written in CSS Files 
+## Stylance: Scoped CSS Written in CSS Files
 
 Stylers lets you write CSS inline in your Rust code, extracts it at compile time, and scopes it. [Stylance](https://github.com/basro/stylance-rs) allows you to write your CSS in CSS files alongside your components, import those files into your components, and scope the CSS classes to your components.
 
 This works well with the live-reloading features of `trunk` and `cargo-leptos` because edited CSS files can be updated immediately in the browser.
 
-```rust 
+```rust
 import_style!(style, "app.module.scss");
 
 #[component]
@@ -103,9 +103,10 @@ fn HomePage() -> impl IntoView {
 ```
 
 You can edit the CSS directly without causing a Rust recompile.
-```css 
+
+```css
 .jumbotron {
-    background: blue;
+  background: blue;
 }
 ```
 

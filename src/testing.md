@@ -55,7 +55,7 @@ more idiomatic your code will feel and the easier it will be to test.
 
 ## 2. Test components with end-to-end (`e2e`) testing
 
-Our [`examples`](https://github.com/leptos-rs/leptos/tree/main/examples) directory has several examples with extensive end-to-end testing, using different testing tools.
+Our [`examples`](https://github.com/leptos-rs/leptos/tree/leptos_0.6/examples) directory has several examples with extensive end-to-end testing, using different testing tools.
 
 The easiest way to see how to use these is to take a look at the test examples themselves:
 
@@ -65,7 +65,7 @@ This is a fairly simple manual testing setup that uses the [`wasm-pack test`](ht
 
 #### Sample Test
 
-````rust
+```rust
 #[wasm_bindgen_test]
 fn clear() {
     let document = leptos::document();
@@ -108,9 +108,9 @@ assert_eq!(
     })
 );
 }
-````
+```
 
-### [`wasm-bindgen-test` with `counters_stable`](https://github.com/leptos-rs/leptos/tree/main/examples/counters_stable/tests/web)
+### [`wasm-bindgen-test` with `counters`](https://github.com/leptos-rs/leptos/tree/leptos_0.6/examples/counters/tests/web.rs)
 
 This more developed test suite uses a system of fixtures to refactor the manual DOM manipulation of the `counter` tests and easily test a wide range of cases.
 
@@ -137,7 +137,7 @@ fn should_increase_the_total_count() {
 }
 ```
 
-### [Playwright with `counters_stable`](https://github.com/leptos-rs/leptos/tree/main/examples/counters_stable/e2e)
+### [Playwright with `counters`](https://github.com/leptos-rs/leptos/tree/main/examples/counters/e2e)
 
 These tests use the common JavaScript testing tool Playwright to run end-to-end tests on the same example, using a library and testing approach familiar to many who have done frontend development before.
 
@@ -162,7 +162,7 @@ test.describe("Increment Count", () => {
 });
 ```
 
-### [Gherkin/Cucumber Tests with `todo_app_sqlite`](https://github.com/leptos-rs/leptos/blob/main/examples/todo_app_sqlite/e2e/README.md)
+### [Gherkin/Cucumber Tests with `todo_app_sqlite`](https://github.com/leptos-rs/leptos/blob/leptos_0.6/examples/todo_app_sqlite/e2e/README.md)
 
 You can integrate any testing tool you’d like into this flow. This example uses Cucumber, a testing framework based on natural language.
 

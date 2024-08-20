@@ -3,19 +3,20 @@
 It's possible to deploy Leptos fullstack, SSR apps to any number of server or container hosting services. The most simple way to get a Leptos SSR app into production might be to use a VPS service and either run Leptos natively in a VM ([see here for more details](https://github.com/leptos-rs/start-axum?tab=readme-ov-file#executing-a-server-on-a-remote-machine-without-the-toolchain)). Alternatively, you could containerize your Leptos app and run it in [Podman](https://podman.io/) or [Docker](https://www.docker.com/) on any colocated or cloud server.
 
 There are a multitude of different deployment setups and hosting services, and in general, Leptos itself is agnostic to the deployment setup you use. With this diversity of deployment targets in mind, on this page we will go over:
+
 - [creating a `Containerfile` (or `Dockerfile`) for use with Leptos SSR apps](#creating-a-containerfile)
 - Using a `Dockerfile` to [deploy to a cloud service](#cloud-deployments) - [for example, Fly.io](#deploy-to-flyio)
 - Deploying Leptos to [serverless runtimes](#deploy-to-serverless-runtimes) - for example, [AWS Lambda](#aws-lambda) and [JS-hosted WASM runtimes like Deno & Cloudflare](#deno--cloudflare-workers)
 - [Platforms that have not yet gained Leptos SSR support](#currently-unsupported-platforms)
 
-*Note: Leptos does not endorse the use of any particular method of deployment or hosting service.*
+_Note: Leptos does not endorse the use of any particular method of deployment or hosting service._
 
 ## Creating a Containerfile
 
 The most popular way for people to deploy full-stack apps built with `cargo-leptos` is to use a cloud hosting service that supports deployment via a Podman or Docker build. Here’s a sample `Containerfile` / `Dockerfile`, which is based on the one we use to deploy the Leptos website.
 
-
 ### Debian
+
 ```dockerfile
 # Get started with a build env with Rust nightly
 FROM rustlang/rust:nightly-bullseye as builder
@@ -71,7 +72,9 @@ EXPOSE 8080
 # Run the server
 CMD ["/app/leptos_start"]
 ```
+
 ### Alpine
+
 ```dockerfile
 # Get started with a build env with Rust nightly
 FROM rustlang/rust:nightly-alpine as builder
@@ -104,8 +107,8 @@ ENV LEPTOS_SITE_ROOT=./site
 
 CMD ["/app/leptos_start"]
 ```
-> Read more: [`gnu` and `musl` build files for Leptos apps](https://github.com/leptos-rs/leptos/issues/1152#issuecomment-1634916088).
 
+> Read more: [`gnu` and `musl` build files for Leptos apps](https://github.com/leptos-rs/leptos/issues/1152#issuecomment-1634916088).
 
 ## Cloud Deployments
 
@@ -158,7 +161,6 @@ fly launch --no-deploy
 to create a new Fly app and register it with the service. Git commit your new `fly.toml` file.
 
 To set up the Github Actions deployment workflow, copy the following into a `.github/workflows/fly_deploy.yml` file:
-
 
 ```admonish example collapsible=true
 
@@ -216,16 +218,13 @@ However, please keep in mind that some native server functionality does not work
 
 The other factor to bear in mind is the 'cold-start' time for functions as a service - depending on your use case and the FaaS platform you use, this may or may not meet your latency requirements; you may need to keep one function running at all times to optimize the speed of your requests.
 
-
-
 ### Deno & Cloudflare Workers
 
-Currently, Leptos-Axum supports running in Javascript-hosted WebAssembly runtimes such as Deno, Cloudflare Workers, etc. This option requires some changes to the setup of your source code (for example, in `Cargo.toml` you must define your app using `crate-type = ["cdylib"]` and the "wasm" feature must be enabled for `leptos_axum`). [The Leptos HackerNews JS-fetch example](https://github.com/leptos-rs/leptos/tree/main/examples/hackernews_js_fetch) demonstrates the required modifications and shows how to run an app in the Deno runtime. Additionally, the [`leptos_axum` crate docs](https://docs.rs/leptos_axum/latest/leptos_axum/#js-fetch-integration) are a helpful reference when setting up your own `Cargo.toml` file for JS-hosted WASM runtimes.
+Currently, Leptos-Axum supports running in Javascript-hosted WebAssembly runtimes such as Deno, Cloudflare Workers, etc. This option requires some changes to the setup of your source code (for example, in `Cargo.toml` you must define your app using `crate-type = ["cdylib"]` and the "wasm" feature must be enabled for `leptos_axum`). [The Leptos HackerNews JS-fetch example](https://github.com/leptos-rs/leptos/tree/leptos_0.6/examples/hackernews_js_fetch) demonstrates the required modifications and shows how to run an app in the Deno runtime. Additionally, the [`leptos_axum` crate docs](https://docs.rs/leptos_axum/latest/leptos_axum/#js-fetch-integration) are a helpful reference when setting up your own `Cargo.toml` file for JS-hosted WASM runtimes.
 
 While the initial setup for JS-hosted WASM runtimes is not onerous, the more important restriction to keep in mind is that since your app will be compiled to WebAssembly (`wasm32-unknown-unknown`) on the server as well as the client, you must ensure that the crates you use in your app are all WASM-compatible; this may or may not be a deal-breaker depending on your app's requirements, as not all crates in the Rust ecosystem have WASM support.
 
-If you're willing to live with the limitations of WASM server-side, the best place to get started right now is by checking out the [example of running Leptos with Deno](https://github.com/leptos-rs/leptos/tree/main/examples/hackernews_js_fetch) in the official Leptos Github repo.
-
+If you're willing to live with the limitations of WASM server-side, the best place to get started right now is by checking out the [example of running Leptos with Deno](https://github.com/leptos-rs/leptos/tree/leptos_0.6/examples/hackernews_js_fetch) in the official Leptos Github repo.
 
 ## Platforms Working on Leptos Support
 
@@ -233,10 +232,7 @@ If you're willing to live with the limitations of WASM server-side, the best pla
 
 WebAssembly on the server has been gaining steam lately, and the developers of the open source serverless WebAssembly framework Spin are working on natively supporting Leptos. While the Leptos-Spin SSR integration is still in its early stages, there is a working example you may wish to try out.
 
-The full set of instructions to get Leptos SSR & Spin working together are available as [a post on the Fermyon blog](
-https://www.fermyon.com/blog/leptos-spin-get-started), or if you want to skip the article and just start playing around with a working starter repo, [see here](https://github.com/diversable/leptos-spin-ssr-test).
-
-
+The full set of instructions to get Leptos SSR & Spin working together are available as [a post on the Fermyon blog](https://www.fermyon.com/blog/leptos-spin-get-started), or if you want to skip the article and just start playing around with a working starter repo, [see here](https://github.com/diversable/leptos-spin-ssr-test).
 
 ### Deploy to Shuttle.rs
 

@@ -10,13 +10,13 @@ trunk build --release
 
 We've created several example repositories which show how to set up and deploy a Leptos CSR app to various hosting services.
 
-*Note: Leptos does not endorse the use of any particular hosting service - feel free to use any service that supports static site deploys.*
+_Note: Leptos does not endorse the use of any particular hosting service - feel free to use any service that supports static site deploys._
 
 Examples:
+
 - [Github Pages](#github-pages)
 - [Vercel](#vercel)
 - [Spin (serverless WebAssembly)](#spin---serverless-webassembly)
-
 
 ## Github Pages
 
@@ -120,14 +120,13 @@ For more on deploying to Github Pages [see the example repo here](https://github
 ### Step 1: Set Up Vercel
 
 In the Vercel Web UI...
+
 1. Create a new project
 2. Ensure
-	- The "Build Command" is left empty with Override on
-	- The "Output Directory" is changed to dist (which is the default output directory for Trunk builds) and the Override is on
-
+   - The "Build Command" is left empty with Override on
+   - The "Output Directory" is changed to dist (which is the default output directory for Trunk builds) and the Override is on
 
 <img src="./image.png" />
-
 
 ### Step 2: Add Vercel Credentials for GitHub Actions
 
@@ -142,16 +141,15 @@ Note: Both the preview and deploy actions will need your Vercel credentials setu
 4. Inside the generated `.vercel` folder, open the the `project.json` file and save the "projectId" and "orgId" for the next step.
 
 5. Inside GitHub, go the repo's "Settings" > "Secrets and Variables" > "Actions" and add the following as [Repository secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets):
-	- save your Vercel Access Token (from sub-step 1) as the `VERCEL_TOKEN` secret
-	- from the `.vercel/project.json` add "projectID" as `VERCEL_PROJECT_ID`
-	- from the `.vercel/project.json` add "orgId" as `VERCEL_ORG_ID`
+   - save your Vercel Access Token (from sub-step 1) as the `VERCEL_TOKEN` secret
+   - from the `.vercel/project.json` add "projectID" as `VERCEL_PROJECT_ID`
+   - from the `.vercel/project.json` add "orgId" as `VERCEL_ORG_ID`
 
 <i>For full instructions see ["How can I use Github Actions with Vercel"](https://vercel.com/guides/how-can-i-use-github-actions-with-vercel)</i>
 
 ### Step 3: Add Github Action Scripts
 
-Finally, you're ready to simply copy and paste the two files - one for deployment, one for PR previews - from below or from [the example repo's `.github/workflows/` folder](https://github.com/diversable/vercel-leptos-CSR-deployment/tree/main/.github/workflows) into your own github workflows folder - then, on your next commit or PR deploys will occur automatically.
-
+Finally, you're ready to simply copy and paste the two files - one for deployment, one for PR previews - from below or from [the example repo's `.github/workflows/` folder](https://github.com/diversable/vercel-leptos-CSR-deployment/tree/leptos_0.6/.github/workflows) into your own github workflows folder - then, on your next commit or PR deploys will occur automatically.
 
 <i>Production deployment script: `vercel_deploy.yml`</i>
 
@@ -310,10 +308,7 @@ Finally, you're ready to simply copy and paste the two files - one for deploymen
 
 ```
 
-
 See [the example repo here](https://github.com/diversable/vercel-leptos-CSR-deployment) for more.
-
-
 
 ## Spin - Serverless WebAssembly
 
@@ -333,8 +328,8 @@ Start by installing the [Spin CLI using the instructions, here](https://develope
 
 6. With the 'preview' and 'deploy' scripts active, Github Actions will now generate previews on pull requests & deploy automatically on updates to your 'main' branch.
 
-
 <i>Production deployment script: `spin_deploy.yml`</i>
+
 ```admonish example collapsible=true
 
 	# For setup instructions needed for Fermyon Cloud, see:
