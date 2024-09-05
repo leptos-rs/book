@@ -24,92 +24,92 @@ Deploying a Leptos CSR app to Github pages is a simple affair. First, go to your
 
 ```admonish example collapsible=true
 
-	name: Release to Github Pages
+    name: Release to Github Pages
 
-	on:
-	push:
-		branches: [main]
-	workflow_dispatch:
+    on:
+      push:
+        branches: [main]
+      workflow_dispatch:
 
-	permissions:
-	contents: write # for committing to gh-pages branch.
-	pages: write
-	id-token: write
+    permissions:
+      contents: write # for committing to gh-pages branch.
+      pages: write
+      id-token: write
 
-	# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-	# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
-	concurrency:
-	group: "pages"
-	cancel-in-progress: false
+    # Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+    # However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+    concurrency:
+      group: "pages"
+      cancel-in-progress: false
 
-	jobs:
-	Github-Pages-Release:
+    jobs:
+      Github-Pages-Release:
 
-		timeout-minutes: 10
+        timeout-minutes: 10
 
-		environment:
-		name: github-pages
-		url: ${{ steps.deployment.outputs.page_url }}
+        environment:
+          name: github-pages
+          url: ${{ steps.deployment.outputs.page_url }}
 
-		runs-on: ubuntu-latest
+        runs-on: ubuntu-latest
 
-		steps:
-		- uses: actions/checkout@v4 # repo checkout
+        steps:
+          - uses: actions/checkout@v4 # repo checkout
 
-		# Install Rust Nightly Toolchain, with Clippy & Rustfmt
-		- name: Install nightly Rust
-			uses: dtolnay/rust-toolchain@nightly
-			with:
-			components: clippy, rustfmt
+          # Install Rust Nightly Toolchain, with Clippy & Rustfmt
+          - name: Install nightly Rust
+            uses: dtolnay/rust-toolchain@nightly
+            with:
+              components: clippy, rustfmt
 
-		- name: Add WASM target
-			run: rustup target add wasm32-unknown-unknown
+          - name: Add WASM target
+            run: rustup target add wasm32-unknown-unknown
 
-		- name: lint
-			run: cargo clippy & cargo fmt
-
-
-		# If using tailwind...
-		# - name: Download and install tailwindcss binary
-		#   run: npm install -D tailwindcss && npx tailwindcss -i <INPUT/PATH.css> -o <OUTPUT/PATH.css>  # run tailwind
+          - name: lint
+            run: cargo clippy & cargo fmt
 
 
-		- name: Download and install Trunk binary
-			run: wget -qO- https://github.com/trunk-rs/trunk/releases/download/v0.18.2/trunk-x86_64-unknown-linux-gnu.tar.gz | tar -xzf-
-
-		- name: Build with Trunk
-			# "${GITHUB_REPOSITORY#*/}" evaluates into the name of the repository
-			# using --public-url something will allow trunk to modify all the href paths like from favicon.ico to repo_name/favicon.ico .
-			# this is necessary for github pages where the site is deployed to username.github.io/repo_name and all files must be requested
-			# relatively as favicon.ico. if we skip public-url option, the href paths will instead request username.github.io/favicon.ico which
-			# will obviously return error 404 not found.
-			run: ./trunk build --release --public-url "${GITHUB_REPOSITORY#*/}"
+          # If using tailwind...
+          # - name: Download and install tailwindcss binary
+          #   run: npm install -D tailwindcss && npx tailwindcss -i <INPUT/PATH.css> -o <OUTPUT/PATH.css>  # run tailwind
 
 
-		# Deploy to gh-pages branch
-		# - name: Deploy 🚀
-		#   uses: JamesIves/github-pages-deploy-action@v4
-		#   with:
-		#     folder: dist
+          - name: Download and install Trunk binary
+            run: wget -qO- https://github.com/trunk-rs/trunk/releases/download/v0.18.4/trunk-x86_64-unknown-linux-gnu.tar.gz | tar -xzf-
+
+          - name: Build with Trunk
+            # "${GITHUB_REPOSITORY#*/}" evaluates into the name of the repository
+            # using --public-url something will allow trunk to modify all the href paths like from favicon.ico to repo_name/favicon.ico .
+            # this is necessary for github pages where the site is deployed to username.github.io/repo_name and all files must be requested
+            # relatively as favicon.ico. if we skip public-url option, the href paths will instead request username.github.io/favicon.ico which
+            # will obviously return error 404 not found.
+            run: ./trunk build --release --public-url "${GITHUB_REPOSITORY#*/}"
 
 
-		# Deploy with Github Static Pages
+          # Deploy to gh-pages branch
+          # - name: Deploy 🚀
+          #   uses: JamesIves/github-pages-deploy-action@v4
+          #   with:
+          #     folder: dist
 
-		- name: Setup Pages
-			uses: actions/configure-pages@v4
-			with:
-			enablement: true
-			# token:
 
-		- name: Upload artifact
-			uses: actions/upload-pages-artifact@v2
-			with:
-			# Upload dist dir
-			path: './dist'
+          # Deploy with Github Static Pages
 
-		- name: Deploy to GitHub Pages 🚀
-			id: deployment
-			uses: actions/deploy-pages@v3
+          - name: Setup Pages
+            uses: actions/configure-pages@v4
+            with:
+              enablement: true
+              # token:
+
+          - name: Upload artifact
+            uses: actions/upload-pages-artifact@v2
+            with:
+              # Upload dist dir
+              path: './dist'
+
+          - name: Deploy to GitHub Pages 🚀
+            id: deployment
+            uses: actions/deploy-pages@v3
 
 ```
 
