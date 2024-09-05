@@ -24,7 +24,7 @@ Deploying a Leptos CSR app to Github pages is a simple affair. First, go to your
 
 ```admonish example collapsible=true
 
-    name: Release to Github Pagessrc/deployment/csr.md
+    name: Release to Github Pages
 
     on:
       push:
