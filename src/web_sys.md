@@ -98,7 +98,7 @@ available for any HTML element. Each particular HTML element then has its own el
 The goal of `leptos::HtmlElement<T>` is to bridge the gap between elements in your view and these more specific JavaScript types, so that you
 can access the particular functionality of those elements.
 
-This is implement by using the Rust `Deref` trait to allow you to dereference a `leptos::HtmlElement<T>` to the appropriately-typed JS object
+This is implemented by using the Rust `Deref` trait to allow you to dereference a `leptos::HtmlElement<T>` to the appropriately-typed JS object
 for that particular element type `T`.
 
 ### Definition
