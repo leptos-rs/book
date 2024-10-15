@@ -137,3 +137,74 @@ If you just want to use the default options from the command line, just run `lep
 If you wish to set up your editor to work with `leptosfmt`, or if you wish to customize your `leptosfmt` experience, please see the instructions available on the [`leptosfmt` github repo's README.md page](https://github.com/bram209/leptosfmt).
 
 Just note that it's recommended to set up your editor with `leptosfmt` on a per-workspace basis for best results.
+
+## 4) Add `leptos-fmt` vscode plugin (optional)
+
+If you want to automatically format your Leptos related files on save, you can use the following VSCode extension:
+
+**Demo**
+
+[![Demo](https://raw.githubusercontent.com/codeitlikemiley/leptos-fmt/yt/images/demo.gif)](https://youtu.be/dS92U-yv7co)
+
+[leptos-fmt repository](http://github.com/codeitlikemiley/leptos-fmt)
+[vscode marketplace: leptos-fmt](https://marketplace.visualstudio.com/items?itemName=masterustacean.leptos-fmt)
+
+## 5) Add [`cargo-runner`](https://github.com/codeitlikemiley/cargo-runner) vscode plugin (optional)
+
+`Cargo Runner` is another great tool to use with any of your Rust projects.
+
+It allows you to perform cargo commands depending on your current cursor context.
+
+It can either run , build, test/doc-test, benchmark , and debug your Rust code from within VSCode.
+
+with just 2 Key Press <kbd>CMD or Ctrl</kbd> + <kbd>R</kbd>
+
+If the default command is not `cargo run`  or `cargo build` in cases with `cargo leptos watch`
+
+There is an advance feature that utilize a `Makefile`
+
+```makefile
+.PHONY: run
+   run: cargo leptos watch
+
+.PHONY: build
+   build: cargo leptos build
+
+.PHONY: test
+   test: cargo leptos test
+```
+
+If you provide a `Makefile` beside your `Cargo.toml` file, it would be used to override the default command.
+
+e.g. It would **swap** the default command from **cargo run** to **cargo leptos watch**
+
+You can also append or prepend command parameters to the default command
+
+**Override Command Parameters**
+
+1. Press <kbd>CMD or Ctrl</kbd> + <kbd>R</kbd> to open the command palette
+
+2. Choose context from any of the following options:
+
+- run
+- build
+- test
+- bench
+- env
+
+3. Select the context you want to override
+
+> e.g. choose:  env
+
+Type on the user input the args you wanna pass as override argument
+e.g.
+
+```sh
+DATABASE_URL="libsql://goldcoders-codeitlikemiley.turso.io"
+```
+Note: .cargo_runner.toml would be created per create , you can have multiple .cargo_runner.toml on workspace, you better add this to your .gitignore file
+
+
+The next time you Run command with <kbd>CMD or Ctrl</kbd> + <kbd>R</kbd> it would **append** or **prepend** those to the default command.
+
+[For PR and Issues](https://github.com/codeitlikemiley/cargo-runner)
