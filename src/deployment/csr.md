@@ -14,104 +14,227 @@ _Note: Leptos does not endorse the use of any particular hosting service - feel 
 
 Examples:
 
+- [GitLab Pages](#gitlab-pages)
 - [Github Pages](#github-pages)
 - [Vercel](#vercel)
 - [Spin (serverless WebAssembly)](#spin---serverless-webassembly)
+
+## General Advice
+
+Depending on the complexity of your application, you may find that the size of
+the WebAssembly binary can get large. This impacts users of your application by
+slowing down loading time. There are two easy things you can do to mitigate
+this: using `wasm-opt` to reduce the size, and compeessing it. There is more
+general information in the [Optimizing WASM Binary Size](./binary_size.md) that
+you should follow, but these two tips are useful for CSR applications built
+with Trunk.
+
+### Optimizing WebAssembly
+
+If you use Trunk to build your client-side rendered application, then you will have
+an `index.html` file which tells Trunk what assets to build, and where to put them.
+
+Part of this is metadata telling Trunk how to include your Rust application. This
+is specified as a `<link>` element, typically in the `<head>` of your `index.html`.
+If you add the `data-wasm-opt` attribute to this element, then Trunk will call
+`wasm-opt` on your binary, which can significantly reduce code size.
+
+```html
+<link data-trunk rel="rust" data-wasm-opt="z">
+```
+
+Similar to how your `Cargo.toml` supports different optimization levels, so
+does `wasm-opt`. Typically, using the `s` or `z` levels will get you small code
+sizes.  Depending on your application, you may see a 10% reduction in code size
+by enabling this.
+
+### Compression
+
+The WebAssembly output is highly compressible. Depending on the compression
+algorithm used, you can get significant savings. Typical compression ratios are
+50% with gzip and 70% using brotli.
+
+If your hosting solution handles compression for you, then you don't need to do
+anything.  Some hosting solutions allow serving precompressed content, but
+require you to do the compression. The way it works is when a user requests
+`file.wasm`, the browser indicates that it supports compression, and you have a
+`file.wasm.gz` file, then it will serve it instead.
+
+One way to create these precompressed files is by running this command:
+
+```bash
+find dist -not -name '*.gz' -not -name '*.br' -type f -exec gzip -vk {} \;
+find dist -not -name '*.gz' -not -name '*.br' -type f -exec brotli -vk {} \;
+```
+
+This will pre-compress all of your assets with gzip and brotli, which have
+almost universal browser support.
+
+## GitLab Pages
+
+Deploying a Leptos application with GitLab Pages is very straightforward.
+GitLab CI uses a `.gitlab-ci.yml` file, which specifies some actions to be
+taken (which generally involve running some commands in a docker container with
+an image that you specify).
+
+CI jobs can specify outputs (called *artifacts*). If you have a magic CI job
+named *pages*, then the output of this job is what gets hosted. You can also
+add custom domains, so that you can deploy static sites.
+
+A simple example is the following configuration. If you create a file in your
+repository called `.gitlab-ci.yml` and paste the following configuration into
+it, then it will build your project with `trunk`, compress all assets, and
+publish them to GitLab Pages. One important thing to keep in mind is that you
+likely want a `_redirects` file to cause all requests to go to `index.html`,
+otherwise your routing won't work correctly. This example includes one.
+
+You may want to adjust the Rust and Trunk versions to the most recent ones and
+the name of the default branch.
+
+~~~admonish example collapsible=true
+```yaml
+stages:
+  - build
+  - publish
+
+# adjust these
+variables:
+  RUST_VERSION: "1.81"
+  TRUNK_VERSION: "0.21.1"
+
+# Build stage: builds everything using trunk.
+build:
+  stage: build
+  image: rust:$RUST_VERSION
+  before_script:
+    - rustup target add wasm32-unknown-unknown
+    - wget -qO- https://github.com/thedodd/trunk/releases/download/v${TRUNK_VERSION}/trunk-x86_64-unknown-linux-gnu.tar.gz | tar -xzf- -C /usr/local/bin
+  script:
+    - trunk build --release
+  artifacts:
+    paths:
+      - dist
+
+# Pages job: compress files and publish statically. this takes the output from
+# the "build" job and produces a folder containing everything that needs to be
+# statically hosted.
+#
+# we also have to do is add a redirects file: because this is a single-page
+# app, we want every path to resolve to the index.html (otherwise you get a 404
+# if you request diff.rs/serde, because there is no actual file or folder named
+# "serde").
+pages:
+  stage: publish
+  image: alpine
+  before_script:
+    - apk add brotli gzip
+  script:
+    - mv dist public
+    - find public -not -name '*.gz' -not -name '*.br' -type f -exec gzip -vk {} \;
+    - find public -not -name '*.gz' -not -name '*.br' -type f -exec brotli -vk {} \;
+    - echo '/* / 200' >> public/_redirects
+  artifacts:
+    paths:
+      - public
+  only:
+    - master
+```
+~~~
 
 ## Github Pages
 
 Deploying a Leptos CSR app to Github pages is a simple affair. First, go to your Github repo's settings and click on "Pages" in the left side menu. In the "Build and deployment" section of the page, change the "source" to "Github Actions". Then copy the following into a file such as `.github/workflows/gh-pages-deploy.yml`
 
-```admonish example collapsible=true
+~~~admonish example collapsible=true
+```yaml
+name: Release to Github Pages
 
-    name: Release to Github Pages
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
 
-    on:
-      push:
-        branches: [main]
-      workflow_dispatch:
+permissions:
+  contents: write # for committing to gh-pages branch.
+  pages: write
+  id-token: write
 
-    permissions:
-      contents: write # for committing to gh-pages branch.
-      pages: write
-      id-token: write
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
-    # Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-    # However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
-    concurrency:
-      group: "pages"
-      cancel-in-progress: false
+jobs:
+  Github-Pages-Release:
 
-    jobs:
-      Github-Pages-Release:
+    timeout-minutes: 10
 
-        timeout-minutes: 10
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
 
-        environment:
-          name: github-pages
-          url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
 
-        runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4 # repo checkout
 
-        steps:
-          - uses: actions/checkout@v4 # repo checkout
+      # Install Rust Nightly Toolchain, with Clippy & Rustfmt
+      - name: Install nightly Rust
+        uses: dtolnay/rust-toolchain@nightly
+        with:
+          components: clippy, rustfmt
 
-          # Install Rust Nightly Toolchain, with Clippy & Rustfmt
-          - name: Install nightly Rust
-            uses: dtolnay/rust-toolchain@nightly
-            with:
-              components: clippy, rustfmt
+      - name: Add WASM target
+        run: rustup target add wasm32-unknown-unknown
 
-          - name: Add WASM target
-            run: rustup target add wasm32-unknown-unknown
-
-          - name: lint
-            run: cargo clippy & cargo fmt
-
-
-          # If using tailwind...
-          # - name: Download and install tailwindcss binary
-          #   run: npm install -D tailwindcss && npx tailwindcss -i <INPUT/PATH.css> -o <OUTPUT/PATH.css>  # run tailwind
+      - name: lint
+        run: cargo clippy & cargo fmt
 
 
-          - name: Download and install Trunk binary
-            run: wget -qO- https://github.com/trunk-rs/trunk/releases/download/v0.18.4/trunk-x86_64-unknown-linux-gnu.tar.gz | tar -xzf-
-
-          - name: Build with Trunk
-            # "${GITHUB_REPOSITORY#*/}" evaluates into the name of the repository
-            # using --public-url something will allow trunk to modify all the href paths like from favicon.ico to repo_name/favicon.ico .
-            # this is necessary for github pages where the site is deployed to username.github.io/repo_name and all files must be requested
-            # relatively as favicon.ico. if we skip public-url option, the href paths will instead request username.github.io/favicon.ico which
-            # will obviously return error 404 not found.
-            run: ./trunk build --release --public-url "${GITHUB_REPOSITORY#*/}"
+      # If using tailwind...
+      # - name: Download and install tailwindcss binary
+      #   run: npm install -D tailwindcss && npx tailwindcss -i <INPUT/PATH.css> -o <OUTPUT/PATH.css>  # run tailwind
 
 
-          # Deploy to gh-pages branch
-          # - name: Deploy 🚀
-          #   uses: JamesIves/github-pages-deploy-action@v4
-          #   with:
-          #     folder: dist
+      - name: Download and install Trunk binary
+        run: wget -qO- https://github.com/trunk-rs/trunk/releases/download/v0.18.4/trunk-x86_64-unknown-linux-gnu.tar.gz | tar -xzf-
+
+      - name: Build with Trunk
+        # "${GITHUB_REPOSITORY#*/}" evaluates into the name of the repository
+        # using --public-url something will allow trunk to modify all the href paths like from favicon.ico to repo_name/favicon.ico .
+        # this is necessary for github pages where the site is deployed to username.github.io/repo_name and all files must be requested
+        # relatively as favicon.ico. if we skip public-url option, the href paths will instead request username.github.io/favicon.ico which
+        # will obviously return error 404 not found.
+        run: ./trunk build --release --public-url "${GITHUB_REPOSITORY#*/}"
 
 
-          # Deploy with Github Static Pages
+      # Deploy to gh-pages branch
+      # - name: Deploy 🚀
+      #   uses: JamesIves/github-pages-deploy-action@v4
+      #   with:
+      #     folder: dist
 
-          - name: Setup Pages
-            uses: actions/configure-pages@v4
-            with:
-              enablement: true
-              # token:
 
-          - name: Upload artifact
-            uses: actions/upload-pages-artifact@v2
-            with:
-              # Upload dist dir
-              path: './dist'
+      # Deploy with Github Static Pages
 
-          - name: Deploy to GitHub Pages 🚀
-            id: deployment
-            uses: actions/deploy-pages@v3
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+        with:
+          enablement: true
+          # token:
 
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v2
+        with:
+          # Upload dist dir
+          path: './dist'
+
+      - name: Deploy to GitHub Pages 🚀
+        id: deployment
+        uses: actions/deploy-pages@v3
 ```
+~~~
 
 For more on deploying to Github Pages [see the example repo here](https://github.com/diversable/deploy_leptos_csr_to_gh_pages)
 
