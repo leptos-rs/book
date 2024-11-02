@@ -40,7 +40,7 @@ cargo install trunk
 And then create a basic Rust project
 
 ```bash
-cargo init leptos-tutorial
+cargo new leptos-tutorial
 ```
 
 `cd` into your new `leptos-tutorial` project and add `leptos` as a dependency
