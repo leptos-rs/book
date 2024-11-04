@@ -269,14 +269,14 @@ view! {
     <main>
         {move || match is_odd() {
             true if value() == 1 => {
-                // returns HtmlElement<Pre>
+                // returns HtmlElement<AnyElement>
                 view! { <pre>"One"</pre> }.into_any()
             },
             false if value() == 2 => {
-                // returns HtmlElement<P>
+                // returns HtmlElement<AnyElement>
                 view! { <p>"Two"</p> }.into_any()
             }
-            // returns HtmlElement<Textarea>
+            // returns HtmlElement<AnyElement>
             _ => view! { <textarea>{value()}</textarea> }.into_any()
         }}
     </main>
