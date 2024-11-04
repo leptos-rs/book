@@ -66,7 +66,7 @@ There are a few things to note about the way you define a server function, too.
 
 - Server functions are created by using the [`#[server]` macro](https://docs.rs/leptos_server/latest/leptos_server/index.html#server) to annotate a top-level function, which can be defined anywhere.
 - We provide the macro a type name. The type name is used internally as a container to hold, serialize, and deserialize the arguments.
-- We provide the macro a path. This is a prefix for the path at which we’ll mount a server function handler on our server. (See examples for [Actix](https://github.com/leptos-rs/leptos/blob/main/examples/todo_app_sqlite/src/main.rs#L44) and [Axum](https://github.com/leptos-rs/leptos/blob/main/examples/todo_app_sqlite_axum/src/main.rs#L51).)
+- We provide the macro a path. This is a prefix for the path at which we’ll mount a server function handler on our server.
 - You’ll need to have `serde` as a dependency with the `derive` featured enabled for the macro to work properly. You can easily add it to `Cargo.toml` with `cargo add serde --features=derive`.
 
 ## Server Function URL Prefixes
