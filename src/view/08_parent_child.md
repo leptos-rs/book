@@ -382,7 +382,7 @@ pub fn App() -> impl IntoView {
             // Button B: pass a closure
             <ButtonB on_click=move |_| set_right.update(|value| *value = !*value)/>
 
-            // Button B: use a regular event listener
+            // Button C: use a regular event listener
             // setting an event listener on a component like this applies it
             // to each of the top-level elements the component returns
             <ButtonC on:click=move |_| set_italics.update(|value| *value = !*value)/>
