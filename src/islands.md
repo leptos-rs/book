@@ -354,15 +354,22 @@ And let’s modify the `Tab` island to use that context to show or hide itself:
 
 ```rust
 #[island]
-fn Tab(children: Children) -> impl IntoView {
+fn Tab(index: usize, children: Children) -> impl IntoView {
     let selected = expect_context::<ReadSignal<usize>>();
     view! {
-        <div style:display=move || if selected() == index {
-            "block"
-        } else {
-            "none"
-        }>
-// ...
+        <div
+            style:background-color="lightgreen"
+            style:padding="10px"
+            style:display=move || if selected() == index {
+                "block"
+            } else {
+                "none"
+            }
+        >
+            {children()}
+        </div>
+    }
+}
 ```
 
 Now the tabs behave exactly as I’d expect. `Tabs` passes the signal via context to each `Tab`, which uses it to determine whether it should be open or not.
