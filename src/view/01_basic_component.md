@@ -12,33 +12,47 @@ DOM, with self-contained, defined behavior. Unlike HTML elements, they are in
 `<App/>` component.
 
 ```rust
+use leptos::mount::mount_to_body;
+
 fn main() {
-    leptos::mount_to_body(|| view! { <App/> })
+    mount_to_body(App);
 }
 ```
 
-Now let’s define our `<App/>` component itself. Because it’s relatively simple,
+Now let’s define our `App` component itself. Because it’s relatively simple,
 I’ll give you the whole thing up front, then walk through it line by line.
 
 ```rust
+use leptos::prelude::*;
+
 #[component]
 fn App() -> impl IntoView {
-    let (count, set_count) = create_signal(0);
+    let (count, set_count) = signal(0);
 
     view! {
         <button
-            on:click=move |_| {
-                // on stable, this is set_count.set(3);
-                set_count(3);
-            }
+            on:click=move |_| set_count.set(3)
         >
             "Click me: "
-            // on stable, this is move || count.get();
-            {move || count()}
+            {count}
         </button>
+        <p>
+            "Double count: "
+            {move || count.get() * 2}
+        </p>
     }
 }
 ```
+
+## Importing the Prelude
+
+```rust 
+use leptos::prelude::*;
+```
+
+Leptos provides a prelude which includes commonly-used traits and functions. 
+If you'd prefer to use individual imports, feel free to do that; the compiler 
+will provide helpful recommendations for each import.
 
 ## The Component Signature
 
@@ -60,7 +74,8 @@ Every component is a function with the following characteristics
 2. It returns `impl IntoView`, which is an opaque type that includes
    anything you could return from a Leptos `view`.
 
-> Component function arguments are gathered together into a single props struct which is built by the `view` macro as needed.
+> Component function arguments are gathered together into a single props struct 
+> which is built by the `view` macro as needed.
 
 ## The Component Body
 
@@ -77,7 +92,7 @@ let (count, set_count) = create_signal(0);
 creates a signal, the basic unit of reactive change and state management in Leptos.
 This returns a `(getter, setter)` tuple. To access the current value, you’ll
 use `count.get()` (or, on `nightly` Rust, the shorthand `count()`). To set the
-current value, you’ll call `set_count.set(...)` (or `set_count(...)`).
+current value, you’ll call `set_count.set(...)` (or, on nightly, `set_count(...)`).
 
 > `.get()` clones the value and `.set()` overwrites it. In many cases, it’s more efficient to use `.with()` or `.update()`; check out the docs for [`ReadSignal`](https://docs.rs/leptos/latest/leptos/struct.ReadSignal.html) and [`WriteSignal`](https://docs.rs/leptos/latest/leptos/struct.WriteSignal.html) if you’d like to learn more about those trade-offs at this point.
 
@@ -89,68 +104,68 @@ Leptos defines user interfaces using a JSX-like format via the [`view`](https://
 view! {
     <button
         // define an event listener with on:
-        on:click=move |_| {
-            set_count(3);
-        }
+        on:click=move |_| set_count.set(3)
     >
         // text nodes are wrapped in quotation marks
         "Click me: "
-        // blocks can include Rust code
-        {move || count()}
+
+        // blocks include Rust code
+        // in this case, it renders the value of the signal
+        {count}
     </button>
+    <p>
+        "Double count: " 
+        {move || count.get() * 2}
+    </p>
 }
 ```
 
 This should mostly be easy to understand: it looks like HTML, with a special
-`on:click` to define a `click` event listener, a text node that’s formatted like
-a Rust string, and then...
+`on:click` to define a `click` event listener, a few text nodes that look like
+Rust strings, and then two values in braces: one, `{count}`, seems pretty easy 
+to understand (it's just the value of our signal), and then...
 
 ```rust
-{move || count()}
+{move || count.get() * 2}
 ```
 
 whatever that is.
 
 People sometimes joke that they use more closures in their first Leptos application
-than they’ve ever used in their lives. And fair enough. Basically, passing a function
-into the view tells the framework: “Hey, this is something that might change.”
+than they’ve ever used in their lives. And fair enough. 
+
+Passing a function into the view tells the framework: “Hey, this is something 
+that might change.”
 
 When we click the button and call `set_count`, the `count` signal is updated. This
-`move || count()` closure, whose value depends on the value of `count`, reruns,
-and the framework makes a targeted update to that one specific text node, touching
+`move || count.get() * 2` closure, whose value depends on the value of `count`, reruns,
+and the framework makes a targeted update to that specific text node, touching
 nothing else in your application. This is what allows for extremely efficient updates
 to the DOM.
 
-Now, if you have Clippy on—or if you have a particularly sharp eye—you might notice
-that this closure is redundant, at least if you’re in `nightly` Rust. If you’re using
-Leptos with `nightly` Rust, signals are already functions, so the closure is unnecessary.
-As a result, you can write a simpler view:
+Remember—and this is _very important_—only signals and functions are treated as reactive 
+values in the view.
 
-```rust
-view! {
-    <button /* ... */>
-        "Click me: "
-        // identical to {move || count()}
-        {count}
-    </button>
-}
-```
+This means that `{count}` and `{count.get()}` do very different things in your view. 
+`{count}` passes in a signal, telling the framework to update the view every time `count` changes.
+`{count.get()}` accesses the value of `count` once, and passes an `i32` into the view,
+rendering it once, unreactively. 
 
-Remember—and this is _very important_—only functions are reactive. This means that
-`{count}` and `{count()}` do very different things in your view. `{count}` passes
-in a function, telling the framework to update the view every time `count` changes.
-`{count()}` accesses the value of `count` once, and passes an `i32` into the view,
-rendering it once, unreactively. You can see the difference in the CodeSandbox below!
+In the same way, `{move || count.get() * 2}` and `{count.get() * 2}` behave differently.
+The first one is a function, so it's rendered reactively. The second is a value, so it's 
+just rendered once, and won't update when `count` changes.
 
-Let’s make one final change. `set_count(3)` is a pretty useless thing for a click handler to do. Let’s replace “set this value to 3” with “increment this value by 1”:
+You can see the difference in the CodeSandbox below!
+
+Let’s make one final change. `set_count.set(3)` is a pretty useless thing for a click handler to do. Let’s replace “set this value to 3” with “increment this value by 1”:
 
 ```rust
 move |_| {
-    set_count.update(|n| *n += 1);
+    *set_count.write() += 1;
 }
 ```
 
-You can see here that while `set_count` just sets the value, `set_count.update()` gives us a mutable reference and mutates the value in place. Either one will trigger a reactive update in our UI.
+You can see here that while `set_count` just sets the value, `set_count.write()` gives us a mutable reference and mutates the value in place. Either one will trigger a reactive update in our UI.
 
 > Throughout this tutorial, we’ll use CodeSandbox to show interactive examples.
 > Hover over any of the variables to show Rust-Analyzer details
@@ -158,7 +173,7 @@ You can see here that while `set_count` just sets the value, `set_count.update()
 
 ```admonish sandbox title="Live example" collapsible=true
 
-[Click to open CodeSandbox.](https://codesandbox.io/p/sandbox/1-basic-component-3d74p3?file=%2Fsrc%2Fmain.rs%3A1%2C1)
+[Click to open CodeSandbox.](https://codesandbox.io/p/devbox/1-basic-component-0-7-qvgdxs?file=%2Fsrc%2Fmain.rs%3A1%2C1-59%2C2&workspaceId=478437f3-1f86-4b1e-b665-5c27a31451fb)
 
 <noscript>
   Please enable JavaScript to view examples.
@@ -168,7 +183,7 @@ You can see here that while `set_count` just sets the value, `set_count.update()
 Other Previews > 8080.`
 
 <template>
-  <iframe src="https://codesandbox.io/p/sandbox/1-basic-component-3d74p3?file=%2Fsrc%2Fmain.rs%3A1%2C1" width="100%" height="1000px" style="max-height: 100vh"></iframe>
+  <iframe src="https://codesandbox.io/p/devbox/1-basic-component-0-7-qvgdxs?file=%2Fsrc%2Fmain.rs%3A1%2C1-59%2C2&workspaceId=478437f3-1f86-4b1e-b665-5c27a31451fb" width="100%" height="1000px" style="max-height: 100vh"></iframe>
 </template>
 
 ```
@@ -177,7 +192,7 @@ Other Previews > 8080.`
 <summary>CodeSandbox Source</summary>
 
 ```rust
-use leptos::*;
+use leptos::prelude::*;
 
 // The #[component] macro marks a function as a reusable component
 // Components are the building blocks of your user interface
@@ -188,7 +203,7 @@ fn App() -> impl IntoView {
     // and get a (getter, setter) pair
     // signals are the basic unit of change in the framework
     // we'll talk more about them later
-    let (count, set_count) = create_signal(0);
+    let (count, set_count) = signal(0);
 
     // the `view` macro is how we define the user interface
     // it uses an HTML-like format that can accept certain Rust values
@@ -199,31 +214,32 @@ fn App() -> impl IntoView {
 
             // we're able to move `set_count` into the closure
             // because signals are Copy and 'static
-            on:click=move |_| {
-                set_count.update(|n| *n += 1);
-            }
+
+            on:click=move |_| *set_count.write() += 1
         >
             // text nodes in RSX should be wrapped in quotes,
             // like a normal Rust string
-            "Click me"
+            "Click me: "
+            {count}
         </button>
         <p>
             <strong>"Reactive: "</strong>
             // you can insert Rust expressions as values in the DOM
             // by wrapping them in curly braces
             // if you pass in a function, it will reactively update
-            {move || count()}
+            {move || count.get()}
         </p>
         <p>
             <strong>"Reactive shorthand: "</strong>
-            // signals are functions, so we can remove the wrapping closure
+            // you can use signals directly in the view, as a shorthand 
+            // for a function that just wraps the getter
             {count}
         </p>
         <p>
             <strong>"Not reactive: "</strong>
-            // NOTE: if you write {count()}, this will *not* be reactive
+            // NOTE: if you just write {count.get()}, this will *not* be reactive
             // it simply gets the value of count once
-            {count()}
+            {count.get()}
         </p>
     }
 }
@@ -233,6 +249,6 @@ fn App() -> impl IntoView {
 // Because we defined it as `fn App`, we can now use it in a
 // template as <App/>
 fn main() {
-    leptos::mount_to_body(|| view! { <App/> })
+    leptos::mount::mount_to_body(App)
 }
 ```

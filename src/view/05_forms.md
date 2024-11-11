@@ -23,16 +23,15 @@ There are two important things to remember:
    on an `<input type="checkbox">`.)
 
 ```rust
-let (name, set_name) = create_signal("Controlled".to_string());
+let (name, set_name) = signal("Controlled".to_string());
 
 view! {
     <input type="text"
-        on:input=move |ev| {
-            // event_target_value is a Leptos helper function
-            // it functions the same way as event.target.value
-            // in JavaScript, but smooths out some of the typecasting
-            // necessary to make this work in Rust
-            set_name(event_target_value(&ev));
+        // adding :target gives us typed access to the element
+        // that is the target of the event that fires
+        on:input:target=move |ev| {
+            // .value() returns the current value of an HTML input element
+            set_name.set(ev.target().value());
         }
 
         // the `prop:` syntax lets you update a DOM property,
@@ -81,9 +80,9 @@ In this example, we only notify the framework when the `<form>` fires a `submit`
 Note the use of the [`leptos::html`](https://docs.rs/leptos/latest/leptos/html/index.html#) module, which provides a bunch of types for every HTML element.
 
 ```rust
-let (name, set_name) = create_signal("Uncontrolled".to_string());
+let (name, set_name) = signal("Uncontrolled".to_string());
 
-let input_element: NodeRef<html::Input> = create_node_ref();
+let input_element: NodeRef<html::Input> = NodeRef::new();
 
 view! {
     <form on:submit=on_submit> // on_submit defined below
@@ -109,12 +108,13 @@ The view should be pretty self-explanatory by now. Note two things:
 underlying DOM node. Its value will be set when the element is rendered.
 
 ```rust
-let on_submit = move |ev: leptos::ev::SubmitEvent| {
+let on_submit = move |ev: SubmitEvent| {
     // stop the page from reloading!
     ev.prevent_default();
 
     // here, we'll extract the value from the input
-    let value = input_element()
+    let value = input_element
+        .get()
         // event handlers can only fire after the view
         // is mounted to the DOM, so the `NodeRef` will be `Some`
         .expect("<input> should be mounted")
@@ -160,7 +160,7 @@ support the `value` **property**...)
 view! {
     <textarea
         prop:value=move || some_value.get()
-        on:input=/* etc */
+        on:input:target=move |ev| some_value.set(ev.target().value())
     >
         /* plain-text initial value, does not change if the signal changes */
         {some_value.get_untracked()}
@@ -174,12 +174,11 @@ The `<select>` element can likewise be controlled via a `value` property on the 
 which will select whichever `<option>` has that value.
 
 ```rust
-let (value, set_value) = create_signal(0i32);
+let (value, set_value) = signal(0i32);
 view! {
   <select
-    on:change=move |ev| {
-      let new_value = event_target_value(&ev);
-      set_value(new_value.parse().unwrap());
+    on:change:target=move |ev| {
+      set_value(ev.target().value().parse().unwrap());
     }
     prop:value=move || value.get().to_string()
   >
@@ -202,14 +201,14 @@ view! {
 
 ```admonish sandbox title="Controlled vs uncontrolled forms CodeSandbox" collapsible=true
 
-[Click to open CodeSandbox.](https://codesandbox.io/p/sandbox/5-forms-0-5-rf2t7c?file=%2Fsrc%2Fmain.rs%3A1%2C1)
+[Click to open CodeSandbox.](https://codesandbox.io/p/devbox/5-forms-0-7-l5hktg?file=%2Fsrc%2Fmain.rs&workspaceId=478437f3-1f86-4b1e-b665-5c27a31451fb)
 
 <noscript>
   Please enable JavaScript to view examples.
 </noscript>
 
 <template>
-  <iframe src="https://codesandbox.io/p/sandbox/5-forms-0-5-rf2t7c?file=%2Fsrc%2Fmain.rs%3A1%2C1" width="100%" height="1000px" style="max-height: 100vh"></iframe>
+  <iframe src="https://codesandbox.io/p/devbox/5-forms-0-7-l5hktg?file=%2Fsrc%2Fmain.rs&workspaceId=478437f3-1f86-4b1e-b665-5c27a31451fb" width="100%" height="1000px" style="max-height: 100vh"></iframe>
 </template>
 
 ```
@@ -218,7 +217,8 @@ view! {
 <summary>CodeSandbox Source</summary>
 
 ```rust
-use leptos::{ev::SubmitEvent, *};
+use leptos::{ev::SubmitEvent};
+use leptos::prelude::*;
 
 #[component]
 fn App() -> impl IntoView {
@@ -233,17 +233,15 @@ fn App() -> impl IntoView {
 #[component]
 fn ControlledComponent() -> impl IntoView {
     // create a signal to hold the value
-    let (name, set_name) = create_signal("Controlled".to_string());
+    let (name, set_name) = signal("Controlled".to_string());
 
     view! {
         <input type="text"
             // fire an event whenever the input changes
-            on:input=move |ev| {
-                // event_target_value is a Leptos helper function
-                // it functions the same way as event.target.value
-                // in JavaScript, but smooths out some of the typecasting
-                // necessary to make this work in Rust
-                set_name(event_target_value(&ev));
+            // adding :target after the event gives us access to 
+            // a correctly-typed element at ev.target()
+            on:input:target=move |ev| {
+                set_name.set(ev.target().value());
             }
 
             // the `prop:` syntax lets you update a DOM property,
@@ -269,11 +267,11 @@ fn UncontrolledComponent() -> impl IntoView {
     // import the type for <input>
     use leptos::html::Input;
 
-    let (name, set_name) = create_signal("Uncontrolled".to_string());
+    let (name, set_name) = signal("Uncontrolled".to_string());
 
     // we'll use a NodeRef to store a reference to the input element
     // this will be filled when the element is created
-    let input_element: NodeRef<Input> = create_node_ref();
+    let input_element: NodeRef<Input> = NodeRef::new();
 
     // fires when the form `submit` event happens
     // this will store the value of the <input> in our signal
@@ -282,7 +280,7 @@ fn UncontrolledComponent() -> impl IntoView {
         ev.prevent_default();
 
         // here, we'll extract the value from the input
-        let value = input_element()
+        let value = input_element.get()
             // event handlers can only fire after the view
             // is mounted to the DOM, so the `NodeRef` will be `Some`
             .expect("<input> to exist")
@@ -290,7 +288,7 @@ fn UncontrolledComponent() -> impl IntoView {
             // this means we can call`HtmlInputElement::value()`
             // to get the current value of the input
             .value();
-        set_name(value);
+        set_name.set(value);
     };
 
     view! {
@@ -315,7 +313,7 @@ fn UncontrolledComponent() -> impl IntoView {
 // Because we defined it as `fn App`, we can now use it in a
 // template as <App/>
 fn main() {
-    leptos::mount_to_body(App)
+    leptos::mount::mount_to_body(App)
 }
 ```
 

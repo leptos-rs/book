@@ -27,8 +27,8 @@ Let’s define a simple component that will iterate over the rows and display ea
 ```rust
 #[component]
 pub fn App() -> impl IntoView {
-	// start with a set of three rows
-    let (data, set_data) = create_signal(vec![
+    // start with a set of three rows
+    let (data, set_data) = signal(vec![
         DatabaseEntry {
             key: "foo".to_string(),
             value: 10,
@@ -43,22 +43,22 @@ pub fn App() -> impl IntoView {
         },
     ]);
     view! {
-		// when we click, update each row,
-		// doubling its value
+        // when we click, update each row,
+        // doubling its value
         <button on:click=move |_| {
             set_data.update(|data| {
                 for row in data {
                     row.value *= 2;
                 }
             });
-			// log the new value of the signal
-            logging::log!("{:?}", data.get());
+            // log the new value of the signal
+            leptos::logging::log!("{:?}", data.get());
         }>
             "Update Values"
         </button>
-		// iterate over the rows and display each value
+        // iterate over the rows and display each value
         <For
-            each=data
+            each=move || data.get()
             key=|state| state.key.clone()
             let:child
         >
@@ -105,7 +105,7 @@ because the key didn’t change. So: why not just force the key to change?
 
 ```rust
 <For
-	each=data
+	each=move || data.get()
 	key=|state| (state.key.clone(), state.value)
 	let:child
 >
@@ -153,38 +153,36 @@ and setters.
 ```rust
 #[component]
 pub fn App() -> impl IntoView {
-	// start with a set of three rows
-    let (data, set_data) = create_signal(vec![
+    // start with a set of three rows
+    let (data, set_data) = signal(vec![
         DatabaseEntry {
             key: "foo".to_string(),
-            value: create_rw_signal(10),
+            value: RwSignal::new(10),
         },
         DatabaseEntry {
             key: "bar".to_string(),
-            value: create_rw_signal(20),
+            value: RwSignal::new(20),
         },
         DatabaseEntry {
             key: "baz".to_string(),
-            value: create_rw_signal(15),
+            value: RwSignal::new(15),
         },
     ]);
     view! {
-		// when we click, update each row,
-		// doubling its value
+        // when we click, update each row,
+        // doubling its value
         <button on:click=move |_| {
-            data.with(|data| {
-                for row in data {
-                    row.value.update(|value| *value *= 2);
-                }
-            });
-			// log the new value of the signal
-            logging::log!("{:?}", data.get());
+            for row in &*data.read() {
+                row.value.update(|value| *value *= 2);
+            }
+            // log the new value of the signal
+            leptos::logging::log!("{:?}", data.get());
         }>
             "Update Values"
         </button>
-		// iterate over the rows and display each value
+        // iterate over the rows and display each value
         <For
-            each=data
+            each=move || data.get()
             key=|state| state.key.clone()
             let:child
         >
@@ -199,11 +197,11 @@ see that unlike in the previous version, in this version only the individual tex
 nodes are updated. Passing the signal directly into `{child.value}` works, as
 signals do keep their reactivity if you pass them into the view.
 
-Note that I changed the `set_data.update()` to a `data.with()`. `.with()` is the
+Note that I changed the `set_data.update()` to a `data.read()`. `.read()` is a
 non-cloning way of accessing a signal’s value. In this case, we are only updating
-the internal values, not updating the list of values: because signals maintain their
+the inner values, not updating the list of values: because signals maintain their
 own state, we don’t actually need to update the `data` signal at all, so the immutable
-`.with()` is fine here.
+`.read()` is fine here.
 
 > In fact, this version doesn’t update `data`, so the `<For/>` is essentially a static
 > list as in the last chapter, and this could just be a plain iterator. But the `<For/>`
@@ -223,7 +221,7 @@ each field in a signal.
 
 ## Option 3: Memoized Slices
 
-Leptos provides a primitive called [`create_memo`](https://docs.rs/leptos/latest/leptos/fn.create_memo.html),
+Leptos provides a primitive called a [`Memo`](https://docs.rs/leptos/latest/leptos/struct.Memo.html),
 which creates a derived computation that only triggers a reactive update when its value
 has changed.
 
@@ -235,10 +233,10 @@ will be updated to this:
 
 ```rust
 <For
-    each=move || data().into_iter().enumerate()
+    each=move || data.get().into_iter().enumerate()
     key=|(_, state)| state.key.clone()
     children=move |(index, _)| {
-        let value = create_memo(move |_| {
+        let value = Memo::new(move |_| {
             data.with(|data| data.get(index).map(|d| d.value).unwrap_or(0))
         });
         view! {
@@ -276,3 +274,11 @@ multiple reactive values that depend on the same signal isn’t guaranteed.)
 Note also that while memos memoize their reactive changes, the same
 calculation does need to re-run to check the value every time, so nested reactive signals
 will still be more efficient for pinpoint updates here.
+
+
+## Option 4: Stores
+
+Leptos 0.7 introduces a new reactive primitive called “stores.” Stores are designed to address
+the issues described in this chapter so far. They’re a bit experimental, so they require an additional dependency called `reactive_stores` in your `Cargo.toml`.
+
+**TODO finish stores example for this chapter.**

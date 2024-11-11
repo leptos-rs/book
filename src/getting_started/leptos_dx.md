@@ -23,8 +23,10 @@ Because of the nature of macros (they can expand from anything to anything, but 
 
 If you run into issues using these macros in your editor, you can explicitly tell rust-analyzer to ignore certain proc macros. For the `#[server]` macro especially, which annotates function bodies but doesn't actually transform anything inside the body of your function, this can be really helpful.
 
-Starting in Leptos version 0.5.3, rust-analyzer support was added for the `#[component]` macro, but if you run into issues, you may want to add `#[component]` to the macro ignore list as well (see below).
+```admonish note 
+ Starting in Leptos version 0.5.3, rust-analyzer support was added for the `#[component]` macro, but if you run into issues, you may want to add `#[component]` to the macro ignore list as well (see below).
 Note that this means that rust-analyzer doesn't know about your component props, which may generate its own set of errors or warnings in the IDE.
+```
 
 VSCode `settings.json`:
 

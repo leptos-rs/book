@@ -12,8 +12,8 @@ per click.
 You _could_ do this by just creating two `<progress>` elements:
 
 ```rust
-let (count, set_count) = create_signal(0);
-let double_count = move || count() * 2;
+let (count, set_count) = signal(0);
+let double_count = move || count.get() * 2;
 
 view! {
     <progress
@@ -79,9 +79,9 @@ Now we can use our component in the main `<App/>` component’s view.
 ```rust
 #[component]
 fn App() -> impl IntoView {
-    let (count, set_count) = create_signal(0);
+    let (count, set_count) = signal(0);
     view! {
-        <button on:click=move |_| { set_count.update(|n| *n += 1); }>
+        <button on:click=move |_| *set_count.write() += 1>
             "Click me"
         </button>
         // now we use our component!
@@ -109,8 +109,7 @@ be a signal.
 ### `optional` Props
 
 Right now the `max` setting is hard-coded. Let’s take that as a prop too. But
-let’s add a catch: let’s make this prop optional by annotating the particular
-argument to the component function with `#[prop(optional)]`.
+let’s make this prop optional. We can do that by annotating it with `#[prop(optional)]`.
 
 ```rust
 #[component]
@@ -164,11 +163,11 @@ This is great. But we began with two counters, one driven by `count`, and one by
 the derived signal `double_count`. Let’s recreate that by using `double_count`
 as the `progress` prop on another `<ProgressBar/>`.
 
-```rust
+```rust,compile_fail
 #[component]
 fn App() -> impl IntoView {
-    let (count, set_count) = create_signal(0);
-    let double_count = move || count() * 2;
+    let (count, set_count) = signal(0);
+    let double_count = move || count.get() * 2;
 
     view! {
         <button on:click=move |_| { set_count.update(|n| *n += 1); }>
@@ -187,8 +186,9 @@ that the `progress` prop takes `ReadSignal<i32>`, and `double_count` is not
 it’s a closure that returns an `i32`.
 
 There are a couple ways to handle this. One would be to say: “Well, I know that
-a `ReadSignal` is a function, and I know that a closure is a function; maybe I
-could just take any function?” If you’re savvy, you may know that both these
+for the view to be reactive, it needs to take a function or a signal. I can always 
+turn a signal into a function by wrapping it in a closure... Maybe I could
+just take any function?” If you’re savvy, you may know that both these
 implement the trait `Fn() -> i32`. So you could use a generic component:
 
 ```rust
@@ -196,7 +196,7 @@ implement the trait `Fn() -> i32`. So you could use a generic component:
 fn ProgressBar(
     #[prop(default = 100)]
     max: u16,
-    progress: impl Fn() -> i32 + 'static
+    progress: impl Fn() -> i32 + Send + Sync + 'static
 ) -> impl IntoView {
     view! {
         <progress
@@ -212,7 +212,7 @@ fn ProgressBar(
 This is a perfectly reasonable way to write this component: `progress` now takes
 any value that implements this `Fn()` trait.
 
-> Generic props can also be specified using a `where` clause, or using inline generics like `ProgressBar<F: Fn() -> i32 + 'static>`. Note that support for `impl Trait` syntax was released in 0.6.12; if you receive an error message you may need to `cargo update` to ensure that you are on the latest version.
+> Generic props can also be specified using a `where` clause, or using inline generics like `ProgressBar<F: Fn() -> i32 + 'static>`. 
 
 Generics need to be used somewhere in the component props. This is because props are built into a struct, so all generic types must be used somewhere in the struct. This is often easily accomplished using an optional `PhantomData` prop. You can then specify a generic in the view using the syntax for expressing types: `<Component<T>/>` (not with the turbofish-style `<Component::<T>/>`).
 
@@ -241,10 +241,9 @@ which allows you to easily pass props with different values.
 
 In this case, it’s helpful to know about the
 [`Signal`](https://docs.rs/leptos/latest/leptos/struct.Signal.html) type. `Signal`
-is an enumerated type that represents any kind of readable reactive signal. It can
-be useful when defining APIs for components you’ll want to reuse while passing
-different sorts of signals. The [`MaybeSignal`](https://docs.rs/leptos/latest/leptos/enum.MaybeSignal.html) type is useful when you want to be able to take either a static or
-reactive value.
+is an enumerated type that represents any kind of readable reactive signal, or a plain value. 
+It can be useful when defining APIs for components you’ll want to reuse while passing
+different sorts of signals. 
 
 ```rust
 #[component]
@@ -266,11 +265,11 @@ fn ProgressBar(
 
 #[component]
 fn App() -> impl IntoView {
-    let (count, set_count) = create_signal(0);
-    let double_count = move || count() * 2;
+    let (count, set_count) = signal(0);
+    let double_count = move || count.get() * 2;
 
     view! {
-        <button on:click=move |_| { set_count.update(|n| *n += 1); }>
+        <button on:click=move |_| *set_count.write() += 1>
             "Click me"
         </button>
         // .into() converts `ReadSignal` to `Signal`
@@ -287,7 +286,7 @@ Note that you can’t specify optional generic props for a component. Let’s se
 
 ```rust,compile_fail
 #[component]
-fn ProgressBar<F: Fn() -> i32 + 'static>(
+fn ProgressBar<F: Fn() -> i32 + Send + Sync + 'static>(
     #[prop(optional)] progress: Option<F>,
 ) -> impl IntoView {
     progress.map(|progress| {
@@ -328,7 +327,7 @@ However, you can get around this by providing a concrete type using `Box<dyn _>`
 ```rust
 #[component]
 fn ProgressBar(
-    #[prop(optional)] progress: Option<Box<dyn Fn() -> i32>>,
+    #[prop(optional)] progress: Option<Box<dyn Fn() -> i32 + Send + Sync>>,
 ) -> impl IntoView {
     progress.map(|progress| {
         view! {
@@ -387,34 +386,16 @@ type, and each of the fields used to add props. It can be a little hard to
 understand how powerful this is until you hover over the component name or props
 and see the power of the `#[component]` macro combined with rust-analyzer here.
 
-> #### Advanced Topic: `#[component(transparent)]`
->
-> All Leptos components return `-> impl IntoView`. Some, though, need to return
-> some data directly without any additional wrapping. These can be marked with
-> `#[component(transparent)]`, in which case they return exactly the value they
-> return, without the rendering system transforming them in any way.
->
-> This is mostly used in two situations:
->
-> 1. Creating wrappers around `<Suspense/>` or `<Transition/>`, which return a
->    transparent suspense structure to integrate with SSR and hydration properly.
-> 2. Refactoring `<Route/>` definitions for `leptos_router` out into separate
->    components, because `<Route/>` is a transparent component that returns a
->    `RouteDefinition` struct rather than a view.
->
-> In general, you should not need to use transparent components unless you are
-> creating custom wrapping components that fall into one of these two categories.
-
 ```admonish sandbox title="Live example" collapsible=true
 
-[Click to open CodeSandbox.](https://codesandbox.io/p/sandbox/3-components-0-5-5vvl69?file=%2Fsrc%2Fmain.rs%3A1%2C1)
+[Click to open CodeSandbox.](https://codesandbox.io/p/devbox/3-components-0-7-rkjn3j?file=%2Fsrc%2Fmain.rs%3A39%2C10)
 
 <noscript>
   Please enable JavaScript to view examples.
 </noscript>
 
 <template>
-  <iframe src="https://codesandbox.io/p/sandbox/3-components-0-5-5vvl69?file=%2Fsrc%2Fmain.rs%3A1%2C1" width="100%" height="1000px" style="max-height: 100vh"></iframe>
+  <iframe src="https://codesandbox.io/p/devbox/3-components-0-7-rkjn3j?file=%2Fsrc%2Fmain.rs%3A39%2C10" width="100%" height="1000px" style="max-height: 100vh"></iframe>
 </template>
 
 ```
@@ -423,7 +404,7 @@ and see the power of the `#[component]` macro combined with rust-analyzer here.
 <summary>CodeSandbox Source</summary>
 
 ```rust
-use leptos::*;
+use leptos::prelude::*;
 
 // Composing different components together is how we build
 // user interfaces. Here, we'll define a reusable <ProgressBar/>.
@@ -457,14 +438,14 @@ fn ProgressBar(
 
 #[component]
 fn App() -> impl IntoView {
-    let (count, set_count) = create_signal(0);
+    let (count, set_count) = signal(0);
 
-    let double_count = move || count() * 2;
+    let double_count = move || count.get() * 2;
 
     view! {
         <button
             on:click=move |_| {
-                set_count.update(|n| *n += 1);
+                *set_count.write() += 1;
             }
         >
             "Click me"
@@ -484,7 +465,7 @@ fn App() -> impl IntoView {
 }
 
 fn main() {
-    leptos::mount_to_body(App)
+    leptos::mount::mount_to_body(App)
 }
 ```
 

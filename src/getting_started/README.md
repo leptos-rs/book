@@ -46,35 +46,8 @@ cargo init leptos-tutorial
 `cd` into your new `leptos-tutorial` project and add `leptos` as a dependency
 
 ```bash
-cargo add leptos --features=csr,nightly
-```
-
-Or you can leave off `nightly` if you're using stable Rust
-
-```bash
 cargo add leptos --features=csr
 ```
-
-> Using `nightly` Rust, and the `nightly` feature in Leptos enables the function-call syntax for signal getters and setters that is used in most of this book.
->
-> To use nightly Rust, you can either opt into nightly for all your Rust projects by running
->
-> ```bash
-> rustup toolchain install nightly
-> rustup default nightly
-> ```
->
-> or only for this project
->
-> ```bash
-> rustup toolchain install nightly
-> cd <into your project>
-> rustup override set nightly
-> ```
->
-> [See here for more details.](https://doc.rust-lang.org/book/appendix-07-nightly-rust.html)
->
-> If you’d rather use stable Rust with Leptos, you can do that too. In the guide and examples, you’ll just use the [`ReadSignal::get()`](https://docs.rs/leptos/latest/leptos/struct.ReadSignal.html#impl-SignalGet%3CT%3E-for-ReadSignal%3CT%3E) and [`WriteSignal::set()`](https://docs.rs/leptos/latest/leptos/struct.WriteSignal.html#impl-SignalGet%3CT%3E-for-ReadSignal%3CT%3E) methods instead of calling signal getters and setters as functions.
 
 Make sure you've added the `wasm32-unknown-unknown` target so that Rust can compile your code to WebAssembly to run in the browser.
 
@@ -95,10 +68,10 @@ Create a simple `index.html` in the root of the `leptos-tutorial` directory
 And add a simple “Hello, world!” to your `main.rs`
 
 ```rust
-use leptos::*;
+use leptos::prelude::*;
 
 fn main() {
-    mount_to_body(|| view! { <p>"Hello, world!"</p> })
+    leptos::mount::mount_to_body(|| view! { <p>"Hello, world!"</p> })
 }
 ```
 
@@ -126,4 +99,4 @@ simply use `trunk serve` and open a browser tab manually.
 
 ---
 
-Now before we get started building your first real UI's with Leptos, there are a couple of things you might want to know to help make your experience with Leptos just a little bit easier.
+Now before we get started building your first real applications with Leptos, there are a couple of things you might want to know to help make your experience with Leptos just a little bit easier.

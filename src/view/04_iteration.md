@@ -53,8 +53,12 @@ You can render dynamic items as part of a static list.
 ```rust
 // create a list of 5 signals
 let length = 5;
-let counters = (1..=length).map(|idx| create_signal(idx));
-
+let counters = (1..=length).map(|idx| RwSignal::new(idx));
+```
+Note here that instead of calling `signal()` to get a tuple with a reader and a writer,
+here we use `RwSignal::new()` to get a single, read-write signal. This is just more convenient
+for a situation where we’d otherwise be passing the tuples around.
+```
 // each item manages a reactive view
 // but the list itself will never change
 let counter_buttons = counters
@@ -62,7 +66,7 @@ let counter_buttons = counters
         view! {
             <li>
                 <button
-                    on:click=move |_| set_count.update(|n| *n += 1)
+                    on:click=move |_| *set_count.write() += 1
                 >
                     {count}
                 </button>
@@ -85,7 +89,7 @@ Fortunately, there’s a better way.
 The [`<For/>`](https://docs.rs/leptos/latest/leptos/fn.For.html) component is a
 keyed dynamic list. It takes three props:
 
-- `each`: a function (such as a signal) that returns the items `T` to be iterated over
+- `each`: a reactive function that returns the items `T` to be iterated over
 - `key`: a key function that takes `&T` and returns a stable, unique key or ID
 - `children`: renders each `T` into a view
 
@@ -106,14 +110,14 @@ Check out the `<DynamicList/>` component below for an example.
 
 ```admonish sandbox title="Live example" collapsible=true
 
-[Click to open CodeSandbox.](https://codesandbox.io/p/sandbox/4-iteration-0-5-pwdn2y?file=%2Fsrc%2Fmain.rs%3A1%2C1)
+[Click to open CodeSandbox.](https://codesandbox.io/p/devbox/4-iteration-0-7-dw4dfl?file=%2Fsrc%2Fmain.rs%3A1%2C1-159%2C1&workspaceId=478437f3-1f86-4b1e-b665-5c27a31451fb)
 
 <noscript>
   Please enable JavaScript to view examples.
 </noscript>
 
 <template>
-  <iframe src="https://codesandbox.io/p/sandbox/4-iteration-0-5-pwdn2y?file=%2Fsrc%2Fmain.rs%3A1%2C1" width="100%" height="1000px" style="max-height: 100vh"></iframe>
+  <iframe src="https://codesandbox.io/p/devbox/4-iteration-0-7-dw4dfl?file=%2Fsrc%2Fmain.rs%3A1%2C1-159%2C1&workspaceId=478437f3-1f86-4b1e-b665-5c27a31451fb" width="100%" height="1000px" style="max-height: 100vh"></iframe>
 </template>
 
 ```
@@ -122,7 +126,7 @@ Check out the `<DynamicList/>` component below for an example.
 <summary>CodeSandbox Source</summary>
 
 ```rust
-use leptos::*;
+use leptos::prelude::*;
 
 // Iteration is a very common task in most applications.
 // So how do you take a list of data and render it in the DOM?
@@ -151,17 +155,17 @@ fn StaticList(
     length: usize,
 ) -> impl IntoView {
     // create counter signals that start at incrementing numbers
-    let counters = (1..=length).map(|idx| create_signal(idx));
+    let counters = (1..=length).map(|idx| RwSignal::new(idx));
 
     // when you have a list that doesn't change, you can
     // manipulate it using ordinary Rust iterators
     // and collect it into a Vec<_> to insert it into the DOM
     let counter_buttons = counters
-        .map(|(count, set_count)| {
+        .map(|count| {
             view! {
                 <li>
                     <button
-                        on:click=move |_| set_count.update(|n| *n += 1)
+                        on:click=move |_| *count.write() += 1
                     >
                         {count}
                     </button>
@@ -198,18 +202,24 @@ fn DynamicList(
 
     // we generate an initial list as in <StaticList/>
     // but this time we include the ID along with the signal
+    // see NOTE in add_counter below re: ArcRwSignal
     let initial_counters = (0..initial_length)
-        .map(|id| (id, create_signal(id + 1)))
+        .map(|id| (id, ArcRwSignal::new(id + 1)))
         .collect::<Vec<_>>();
 
     // now we store that initial list in a signal
     // this way, we'll be able to modify the list over time,
     // adding and removing counters, and it will change reactively
-    let (counters, set_counters) = create_signal(initial_counters);
+    let (counters, set_counters) = signal(initial_counters);
 
     let add_counter = move |_| {
         // create a signal for the new counter
-        let sig = create_signal(next_counter_id + 1);
+        // we use ArcRwSignal here, instead of RwSignal 
+        // ArcRwSignal is a reference-counted type, rather than the arena-allocated 
+        // signal types we've been using so far.
+        // When we're creating a collection of signals like this, using ArcRwSignal 
+        // allows each signal to be deallocated when its row is removed.
+        let sig = ArcRwSignal::new(next_counter_id + 1);
         // add this counter to the list of counters
         set_counters.update(move |counters| {
             // since `.update()` gives us `&mut T`
@@ -232,7 +242,7 @@ fn DynamicList(
                     // `each` takes any function that returns an iterator
                     // this should usually be a signal or derived signal
                     // if it's not reactive, just render a Vec<_> instead of <For/>
-                    each=counters
+                    each=move || counters.get()
                     // the key should be unique and stable for each row
                     // using an index is usually a bad idea, unless your list
                     // can only grow, because moving items around inside the list
@@ -240,19 +250,24 @@ fn DynamicList(
                     key=|counter| counter.0
                     // `children` receives each item from your `each` iterator
                     // and returns a view
-                    children=move |(id, (count, set_count))| {
+                    children=move |(id, count)| {
+                        // we can convert our ArcRwSignal to a Copy-able RwSignal 
+                        // for nicer DX when moving it into the view
+                        let count = RwSignal::from(count);
                         view! {
                             <li>
                                 <button
-                                    on:click=move |_| set_count.update(|n| *n += 1)
+                                    on:click=move |_| *count.write() += 1
                                 >
                                     {count}
                                 </button>
                                 <button
                                     on:click=move |_| {
-                                        set_counters.update(|counters| {
-                                            counters.retain(|(counter_id, _)| counter_id != &id)
-                                        });
+                                        set_counters
+                                            .write()
+                                            .retain(|(counter_id, _)| {
+                                                counter_id != &id
+                                            });
                                     }
                                 >
                                     "Remove"
@@ -267,7 +282,7 @@ fn DynamicList(
 }
 
 fn main() {
-    leptos::mount_to_body(App)
+    leptos::mount::mount_to_body(App)
 }
 ```
 
