@@ -81,6 +81,12 @@ Some CSS class names can’t be directly parsed by the `view` macro, especially 
 class=("button-20", move || count() % 2 == 1)
 ```
 
+The tuple syntax also allows to specify multiple classes under a single condition using an array as the first tuple element.
+
+```rust
+class=(["button-20", "rounded"], move || count() % 2 == 1)
+```
+
 ## Dynamic Styles
 
 Individual CSS properties can be directly updated with a similar `style:` syntax.
