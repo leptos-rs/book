@@ -29,7 +29,8 @@ p().child((em().child("Big, "), strong().child("bold "), "text"))
 Attributes are added with [`.attr()`](https://docs.rs/leptos/latest/leptos/struct.HtmlElement.html#method.attr). This can take any of the same types that you could pass as an attribute into the view macro (types that implement [`IntoAttribute`](https://docs.rs/leptos/latest/leptos/trait.IntoAttribute.html)).
 
 ```rust
-p().attr("id", "foo").attr("data-count", move || count().to_string())
+p().attr("id", "foo")
+    .attr("data-count", move || count.get().to_string())
 ```
 
 Similarly, the `class:`, `prop:`, and `style:` syntaxes map directly onto [`.class()`](https://docs.rs/leptos/latest/leptos/struct.HtmlElement.html#method.class), [`.prop()`](https://docs.rs/leptos/latest/leptos/struct.HtmlElement.html#method.prop), and [`.style()`](https://docs.rs/leptos/latest/leptos/struct.HtmlElement.html#method.style) methods.
@@ -38,55 +39,31 @@ Event listeners can be added with [`.on()`](https://docs.rs/leptos/latest/leptos
 
 ```rust
 button()
-    .on(ev::click, move |_| set_count.update(|count| *count = 0))
+    .on(ev::click, move |_| set_count.set(0))
     .child("Clear")
 ```
-
-> Many additional methods can be found in the [`HtmlElement`](https://docs.rs/leptos/latest/leptos/struct.HtmlElement.html#method.child) docs, including some methods that are not directly available in the `view` macro.
 
 All of this adds up to a very Rusty syntax to build full-featured views, if you prefer this style.
 
 ```rust
 /// A simple counter view.
 // A component is really just a function call: it runs once to create the DOM and reactive system
-pub fn counter(initial_value: i32, step: u32) -> impl IntoView {
-    let (count, set_count) = create_signal(0);
+pub fn counter(initial_value: i32, step: i32) -> impl IntoView {
+    let (count, set_count) = signal(initial_value);
     div().child((
         button()
             // typed events found in leptos::ev
             // 1) prevent typos in event names
             // 2) allow for correct type inference in callbacks
-            .on(ev::click, move |_| set_count.update(|count| *count = 0))
+            .on(ev::click, move |_| set_count.set(0))
             .child("Clear"),
         button()
-            .on(ev::click, move |_| set_count.update(|count| *count -= 1))
+            .on(ev::click, move |_| *set_count.write() -= step)
             .child("-1"),
         span().child(("Value: ", move || count.get(), "!")),
         button()
-            .on(ev::click, move |_| set_count.update(|count| *count += 1))
+            .on(ev::click, move |_| *set_count.write() += step)
             .child("+1"),
     ))
 }
 ```
-
-This also has the benefit of being more flexible: because these are all plain Rust functions and methods, it’s easier to use them in things like iterator adapters without any additional “magic”:
-
-```rust
-// take some set of attribute names and values
-let attrs: Vec<(&str, AttributeValue)> = todo!();
-// you can use the builder syntax to “spread” these onto the
-// element in a way that’s not possible with the view macro
-let p = attrs
-    .into_iter()
-    .fold(p(), |el, (name, value)| el.attr(name, value));
-
-```
-
-> ## Performance Note
->
-> One caveat: the `view` macro applies significant optimizations in server-side-rendering (SSR) mode to improve HTML rendering performance significantly (think 2-4x faster, depending on the characteristics of any given app). It does this by analyzing your `view` at compile time and converting the static parts into simple HTML strings, rather than expanding them into the builder syntax.
->
-> This means two things:
->
-> 1. The builder syntax and `view` macro should not be mixed, or should only be mixed very carefully: at least in SSR mode, the output of the `view` should be treated as a “black box” that can’t have additional builder methods applied to it without causing inconsistencies.
-> 2. Using the builder syntax will result in less-than-optimal SSR performance. It won’t be slow, by any means (and it’s worth running your own benchmarks in any case), just slower than the `view`-optimized version.

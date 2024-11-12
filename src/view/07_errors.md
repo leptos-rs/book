@@ -11,15 +11,15 @@ Let’s start with a simple component to capture a number input.
 ```rust
 #[component]
 fn NumericInput() -> impl IntoView {
-    let (value, set_value) = create_signal(Ok(0));
-
-    // when input changes, try to parse a number from the input
-    let on_input = move |ev| set_value(event_target_value(&ev).parse::<i32>());
+    let (value, set_value) = signal(Ok(0));
 
     view! {
         <label>
             "Type an integer (or not!)"
-            <input type="number" on:input=on_input/>
+            <input type="number" on:input:target=move |ev| {
+              // when input changes, try to parse a number from the input
+              set_value.set(ev.target().value().parse::<i32>())
+            }/>
             <p>
                 "You entered "
                 <strong>{value}</strong>
@@ -70,32 +70,45 @@ Let’s add an `<ErrorBoundary/>` to this example.
 ```rust
 #[component]
 fn NumericInput() -> impl IntoView {
-    let (value, set_value) = create_signal(Ok(0));
-
-    let on_input = move |ev| set_value(event_target_value(&ev).parse::<i32>());
+        let (value, set_value) = signal(Ok(0));
 
     view! {
         <h1>"Error Handling"</h1>
         <label>
             "Type a number (or something that's not a number!)"
-            <input type="number" on:input=on_input/>
+            <input type="number" on:input:target=move |ev| {
+                // when input changes, try to parse a number from the input
+                set_value.set(ev.target().value().parse::<i32>())
+            }/>
+            // If an `Err(_) had been rendered inside the <ErrorBoundary/>,
+            // the fallback will be displayed. Otherwise, the children of the
+            // <ErrorBoundary/> will be displayed.
             <ErrorBoundary
                 // the fallback receives a signal containing current errors
                 fallback=|errors| view! {
                     <div class="error">
                         <p>"Not a number! Errors: "</p>
-                        // we can render a list of errors as strings, if we'd like
+                        // we can render a list of errors
+                        // as strings, if we'd like
                         <ul>
                             {move || errors.get()
                                 .into_iter()
                                 .map(|(_, e)| view! { <li>{e.to_string()}</li>})
-                                .collect_view()
+                                .collect::<Vec<_>>()
                             }
                         </ul>
                     </div>
                 }
             >
-                <p>"You entered " <strong>{value}</strong></p>
+                <p>
+                    "You entered "
+                    // because `value` is `Result<i32, _>`,
+                    // it will render the `i32` if it is `Ok`,
+                    // and render nothing and trigger the error boundary
+                    // if it is `Err`. It's a signal, so this will dynamically
+                    // update when `value` changes
+                    <strong>{value}</strong>
+                </p>
             </ErrorBoundary>
         </label>
     }
@@ -121,14 +134,14 @@ an `<ErrorBoundary/>` will appear again.
 
 ```admonish sandbox title="Live example" collapsible=true
 
-[Click to open CodeSandbox.](https://codesandbox.io/p/sandbox/7-errors-0-5-5mptv9?file=%2Fsrc%2Fmain.rs%3A1%2C1)
+[Click to open CodeSandbox.](https://codesandbox.io/p/devbox/7-errors-0-7-qqywqz?file=%2Fsrc%2Fmain.rs%3A5%2C1-46%2C6&workspaceId=478437f3-1f86-4b1e-b665-5c27a31451fb)
 
 <noscript>
   Please enable JavaScript to view examples.
 </noscript>
 
 <template>
-  <iframe src="https://codesandbox.io/p/sandbox/7-errors-0-5-5mptv9?file=%2Fsrc%2Fmain.rs%3A1%2C1" width="100%" height="1000px" style="max-height: 100vh"></iframe>
+  <iframe src="https://codesandbox.io/p/devbox/7-errors-0-7-qqywqz?file=%2Fsrc%2Fmain.rs%3A5%2C1-46%2C6&workspaceId=478437f3-1f86-4b1e-b665-5c27a31451fb" width="100%" height="1000px" style="max-height: 100vh"></iframe>
 </template>
 ```
 
@@ -136,20 +149,20 @@ an `<ErrorBoundary/>` will appear again.
 <summary>CodeSandbox Source</summary>
 
 ```rust
-use leptos::*;
+use leptos::prelude::*;
 
 #[component]
 fn App() -> impl IntoView {
-    let (value, set_value) = create_signal(Ok(0));
-
-    // when input changes, try to parse a number from the input
-    let on_input = move |ev| set_value(event_target_value(&ev).parse::<i32>());
+    let (value, set_value) = signal(Ok(0));
 
     view! {
         <h1>"Error Handling"</h1>
         <label>
             "Type a number (or something that's not a number!)"
-            <input type="number" on:input=on_input/>
+            <input type="number" on:input:target=move |ev| {
+                // when input changes, try to parse a number from the input
+                set_value.set(ev.target().value().parse::<i32>())
+            }/>
             // If an `Err(_) had been rendered inside the <ErrorBoundary/>,
             // the fallback will be displayed. Otherwise, the children of the
             // <ErrorBoundary/> will be displayed.
@@ -185,7 +198,7 @@ fn App() -> impl IntoView {
 }
 
 fn main() {
-    leptos::mount_to_body(App)
+    leptos::mount::mount_to_body(App)
 }
 ```
 

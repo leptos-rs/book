@@ -30,7 +30,7 @@ it in the child. This lets you manipulate the state of the parent from the child
 ```rust
 #[component]
 pub fn App() -> impl IntoView {
-    let (toggled, set_toggled) = create_signal(false);
+    let (toggled, set_toggled) = signal(false);
     view! {
         <p>"Toggled? " {toggled}</p>
         <ButtonA setter=set_toggled/>
@@ -63,17 +63,15 @@ Another approach would be to pass a callback to the child: say, `on_click`.
 ```rust
 #[component]
 pub fn App() -> impl IntoView {
-    let (toggled, set_toggled) = create_signal(false);
+    let (toggled, set_toggled) = signal(false);
     view! {
         <p>"Toggled? " {toggled}</p>
         <ButtonB on_click=move |_| set_toggled.update(|value| *value = !*value)/>
     }
 }
 
-
 #[component]
-pub fn ButtonB(#[prop(into)] on_click: Callback<MouseEvent>) -> impl IntoView
-{
+pub fn ButtonB(on_click: impl FnMut(MouseEvent) + 'static) -> impl IntoView {
     view! {
         <button on:click=on_click>
             "Toggle"
@@ -88,48 +86,6 @@ of keeping local state local, preventing the problem of spaghetti mutation. But 
 the logic to mutate that signal needs to exist up in `<App/>`, not down in `<ButtonB/>`. These
 are real trade-offs, not a simple right-or-wrong choice.
 
-> Note the way we use the `Callback<In, Out>` type. This is basically a
-> wrapper around a closure `Fn(In) -> Out` that is also `Copy` and makes it
-> easy to pass around.
->
-> We also used the `#[prop(into)]` attribute so we can pass a normal closure into
-> `on_click`. Please see the [chapter "`into` Props"](./03_components.md#into-props) for more details.
-
-### 2.1 Use Closure instead of `Callback`
-
-You can use a Rust closure `Fn(MouseEvent)` directly instead of `Callback`:
-
-```rust
-#[component]
-pub fn App() -> impl IntoView {
-    let (toggled, set_toggled) = create_signal(false);
-    view! {
-        <p>"Toggled? " {toggled}</p>
-        <ButtonB on_click=move |_| set_toggled.update(|value| *value = !*value)/>
-    }
-}
-
-
-#[component]
-pub fn ButtonB<F>(on_click: F) -> impl IntoView
-where
-    F: Fn(MouseEvent) + 'static
-{
-    view! {
-        <button on:click=on_click>
-            "Toggle"
-        </button>
-    }
-}
-```
-
-The code is very similar in this case. On more advanced use-cases using a
-closure might require some cloning compared to using a `Callback`.
-
-> Note the way we declare the generic type `F` here for the callback. If you’re
-> confused, look back at the [generic props](./03_components.html#generic-props) section
-> of the chapter on components.
-
 ## 3. Use an Event Listener
 
 You can actually write Option 2 in a slightly different way. If the callback maps directly onto
@@ -139,7 +95,7 @@ in your `view` macro in `<App/>`.
 ```rust
 #[component]
 pub fn App() -> impl IntoView {
-    let (toggled, set_toggled) = create_signal(false);
+    let (toggled, set_toggled) = signal(false);
     view! {
         <p>"Toggled? " {toggled}</p>
         // note the on:click instead of on_click
@@ -147,7 +103,6 @@ pub fn App() -> impl IntoView {
         <ButtonC on:click=move |_| set_toggled.update(|value| *value = !*value)/>
     }
 }
-
 
 #[component]
 pub fn ButtonC() -> impl IntoView {
@@ -175,7 +130,7 @@ tree:
 ```rust
 #[component]
 pub fn App() -> impl IntoView {
-    let (toggled, set_toggled) = create_signal(false);
+    let (toggled, set_toggled) = signal(false);
     view! {
         <p>"Toggled? " {toggled}</p>
         <Layout/>
@@ -204,9 +159,10 @@ pub fn Content() -> impl IntoView {
 }
 
 #[component]
-pub fn ButtonD<F>() -> impl IntoView {
+pub fn ButtonD() -> impl IntoView {
     todo!()
 }
+
 ```
 
 Now `<ButtonD/>` is no longer a direct child of `<App/>`, so you can’t simply
@@ -216,7 +172,7 @@ pass your `WriteSignal` to its props. You could do what’s sometimes called
 ```rust
 #[component]
 pub fn App() -> impl IntoView {
-    let (toggled, set_toggled) = create_signal(false);
+    let (toggled, set_toggled) = signal(false);
     view! {
         <p>"Toggled? " {toggled}</p>
         <Layout set_toggled/>
@@ -245,7 +201,7 @@ pub fn Content(set_toggled: WriteSignal<bool>) -> impl IntoView {
 }
 
 #[component]
-pub fn ButtonD<F>(set_toggled: WriteSignal<bool>) -> impl IntoView {
+pub fn ButtonD(set_toggled: WriteSignal<bool>) -> impl IntoView {
     todo!()
 }
 ```
@@ -271,7 +227,7 @@ unnecessary prop drilling.
 ```rust
 #[component]
 pub fn App() -> impl IntoView {
-    let (toggled, set_toggled) = create_signal(false);
+    let (toggled, set_toggled) = signal(false);
 
     // share `set_toggled` with all children of this component
     provide_context(set_toggled);
@@ -283,15 +239,14 @@ pub fn App() -> impl IntoView {
 }
 
 // <Layout/> and <Content/> omitted
-// To work in this version, drop their references to set_toggled
+// To work in this version, drop the `set_toggled` parameter on each
 
 #[component]
 pub fn ButtonD() -> impl IntoView {
     // use_context searches up the context tree, hoping to
     // find a `WriteSignal<bool>`
     // in this case, I .expect() because I know I provided it
-    let setter = use_context::<WriteSignal<bool>>()
-        .expect("to have found the setter provided");
+    let setter = use_context::<WriteSignal<bool>>().expect("to have found the setter provided");
 
     view! {
         <button
@@ -301,6 +256,7 @@ pub fn ButtonD() -> impl IntoView {
         </button>
     }
 }
+
 ```
 
 The same caveats apply to this as to `<ButtonA/>`: passing a `WriteSignal`
@@ -321,14 +277,14 @@ signals and effects, all the way down.
 
 ```admonish sandbox title="Live example" collapsible=true
 
-[Click to open CodeSandbox.](https://codesandbox.io/p/sandbox/8-parent-child-0-5-7rz7qd?file=%2Fsrc%2Fmain.rs%3A1%2C2)
+[Click to open CodeSandbox.](https://codesandbox.io/p/devbox/8-parent-child-0-7-cgcgk9?file=%2Fsrc%2Fmain.rs%3A1%2C1-116%2C2&workspaceId=478437f3-1f86-4b1e-b665-5c27a31451fb)
 
 <noscript>
   Please enable JavaScript to view examples.
 </noscript>
 
 <template>
-  <iframe src="https://codesandbox.io/p/sandbox/8-parent-child-0-5-7rz7qd?file=%2Fsrc%2Fmain.rs%3A1%2C2" width="100%" height="1000px" style="max-height: 100vh"></iframe>
+  <iframe src="https://codesandbox.io/p/devbox/8-parent-child-0-7-cgcgk9?file=%2Fsrc%2Fmain.rs%3A1%2C1-116%2C2&workspaceId=478437f3-1f86-4b1e-b665-5c27a31451fb" width="100%" height="1000px" style="max-height: 100vh"></iframe>
 </template>
 
 ```
@@ -337,7 +293,7 @@ signals and effects, all the way down.
 <summary>CodeSandbox Source</summary>
 
 ```rust
-use leptos::{ev::MouseEvent, *};
+use leptos::{ev::MouseEvent, prelude::*};
 
 // This highlights four different ways that child components can communicate
 // with their parent:
@@ -354,10 +310,10 @@ struct SmallcapsContext(WriteSignal<bool>);
 #[component]
 pub fn App() -> impl IntoView {
     // just some signals to toggle three classes on our <p>
-    let (red, set_red) = create_signal(false);
-    let (right, set_right) = create_signal(false);
-    let (italics, set_italics) = create_signal(false);
-    let (smallcaps, set_smallcaps) = create_signal(false);
+    let (red, set_red) = signal(false);
+    let (right, set_right) = signal(false);
+    let (italics, set_italics) = signal(false);
+    let (smallcaps, set_smallcaps) = signal(false);
 
     // the newtype pattern isn't *necessary* here but is a good practice
     // it avoids confusion with other possible future `WriteSignal<bool>` contexts
@@ -410,12 +366,10 @@ pub fn ButtonA(
 
 /// Button B receives a closure
 #[component]
-pub fn ButtonB<F>(
+pub fn ButtonB(
     /// Callback that will be invoked when the button is clicked.
-    on_click: F,
+    on_click: impl FnMut(MouseEvent) + 'static,
 ) -> impl IntoView
-where
-    F: Fn(MouseEvent) + 'static,
 {
     view! {
         <button
@@ -424,18 +378,6 @@ where
             "Toggle Right"
         </button>
     }
-
-    // just a note: in an ordinary function ButtonB could take on_click: impl Fn(MouseEvent) + 'static
-    // and save you from typing out the generic
-    // the component macro actually expands to define a
-    //
-    // struct ButtonBProps<F> where F: Fn(MouseEvent) + 'static {
-    //   on_click: F
-    // }
-    //
-    // this is what allows us to have named props in our component invocation,
-    // instead of an ordered list of function arguments
-    // if Rust ever had named function arguments we could drop this requirement
 }
 
 /// Button C is a dummy: it renders a button but doesn't handle
@@ -465,7 +407,7 @@ pub fn ButtonD() -> impl IntoView {
 }
 
 fn main() {
-    leptos::mount_to_body(App)
+    leptos::mount::mount_to_body(App)
 }
 ```
 
