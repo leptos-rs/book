@@ -7,40 +7,38 @@ As you build components you may occasionally find yourself wanting to “project
 Consider the following:
 
 ```rust
-pub fn LoggedIn<F, IV>(fallback: F, children: ChildrenFn) -> impl IntoView
+pub fn NestedShow<F, IV>(fallback: F, children: ChildrenFn) -> impl IntoView
 where
-    F: Fn() -> IV + 'static,
-    IV: IntoView,
+    F: Fn() -> IV + Send + Sync + 'static,
+    IV: IntoView + 'static,
 {
     view! {
-        <Suspense
+        <Show
+            when=|| todo!()
             fallback=|| ()
         >
             <Show
-				// check whether user is verified
-				// by reading from the resource
-                when=move || todo!()
+                when=|| todo!()
                 fallback=fallback
             >
-				{children()}
-			</Show>
-        </Suspense>
+                {children()}
+            </Show>
+        </Show>
     }
 }
 ```
 
-This is pretty straightforward: when the user is logged in, we want to show `children`. If the user is not logged in, we want to show `fallback`. And while we’re waiting to find out, we just render `()`, i.e., nothing.
+This is pretty straightforward: if the inner condition is `true`, we want to show `children`. If not, we want to show `fallback`. And if the outer condition is `false`, we just render `()`, i.e., nothing.
 
-In other words, we want to pass the children of `<LoggedIn/>` _through_ the `<Suspense/>` component to become the children of the `<Show/>`. This is what I mean by “projection.”
+In other words, we want to pass the children of `<NestedShow/>` _through_ the outer `<Show/>` component to become the children of the inner `<Show/>`. This is what I mean by “projection.”
 
 This won’t compile.
 
 ```
-error[E0507]: cannot move out of `fallback`, a captured variable in an `Fn` closure
-error[E0507]: cannot move out of `children`, a captured variable in an `Fn` closure
+error[E0525]: expected a closure that implements the `Fn` trait, but this closure only implements `FnOnce`
 ```
 
-The problem here is that both `<Suspense/>` and `<Show/>` need to be able to construct their `children` multiple times. The first time you construct `<Suspense/>`’s children, it would take ownership of `fallback` and `children` to move them into the invocation of `<Show/>`, but then they're not available for future `<Suspense/>` children construction.
+Each `<Show/>` needs to be able to construct its `children` multiple times. The first time you construct the outer `<Show/>`’s children, it takes `fallback` and `children` to move them into the invocation of the inner `<Show/>`, but then they're not available for future outer-`<Show/>` children construction.
 
 ## The Details
 
@@ -49,29 +47,26 @@ The problem here is that both `<Suspense/>` and `<Show/>` need to be able to con
 If you want to really understand the issue here, it may help to look at the expanded `view` macro. Here’s a cleaned-up version:
 
 ```rust
-Suspense(
-    ::leptos::component_props_builder(&Suspense)
+Show(
+    ShowProps::builder()
+        .when(|| todo!())
         .fallback(|| ())
         .children({
-            // fallback and children are moved into this closure
-            Box::new(move || {
-                {
-                    // fallback and children captured here
-                    leptos::Fragment::lazy(|| {
-                        vec![
-                            (Show(
-                                ::leptos::component_props_builder(&Show)
-                                    .when(|| true)
-									// but fallback is moved into Show here
-                                    .fallback(fallback)
-									// and children is moved into Show here
-                                    .children(children)
-                                    .build(),
+            // children and fallback are moved into a closure here
+            ::leptos::children::ToChildren::to_children(move || {
+                Show(
+                    ShowProps::builder()
+                        .when(|| todo!())
+                        // fallback is consumed here
+                        .fallback(fallback)
+                        .children({
+                            // children is captured here
+                            ::leptos::children::ToChildren::to_children(
+                                move || children(),
                             )
-                            .into_view()),
-                        ]
-                    })
-                }
+                        })
+                        .build(),
+                )
             })
         })
         .build(),
@@ -84,29 +79,33 @@ All components own their props; so the `<Show/>` in this case can’t be called 
 
 However, both `<Suspense/>` and `<Show/>` take `ChildrenFn`, i.e., their `children` should implement the `Fn` type so they can be called multiple times with only an immutable reference. This means we don’t need to own `children` or `fallback`; we just need to be able to pass `'static` references to them.
 
-We can solve this problem by using the [`store_value`](https://docs.rs/leptos/latest/leptos/fn.store_value.html) primitive. This essentially stores a value in the reactive system, handing ownership off to the framework in exchange for a reference that is, like signals, `Copy` and `'static`, which we can access or modify through certain methods.
+We can solve this problem by using the [`StoredValue`](https://docs.rs/leptos/latest/leptos/fn.store_value.html) primitive. This essentially stores a value in the reactive system, handing ownership off to the framework in exchange for a reference that is, like signals, `Copy` and `'static`, which we can access or modify through certain methods.
 
 In this case, it’s really simple:
 
 ```rust
-pub fn LoggedIn<F, IV>(fallback: F, children: ChildrenFn) -> impl IntoView
+pub fn NestedShow<F, IV>(fallback: F, children: ChildrenFn) -> impl IntoView
 where
-    F: Fn() -> IV + 'static,
-    IV: IntoView,
+    F: Fn() -> IV + Send + Sync + 'static,
+    IV: IntoView + 'static,
 {
-    let fallback = store_value(fallback);
-    let children = store_value(children);
+    let fallback = StoredValue::new(fallback);
+    let children = StoredValue::new(children);
+
     view! {
-        <Suspense
+        <Show
+            when=|| todo!()
             fallback=|| ()
         >
             <Show
-                when=|| todo!()
-                fallback=move || fallback.with_value(|fallback| fallback())
+                // check whether user is verified
+                // by reading from the resource
+                when=move || todo!()
+                fallback=move || fallback.read_value()()
             >
-                {children.with_value(|children| children())}
+                {children.read_value()()}
             </Show>
-        </Suspense>
+        </Show>
     }
 }
 ```
@@ -115,7 +114,7 @@ At the top level, we store both `fallback` and `children` in the reactive scope 
 
 ## A Final Note
 
-Note that this works because `<Show/>` and `<Suspense/>` only need an immutable reference to their children (which `.with_value` can give it), not ownership.
+Note that this works because `<Show/>` only needs an immutable reference to their children (which `.read_value` can give), not ownership.
 
 In other cases, you may need to project owned props through a function that takes `ChildrenFn` and therefore needs to be called more than once. In this case, you may find the `clone:` helper in the`view` macro helpful.
 
