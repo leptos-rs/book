@@ -1,8 +1,10 @@
 # Loading Data with Resources
 
-A [Resource](https://docs.rs/leptos/latest/leptos/struct.Resource.html) is a reactive data structure that reflects the current state of an asynchronous task, allowing you to integrate asynchronous `Future`s into the synchronous reactive system. Rather than waiting for its data to load with `.await`, you transform the `Future` into a signal that returns `Some(T)` if it has resolved, and `None` if it’s still pending.
+A [Resource](https://docs.rs/leptos/latest/leptos/struct.Resource.html) is a reactive data structure that reflects the current state of an asynchronous task, allowing you to integrate asynchronous `Future`s into the synchronous reactive system. 
 
-You do this by using the [`create_resource`](https://docs.rs/leptos/latest/leptos/fn.create_resource.html) function. This takes two arguments:
+Resources effectively allow you to load some async data, and then reactively access it either synchronously or asynchronously. You can `.await` them like ordinary `Future`s. But you can also access them with `.get()` and other signal access methods, as if a resource were a signal that returns `Some(T)` if it has resolved, and `None` if it’s still pending.
+
+You do this by using [`Resource::new`](https://docs.rs/leptos/latest/leptos/struct.Resource.html). This takes two arguments:
 
 1. a source signal, which will generate a new `Future` whenever it changes
 2. a fetcher function, which takes the data from that signal and returns a `Future`
@@ -11,11 +13,11 @@ Here’s an example
 
 ```rust
 // our source signal: some synchronous, local state
-let (count, set_count) = create_signal(0);
+let (count, set_count) = signal(0);
 
 // our resource
-let async_data = create_resource(
-    count,
+let async_data = Resource::new(
+    move || count.get(),
     // every time `count` changes, this will run
     |value| async move {
         logging::log!("loading data from API");
@@ -27,15 +29,15 @@ let async_data = create_resource(
 To create a resource that simply runs once, you can pass a non-reactive, empty source signal:
 
 ```rust
-let once = create_resource(|| (), |_| async move { load_data().await });
+let once = Resource::new(|| (), |_| async move { load_data().await });
 ```
 
-To access the value you can use `.get()` or `.with(|data| /* */)`. These work just like `.get()` and `.with()` on a signal—`get` clones the value and returns it, `with` applies a closure to it—but for any `Resource<_, T>`, they always return `Option<T>`, not `T`: because it’s always possible that your resource is still loading.
+To access the value you can use `.get()` (or `.read()` or `.with()`). These work just like `.get()` and friends on a signal, but they always return `Option<T>`, not `T`: because it’s always possible that your resource is still loading.
 
 So, you can show the current state of a resource in your view:
 
 ```rust
-let once = create_resource(|| (), |_| async move { load_data().await });
+let once = Resource::new(|| (), |_| async move { load_data().await });
 view! {
     <h1>"My Data"</h1>
     {move || match once.get() {
@@ -45,7 +47,7 @@ view! {
 }
 ```
 
-Resources also provide a `refetch()` method that allows you to manually reload the data (for example, in response to a button click) and a `loading()` method that returns a `ReadSignal<bool>` indicating whether the resource is currently loading or not.
+Resources also provide a `refetch()` method that allows you to manually reload the data (for example, in response to a button click). 
 
 ```admonish sandbox title="Live example" collapsible=true
 

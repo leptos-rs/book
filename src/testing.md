@@ -15,11 +15,9 @@ For example, instead of embedding logic in a component directly like this:
 ```rust
 #[component]
 pub fn TodoApp() -> impl IntoView {
-    let (todos, set_todos) = create_signal(vec![Todo { /* ... */ }]);
+    let (todos, set_todos) = signal(vec![Todo { /* ... */ }]);
     // ⚠️ this is hard to test because it's embedded in the component
-    let num_remaining = move || todos.with(|todos| {
-        todos.iter().filter(|todo| !todo.completed).sum()
-    });
+    let num_remaining = move || todos.read().iter().filter(|todo| !todo.completed).sum();
 }
 ```
 
@@ -44,9 +42,9 @@ mod tests {
 
 #[component]
 pub fn TodoApp() -> impl IntoView {
-    let (todos, set_todos) = create_signal(Todos(vec![Todo { /* ... */ }]));
+    let (todos, set_todos) = signal(Todos(vec![Todo { /* ... */ }]));
     // ✅ this has a test associated with it
-    let num_remaining = move || todos.with(Todos::num_remaining);
+    let num_remaining = move || todos.read().num_remaining();
 }
 ```
 
@@ -55,7 +53,7 @@ more idiomatic your code will feel and the easier it will be to test.
 
 ## 2. Test components with end-to-end (`e2e`) testing
 
-Our [`examples`](https://github.com/leptos-rs/leptos/tree/leptos_0.6/examples) directory has several examples with extensive end-to-end testing, using different testing tools.
+Our [`examples`](https://github.com/leptos-rs/leptos/tree/main/examples) directory has several examples with extensive end-to-end testing, using different testing tools.
 
 The easiest way to see how to use these is to take a look at the test examples themselves:
 
@@ -67,16 +65,20 @@ This is a fairly simple manual testing setup that uses the [`wasm-pack test`](ht
 
 ```rust
 #[wasm_bindgen_test]
-fn clear() {
-    let document = leptos::document();
+async fn clear() {
+    let document = document();
     let test_wrapper = document.create_element("section").unwrap();
     let _ = document.body().unwrap().append_child(&test_wrapper);
 
-    mount_to(
+    // start by rendering our counter and mounting it to the DOM
+    // note that we start at the initial value of 10
+    let _dispose = mount_to(
         test_wrapper.clone().unchecked_into(),
         || view! { <SimpleCounter initial_value=10 step=1/> },
     );
 
+    // now we extract the buttons by iterating over the DOM
+    // this would be easier if they had IDs
     let div = test_wrapper.query_selector("div").unwrap().unwrap();
     let clear = test_wrapper
         .query_selector("button")
@@ -84,14 +86,20 @@ fn clear() {
         .unwrap()
         .unchecked_into::<web_sys::HtmlElement>();
 
+    // now let's click the `clear` button
     clear.click();
 
-assert_eq!(
-    div.outer_html(),
-    // here we spawn a mini reactive system to render the test case
-    run_scope(create_runtime(), || {
+    // the reactive system is built on top of the async system, so changes are not reflected
+    // synchronously in the DOM
+    // in order to detect the changes here, we'll just yield for a brief time after each change,
+    // allowing the effects that update the view to run
+    tick().await;
+
+    // now let's test the <div> against the expected value
+    // we can do this by testing its `outerHTML`
+    assert_eq!(div.outer_html(), {
         // it's as if we're creating it with a value of 0, right?
-        let (value, set_value) = create_signal(0);
+        let (value, _set_value) = signal(0);
 
         // we can remove the event listeners because they're not rendered to HTML
         view! {
@@ -102,38 +110,28 @@ assert_eq!(
                 <button>"+1"</button>
             </div>
         }
-        // the view returned an HtmlElement<Div>, which is a smart pointer for
-        // a DOM element. So we can still just call .outer_html()
+        // Leptos supports multiple backend renderers for HTML elements
+        // .into_view() here is just a convenient way of specifying "use the regular DOM renderer"
+        .into_view()
+        // views are lazy -- they describe a DOM tree but don't create it yet
+        // calling .build() will actually build the DOM elements
+        .build()
+        // .build() returned an ElementState, which is a smart pointer for
+        // a DOM element. So we can still just call .outer_html(), which access the outerHTML on
+        // the actual DOM element
         .outer_html()
-    })
-);
-}
-```
+    });
 
-### [`wasm-bindgen-test` with `counters`](https://github.com/leptos-rs/leptos/tree/leptos_0.6/examples/counters/tests/web.rs)
-
-This more developed test suite uses a system of fixtures to refactor the manual DOM manipulation of the `counter` tests and easily test a wide range of cases.
-
-#### Sample Test
-
-```rust
-use super::*;
-use crate::counters_page as ui;
-use pretty_assertions::assert_eq;
-
-#[wasm_bindgen_test]
-fn should_increase_the_total_count() {
-    // Given
-    ui::view_counters();
-    ui::add_counter();
-
-    // When
-    ui::increment_counter(1);
-    ui::increment_counter(1);
-    ui::increment_counter(1);
-
-    // Then
-    assert_eq!(ui::total(), 3);
+    // There's actually an easier way to do this...
+    // We can just test against a <SimpleCounter/> with the initial value 0
+    assert_eq!(test_wrapper.inner_html(), {
+        let comparison_wrapper = document.create_element("section").unwrap();
+        let _dispose = mount_to(
+            comparison_wrapper.clone().unchecked_into(),
+            || view! { <SimpleCounter initial_value=0 step=1/>},
+        );
+        comparison_wrapper.inner_html()
+    });
 }
 ```
 
@@ -144,9 +142,6 @@ These tests use the common JavaScript testing tool Playwright to run end-to-end 
 #### Sample Test
 
 ```js
-import { test, expect } from "@playwright/test";
-import { CountersPage } from "./fixtures/counters_page";
-
 test.describe("Increment Count", () => {
   test("should increase the total count", async ({ page }) => {
     const ui = new CountersPage(page);
@@ -162,7 +157,7 @@ test.describe("Increment Count", () => {
 });
 ```
 
-### [Gherkin/Cucumber Tests with `todo_app_sqlite`](https://github.com/leptos-rs/leptos/blob/leptos_0.6/examples/todo_app_sqlite/e2e/README.md)
+### [Gherkin/Cucumber Tests with `todo_app_sqlite`](https://github.com/leptos-rs/leptos/blob/main/examples/todo_app_sqlite/e2e/README.md)
 
 You can integrate any testing tool you’d like into this flow. This example uses Cucumber, a testing framework based on natural language.
 
