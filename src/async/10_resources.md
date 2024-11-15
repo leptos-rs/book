@@ -1,64 +1,81 @@
 # Loading Data with Resources
 
-A [Resource](https://docs.rs/leptos/latest/leptos/struct.Resource.html) is a reactive data structure that reflects the current state of an asynchronous task, allowing you to integrate asynchronous `Future`s into the synchronous reactive system. 
+Resources are reactive wrappers for asynchronous tasks, which allow you to integrate an asynchronous `Future` into the synchronous reactive system. 
 
-Resources effectively allow you to load some async data, and then reactively access it either synchronously or asynchronously. You can `.await` them like ordinary `Future`s. But you can also access them with `.get()` and other signal access methods, as if a resource were a signal that returns `Some(T)` if it has resolved, and `None` if it’s still pending.
+They effectively allow you to load some async data, and then reactively access it either synchronously or asynchronously. You can `.await` a resource like an ordinary `Future`, and this will track it. But you can also access a resource with `.get()` and other signal access methods, as if a resource were a signal that returns `Some(T)` if it has resolved, and `None` if it’s still pending.
 
-You do this by using [`Resource::new`](https://docs.rs/leptos/latest/leptos/struct.Resource.html). This takes two arguments:
+Resources come in two primary flavors: `Resource` and `LocalResource`. If you’re using server-side rendering (which this book will discuss later), you should default to using `Resource`. If you’re using client-side rendering with a `!Send` API (like many of the browser APIs), or if you have are using SSR but have some async task that can only be done on the browser (for example, accessing an async browser API) then you should use `LocalResource`.
 
-1. a source signal, which will generate a new `Future` whenever it changes
-2. a fetcher function, which takes the data from that signal and returns a `Future`
+## Local Resources
 
-Here’s an example
+`LocalResource::new()` takes a single argument: a “fetcher” function that returns a `Future`.
+
+The `Future` can be an `async` block, the result of an `async fn` call, or any other Rust `Future`. The function will work like a derived signal or the other reactive closures that we’ve seen so far: you can read signals inside it, and whenever the signal changes, the function will run again, creating a new `Future` to run.
 
 ```rust
-// our source signal: some synchronous, local state
+// this count is our synchronous, local state
+let (count, set_count) = signal(0);
+
+// tracks `count`, and reloads by calling `load_data`
+// whenever it changes
+let async_data = LocalResource::new(move || load_data(count.get()));
+```
+
+Creating a resource immediately calls its fetcher and begins polling the `Future`. Reading from a resource will return `None` until the async task completes, at which point it will notify its subscribers, and now have `Some(value)`.
+
+You can also `.await` a resource. This might seem pointless—Why would you create a wrapper around a `Future`, only to then `.await` it? We’ll see why in the next chapter.
+
+## Resources
+
+If you’re using SSR, you should be using `Resource` instead of `LocalResource` in most cases.
+
+This API is slightly different. `Resource::new()` takes two functions as its arguments:
+
+1. a source function, which contains the “input.” This input is memoized, and whenever its value changes, the fetcher will be called.
+2. a fetcher function, which takes the data from the source function and returns a `Future`
+
+Unlike a `LocalResource`, a `Resource` serializes its value from the server to the client. Then, on the client, when first loading the page, the initial value will be deserialized rather than the async task running again. This is extremely important and very useful: It means that rather than waiting for the client WASM bundle to load and begin running the application, data loading begins on the server. (There will be more to say about this in later chapters.)
+
+This is also why the API is split into two parts: signals in the *source* function are tracked, but signals in the *fetcher* are untracked, because this allows the resource to maintain reactivity without needing to run the fetcher again during initial hydration on the client.
+
+Here’s the same example, using `Resource` instead of `LocalResource`
+
+```rust
+// this count is our synchronous, local state
 let (count, set_count) = signal(0);
 
 // our resource
 let async_data = Resource::new(
     move || count.get(),
     // every time `count` changes, this will run
-    |value| async move {
-        logging::log!("loading data from API");
-        load_data(value).await
-    },
+    |count| load_data(count) 
 );
-```
-
-To create a resource that simply runs once, you can pass a non-reactive, empty source signal:
-
-```rust
-let once = Resource::new(|| (), |_| async move { load_data().await });
-```
-
-To access the value you can use `.get()` (or `.read()` or `.with()`). These work just like `.get()` and friends on a signal, but they always return `Option<T>`, not `T`: because it’s always possible that your resource is still loading.
-
-So, you can show the current state of a resource in your view:
-
-```rust
-let once = Resource::new(|| (), |_| async move { load_data().await });
-view! {
-    <h1>"My Data"</h1>
-    {move || match once.get() {
-        None => view! { <p>"Loading..."</p> }.into_view(),
-        Some(data) => view! { <ShowData data/> }.into_view()
-    }}
-}
 ```
 
 Resources also provide a `refetch()` method that allows you to manually reload the data (for example, in response to a button click). 
 
+To create a resource that simply runs once, you can use `OnceResource`, which simply takes a `Future`, and adds some optimizations that come from knowing it will only load once.
+
+```rust
+let once = OnceResource::new(load_data(42));
+```
+
+## Accessing Resources
+
+Both `LocalResource` and `Resource` implement the various signal access methods (`.read()`, `.with()`, `.get()`), but return `Option<T>` instead of `T`; they will be `None` until the async data has loaded.
+
+`LocalResource` will actually return an `Option<SendWrapper<T>>`, which has to do with thread-safety requirements; you can use `.as_deref()` to get access to the inner type (see the example below).
+
 ```admonish sandbox title="Live example" collapsible=true
 
-[Click to open CodeSandbox.](https://codesandbox.io/p/sandbox/10-resources-0-5-x6h5j6?file=%2Fsrc%2Fmain.rs%3A2%2C3)
+[Click to open CodeSandbox.](https://codesandbox.io/p/devbox/10-resource-0-7-q5xr9m?file=%2Fsrc%2Fmain.rs%3A7%2C30)
 
 <noscript>
   Please enable JavaScript to view examples.
 </noscript>
 
 <template>
-  <iframe src="https://codesandbox.io/p/sandbox/10-resources-0-5-9jq86q?file=%2Fsrc%2Fmain.rs%3A2%2C3" width="100%" height="1000px" style="max-height: 100vh"></iframe>
+  <iframe src="https://codesandbox.io/p/devbox/10-resource-0-7-q5xr9m?file=%2Fsrc%2Fmain.rs%3A7%2C30" width="100%" height="1000px" style="max-height: 100vh"></iframe>
 </template>
 
 ```
@@ -68,7 +85,7 @@ Resources also provide a `refetch()` method that allows you to manually reload t
 
 ```rust
 use gloo_timers::future::TimeoutFuture;
-use leptos::*;
+use leptos::prelude::*;
 
 // Here we define an async function
 // This could be anything: a network request, database read, etc.
@@ -80,25 +97,16 @@ async fn load_data(value: i32) -> i32 {
 }
 
 #[component]
-fn App() -> impl IntoView {
+pub fn App() -> impl IntoView {
     // this count is our synchronous, local state
-    let (count, set_count) = create_signal(0);
+    let (count, set_count) = signal(0);
 
-    // create_resource takes two arguments after its scope
-    let async_data = create_resource(
-        // the first is the "source signal"
-        count,
-        // the second is the loader
-        // it takes the source signal's value as its argument
-        // and does some async work
-        |value| async move { load_data(value).await },
-    );
-    // whenever the source signal changes, the loader reloads
+    // tracks `count`, and reloads by calling `load_data`
+    // whenever it changes
+    let async_data = LocalResource::new(move || load_data(count.get()));
 
-    // you can also create resources that only load once
-    // just return the unit type () from the source signal
-    // that doesn't depend on anything: we just load it once
-    let stable = create_resource(|| (), |_| async move { load_data(1).await });
+    // a resource will only load once if it doesn't read any reactive data
+    let stable = LocalResource::new(|| load_data(1));
 
     // we can access the resource values with .get()
     // this will reactively return None before the Future has resolved
@@ -106,26 +114,20 @@ fn App() -> impl IntoView {
     let async_result = move || {
         async_data
             .get()
+            .as_deref()
             .map(|value| format!("Server returned {value:?}"))
             // This loading state will only show before the first load
             .unwrap_or_else(|| "Loading...".into())
     };
 
-    // the resource's loading() method gives us a
-    // signal to indicate whether it's currently loading
-    let loading = async_data.loading();
-    let is_loading = move || if loading() { "Loading..." } else { "Idle." };
-
     view! {
         <button
-            on:click=move |_| {
-                set_count.update(|n| *n += 1);
-            }
+            on:click=move |_| *set_count.write() += 1
         >
             "Click me"
         </button>
         <p>
-            <code>"stable"</code>": " {move || stable.get()}
+            <code>"stable"</code>": " {move || stable.get().as_deref().copied()}
         </p>
         <p>
             <code>"count"</code>": " {count}
@@ -134,13 +136,12 @@ fn App() -> impl IntoView {
             <code>"async_value"</code>": "
             {async_result}
             <br/>
-            {is_loading}
         </p>
     }
 }
 
 fn main() {
-    leptos::mount_to_body(App)
+    leptos::mount::mount_to_body(App)
 }
 ```
 

@@ -6,7 +6,7 @@ Well, you could always use [`spawn_local`](https://docs.rs/leptos/latest/leptos/
 
 All of this is true. Or you could use the final `async` primitive: [`create_action`](https://docs.rs/leptos/latest/leptos/fn.create_action.html).
 
-Actions and resources seem similar, but they represent fundamentally different things. If you’re trying to load data by running an `async` function, either once or when some other value changes, you probably want to use `create_resource`. If you’re trying to occasionally run an `async` function in response to something like a user clicking a button, you probably want to use `create_action`.
+Actions and resources seem similar, but they represent fundamentally different things. If you’re trying to load data by running an `async` function, either once or when some other value changes, you probably want to use a resource. If you’re trying to occasionally run an `async` function in response to something like a user clicking a button, you probably want to use an `Action`.
 
 Say we have some `async` function we want to run.
 
@@ -16,22 +16,22 @@ async fn add_todo_request(new_title: &str) -> Uuid {
 }
 ```
 
-`create_action` takes an `async` function that takes a reference to a single argument, which you could think of as its “input type.”
+`Action::new()` takes an `async` function that takes a reference to a single argument, which you could think of as its “input type.”
 
 > The input is always a single type. If you want to pass in multiple arguments, you can do it with a struct or tuple.
 >
 > ```rust
 > // if there's a single argument, just use that
-> let action1 = create_action(|input: &String| {
+> let action1 = Action::new(|input: &String| {
 >    let input = input.clone();
 >    async move { todo!() }
 > });
 >
 > // if there are no arguments, use the unit type `()`
-> let action2 = create_action(|input: &()| async { todo!() });
+> let action2 = Action::new(|input: &()| async { todo!() });
 >
 > // if there are multiple arguments, use a tuple
-> let action3 = create_action(
+> let action3 = Action::new(
 >   |input: &(usize, String)| async { todo!() }
 > );
 > ```
@@ -41,7 +41,7 @@ async fn add_todo_request(new_title: &str) -> Uuid {
 So in this case, all we need to do to create an action is
 
 ```rust
-let add_todo_action = create_action(|input: &String| {
+let add_todo_action = Action::new(|input: &String| {
     let input = input.to_owned();
     async move { add_todo_request(&input).await }
 });
@@ -66,7 +66,7 @@ let todo_id = add_todo_action.value(); // RwSignal<Option<Uuid>>
 This makes it easy to track the current state of your request, show a loading indicator, or do “optimistic UI” based on the assumption that the submission will succeed.
 
 ```rust
-let input_ref = create_node_ref::<Input>();
+let input_ref = NodeRef::<Input>::new();
 
 view! {
     <form
@@ -85,22 +85,22 @@ view! {
         <button type="submit">"Add Todo"</button>
     </form>
     // use our loading state
-    <p>{move || pending().then("Loading...")}</p>
+    <p>{move || pending.get().then_some("Loading...")}</p>
 }
 ```
 
-Now, there’s a chance this all seems a little over-complicated, or maybe too restricted. I wanted to include actions here, alongside resources, as the missing piece of the puzzle. In a real Leptos app, you’ll actually most often use actions alongside server functions, [`create_server_action`](https://docs.rs/leptos/latest/leptos/fn.create_server_action.html), and the [`<ActionForm/>`](https://docs.rs/leptos_router/latest/leptos_router/fn.ActionForm.html) component to create really powerful progressively-enhanced forms. So if this primitive seems useless to you... Don’t worry! Maybe it will make sense later. (Or check out our [`todo_app_sqlite`](https://github.com/leptos-rs/leptos/blob/main/examples/todo_app_sqlite/src/todo.rs) example now.)
+Now, there’s a chance this all seems a little over-complicated, or maybe too restricted. I wanted to include actions here, alongside resources, as the missing piece of the puzzle. In a real Leptos app, you’ll actually most often use actions alongside server functions, [`ServerAction`](https://docs.rs/leptos/latest/leptos/fn.create_server_action.html), and the [`<ActionForm/>`](https://docs.rs/leptos_router/latest/leptos_router/fn.ActionForm.html) component to create really powerful progressively-enhanced forms. So if this primitive seems useless to you... Don’t worry! Maybe it will make sense later. (Or check out our [`todo_app_sqlite`](https://github.com/leptos-rs/leptos/blob/main/examples/todo_app_sqlite/src/todo.rs) example now.)
 
 ```admonish sandbox title="Live example" collapsible=true
 
-[Click to open CodeSandbox.](https://codesandbox.io/p/sandbox/13-actions-0-5-8xk35v?file=%2Fsrc%2Fmain.rs%3A1%2C1)
+[Click to open CodeSandbox.](https://codesandbox.io/p/devbox/13-action-0-7-g73rl9?file=%2Fsrc%2Fmain.rs)
 
 <noscript>
   Please enable JavaScript to view examples.
 </noscript>
 
 <template>
-  <iframe src="https://codesandbox.io/p/sandbox/13-actions-0-5-8xk35v?file=%2Fsrc%2Fmain.rs%3A1%2C1" width="100%" height="1000px" style="max-height: 100vh"></iframe>
+  <iframe src="https://codesandbox.io/p/devbox/13-action-0-7-g73rl9?file=%2Fsrc%2Fmain.rs" width="100%" height="1000px" style="max-height: 100vh"></iframe>
 </template>
 
 ```
@@ -110,7 +110,7 @@ Now, there’s a chance this all seems a little over-complicated, or maybe too r
 
 ```rust
 use gloo_timers::future::TimeoutFuture;
-use leptos::{html::Input, *};
+use leptos::{html::Input, prelude::*};
 use uuid::Uuid;
 
 // Here we define an async function
@@ -120,16 +120,17 @@ use uuid::Uuid;
 async fn add_todo(text: &str) -> Uuid {
     _ = text;
     // fake a one-second delay
-    TimeoutFuture::new(1_000).await;
+    // SendWrapper allows us to use this !Send browser API; don't worry about it
+    send_wrapper::SendWrapper::new(TimeoutFuture::new(1_000)).await;
     // pretend this is a post ID or something
     Uuid::new_v4()
 }
 
 #[component]
-fn App() -> impl IntoView {
+pub fn App() -> impl IntoView {
     // an action takes an async function with single argument
     // it can be a simple type, a struct, or ()
-    let add_todo = create_action(|input: &String| {
+    let add_todo = Action::new(|input: &String| {
         // the input is a reference, but we need the Future to own it
         // this is important: we need to clone and move into the Future
         // so it has a 'static lifetime
@@ -143,7 +144,7 @@ fn App() -> impl IntoView {
     let pending = add_todo.pending();
     let todo_id = add_todo.value();
 
-    let input_ref = create_node_ref::<Input>();
+    let input_ref = NodeRef::<Input>::new();
 
     view! {
         <form
@@ -161,24 +162,24 @@ fn App() -> impl IntoView {
             </label>
             <button type="submit">"Add Todo"</button>
         </form>
-        <p>{move || pending().then(|| "Loading...")}</p>
+        <p>{move || pending.get().then_some("Loading...")}</p>
         <p>
             "Submitted: "
-            <code>{move || format!("{:#?}", submitted())}</code>
+            <code>{move || format!("{:#?}", submitted.get())}</code>
         </p>
         <p>
             "Pending: "
-            <code>{move || format!("{:#?}", pending())}</code>
+            <code>{move || format!("{:#?}", pending.get())}</code>
         </p>
         <p>
             "Todo ID: "
-            <code>{move || format!("{:#?}", todo_id())}</code>
+            <code>{move || format!("{:#?}", todo_id.get())}</code>
         </p>
     }
 }
 
 fn main() {
-    leptos::mount_to_body(App)
+    leptos::mount::mount_to_body(App)
 }
 ```
 
