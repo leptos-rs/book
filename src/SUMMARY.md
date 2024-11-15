@@ -18,7 +18,7 @@
   - [No Macros: The View Builder Syntax](./view/builder.md)
 - [Reactivity](./reactivity/README.md)
   - [Working with Signals](./reactivity/working_with_signals.md)
-  - [Responding to Changes with `create_effect`](./reactivity/14_create_effect.md)
+  - [Responding to Changes with Effects](./reactivity/14_create_effect.md)
   - [Interlude: Reactivity and Functions](./reactivity/interlude_functions.md)
 - [Testing](./testing.md)
 - [Async](./async/README.md)
