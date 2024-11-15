@@ -13,26 +13,26 @@ Consider the following simple Leptos app:
 
 ```rust
 use leptos::logging::log;
-use leptos::*;
+use leptos::prelude::*;
 
 #[component]
 pub fn App() -> impl IntoView {
-    let (count, set_count) = create_signal(0);
+    let (count, set_count) = signal(0);
 
     view! {
-        <button on:click=move |_| set_count.update(|n| *n += 1)>"+1"</button>
-        {move || if count() % 2 == 0 {
-            view! { <p>"Even numbers are fine."</p> }.into_view()
+        <button on:click=move |_| *set_count.write() += 1>"+1"</button>
+        {move || if count.get() % 2 == 0 {
+            view! { <p>"Even numbers are fine."</p> }.into_any()
         } else {
-            view! { <InnerComponent count/> }.into_view()
+            view! { <InnerComponent count/> }.into_any()
         }}
     }
 }
 
 #[component]
 pub fn InnerComponent(count: ReadSignal<usize>) -> impl IntoView {
-    create_effect(move |_| {
-        log!("count is odd and is {}", count());
+    Effect::new(move |_| {
+        log!("count is odd and is {}", count.get());
     });
 
     view! {
@@ -98,20 +98,20 @@ This means that when your application is rendered, it creates a tree of nested e
 let button = /* render the <button> once */;
 
 // the renderer wraps an effect around the `move || if count() ...`
-create_effect(|_| {
-    if count() % 2 == 0 {
+Effect::new(|_| {
+    if count.get() % 2 == 0 {
         let p = /* render the even <p> */;
     } else {
         // the user created an effect to log the count
-        create_effect(|_| {
-            log!("count is odd and is {}", count());
+        Effect::new(|_| {
+            log!("count is odd and is {}", count.get());
         });
 
         let p1 = /* render the <p> from OddDuck */;
         let p2 = /* render the second <p> */ 
 
         // the renderer creates an effect to update the second <p>
-        create_effect(|_| {
+        Effect::new(|_| {
             // update the content of the <p> with the signal
             p2.set_text_content(count.get());
         });
@@ -154,6 +154,18 @@ The opposite is also true, and comes up particularly when working with collectio
 For example, if you have a todo app that creates a new `RwSignal<Todo>` for each todo, stores it in an `RwSignal<Vec<RwSignal<Todo>>>`, and then passes it down to a `<Todo/>`, that signal is not automatically disposed when you remove the todo from the list, but must be manually disposed, or it will "leak" for as long as its owner is still alive. (See the [TodoMVC example](https://github.com/leptos-rs/leptos/blob/main/examples/todomvc/src/lib.rs#L77-L85) for more discussion.) 
 
 This is only an issue when you create signals, store them in a collection, and remove them from the collection without manually disposing of them as well.
+
+### Solving these Problems with Reference-Counted Signals
+
+0.7 introduces a reference-counted equivalent for each of our arena-allocated primitive: for every `RwSignal` there is an `ArcRwSignal` (`ArcReadSignal`, `ArcWriteSignal`, `ArcMemo`, and so on).
+
+These have their memory and disposal managed by reference counting, rather than the ownership tree.
+
+This means that they can safely be used in situations in which the arena-allocated equivalents would either be leaked or used after being disposed.
+
+This is especially useful when creating collections of signals: you might create `ArcRwSignal<_>` instead of `RwSignal<_>`, and then convert it into an `RwSignal<_>` in each row of a table, for example.
+
+See the use of `ArcRwSignal<i32>` in the [`counters` example](https://github.com/leptos-rs/leptos/blob/main/examples/counters/src/lib.rs) for a more concrete example.
 
 ## Connecting the Dots
 

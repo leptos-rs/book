@@ -87,121 +87,27 @@ However, in some cases you want direct access to the underlying DOM element that
 on [“uncontrolled inputs”](/view/05_forms.html?highlight=NodeRef#uncontrolled-inputs) showed how to do this using the 
 [`NodeRef`](https://docs.rs/leptos/latest/leptos/struct.NodeRef.html) type.
 
-You may notice that [`NodeRef::get`](https://docs.rs/leptos/latest/leptos/struct.NodeRef.html#method.get) returns an `Option<leptos::HtmlElement<T>>`. This is *not* the same type as a [`web_sys::HtmlElement`](https://docs.rs/web-sys/latest/web_sys/struct.HtmlElement.html), although they 
-are related. So what is this [`HtmlElement<T>`](https://docs.rs/leptos/latest/leptos/struct.HtmlElement.html) type, and how do you use it?
+[`NodeRef::get`](https://docs.rs/leptos/latest/leptos/struct.NodeRef.html#method.get) returns a correctly-typed 
+`web-sys` element that can be directly manipulated.
 
-### Overview
+For example, consider the following:
+```rust 
+#[component]
+pub fn App() -> impl IntoView {
+    let node_ref = NodeRef::<Input>::new();
 
-`web_sys::HtmlElement` is the Rust equivalent of the browser’s [`HTMLElement`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement) 
-interface, which is implemented for all HTML elements. It provides access to a minimal set of functions and APIs that are guaranteed to be 
-available for any HTML element. Each particular HTML element then has its own element class, which implements additional functionality. 
-The goal of `leptos::HtmlElement<T>` is to bridge the gap between elements in your view and these more specific JavaScript types, so that you
-can access the particular functionality of those elements.
+    Effect::new(move |_| {
+        if let Some(node) = node_ref.get() {
+            leptos::logging::log!("value = {}", node.value());
+        }
+    });
 
-This is implemented by using the Rust `Deref` trait to allow you to dereference a `leptos::HtmlElement<T>` to the appropriately-typed JS object
-for that particular element type `T`.
-
-### Definition
-
-Understanding this relationship involves understanding some related traits.
-
-The following simply defines what types are allowed inside the `T` of `leptos::HtmlElement<T>` and how it links to `web_sys`.
-
-```rust
-pub struct HtmlElement<El> where El: ElementDescriptor { /* ... */ }
-
-pub trait ElementDescriptor: ElementDescriptorBounds { /* ... */ }
-
-pub trait ElementDescriptorBounds: Debug {}
-impl<El> ElementDescriptorBounds for El where El: Debug {}
-
-// this is implemented for every single element in `leptos::{html, svg, math}::*`
-impl ElementDescriptor for leptos::html::Div { /* ... */ }
-
-// same with this, derefs to the corresponding `web_sys::Html*Element`
-impl Deref for leptos::html::Div {
-    type Target = web_sys::HtmlDivElement;
-    // ...
+    view! {
+        <input node_ref=node_ref/>
+    }
 }
 ```
 
-The following is from `web_sys`:
-```rust
-impl Deref for web_sys::HtmlDivElement {
-    type Target = web_sys::HtmlElement;
-    // ...
-}
+Inside the effect here, `node` is simply a `web_sys::HtmlInputElement`. This allows us to call any appropriate methods.
 
-impl Deref for web_sys::HtmlElement {
-    type Target = web_sys::Element;
-    // ...
-}
-
-impl Deref for web_sys::Element {
-    type Target = web_sys::Node;
-    // ...
-}
-
-impl Deref for web_sys::Node {
-    type Target = web_sys::EventTarget;
-    // ...
-}
-```
-
-`web_sys` uses long deref chains to emulate the inheritance used in JavaScript.
-If you can't find the method you're looking for on one type, take a look further down the deref chain.
-The `leptos::html::*` types all deref into `web_sys::Html*Element` or `web_sys::HtmlElement`.
-By calling `element.method()`, Rust will automatically add more derefs as needed to call the correct method!
-
-However, some methods have the same name, such as [`leptos::HtmlElement::style`](https://docs.rs/leptos/latest/leptos/struct.HtmlElement.html#method.style) and [`web_sys::HtmlElement::style`](https://docs.rs/web-sys/latest/web_sys/struct.HtmlElement.html#method.style).
-In these cases, Rust will pick the one that requires the least amount of derefs, which is `leptos::HtmlElement::style` if you're getting an element straight from a `NodeRef`.
-If you wish to use the `web_sys` method instead, you can manually deref with `(*element).style()`.
-
-If you want to have even more control over which type you are calling a method from, `AsRef<T>` is implemented for all types that are part of the deref chain, so you can explicitly state which type you want.
-
-> See also: [The `wasm-bindgen` Guide: Inheritance in `web-sys`](https://rustwasm.github.io/wasm-bindgen/web-sys/inheritance.html).
-
-### Clones
-
-The `web_sys::HtmlElement` (and by extension the `leptos::HtmlElement` too) actually only store references to the HTML element it affects.
-Therefore, calling `.clone()` doesn't actually make a new HTML element, it simply gets another reference to the same one.
-Calling methods that change the element from any of its clones will affect the original element.
-
-Unfortunately, `web_sys::HtmlElement` does not implement `Copy`, so you may need to add a bunch of clones especially when using it in closures.
-Don't worry though, these clones are cheap!
-
-### Casting
-
-You can get less specific types through `Deref` or `AsRef`, so use those when possible.
-However, if you need to cast to a more specific type (e.g. from an `EventTarget` to a `HtmlInputElement`), you will need to use the methods provided by `wasm_bindgen::JsCast` (re-exported through `web_sys::wasm_bindgen::JsCast`).
-You'll probably only need the [`dyn_ref`](https://docs.rs/wasm-bindgen/0.2.90/wasm_bindgen/trait.JsCast.html#method.dyn_ref) method.
-
-```rust
-use web_sys::wasm_bindgen::JsCast;
-
-let on_click = |ev: MouseEvent| {
-    let target: HtmlInputElement = ev.current_target().unwrap().dyn_ref().unwrap();
-    // or, just use the existing `leptos::event_target_*` functions
-}
-```
-
-> See the [`event_target_*` functions here](https://docs.rs/leptos/latest/leptos/fn.event_target.html?search=event_target), if you're curious.
-
-### `leptos::HtmlElement`
-
-The [`leptos::HtmlElement`](https://docs.rs/leptos/latest/leptos/struct.HtmlElement.html) adds some extra convenience methods to make it easier to manipulate common attributes.
-These methods were built for the [builder syntax](./view/builder.md), so it takes and returns `self`.
-You can just do `_ = element.clone().<method>()` to ignore the element it returns - it'll still affect the original element, even though it doesn't look like it (see previous section on [Clones](#clones))!
-
-Here are some of the common methods you may want to use, for example in event listeners or `use:` directives.
-- [`id`](https://docs.rs/leptos/latest/leptos/struct.HtmlElement.html#method.id): *overwrites* the id on the element.
-- [`classes`](https://docs.rs/leptos/latest/leptos/struct.HtmlElement.html#method.classes): *adds* the classes to the element.
-    You can specify multiple classes with a space-separated string.
-    You can also use [`class`](https://docs.rs/leptos/latest/leptos/struct.HtmlElement.html#method.class) to conditionally add a *single* class: do not add multiple with this method.
-- [`attr`](https://docs.rs/leptos/latest/leptos/struct.HtmlElement.html#method.attr): sets a `key=value` attribute to the element.
-- [`prop`](https://docs.rs/leptos/latest/leptos/struct.HtmlElement.html#method.prop): sets a *property* on the element: see the distinction between [properties and attributes here](./view/05_forms.md#why-do-you-need-propvalue).
-- [`on`](https://docs.rs/leptos/latest/leptos/struct.HtmlElement.html#method.on): adds an event listener to the element.
-    Specify the event type through one of [`leptos::ev::*`](https://docs.rs/leptos/latest/leptos/ev/index.html) (it's the ones in all lowercase).
-- [`child`](https://docs.rs/leptos/latest/leptos/struct.HtmlElement.html#method.child): adds an element as the last child of the element.
-
-Take a look at the rest of the [`leptos::HtmlElement`](https://docs.rs/leptos/latest/leptos/struct.HtmlElement.html) methods too. If none of them fit your requirements, also take a look at [`leptos-use`](https://leptos-use.rs/). Otherwise, you’ll have to use the `web_sys` APIs.
+(Note that `.get()` returns an `Option` here, because the `NodeRef` is empty until it is filled when the DOM elements are actually created. Effects run a tick after the component runs, so in most cases the `<input>` will already have been created by the time the effect runs.)

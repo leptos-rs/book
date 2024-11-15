@@ -71,17 +71,14 @@ pub fn App() -> impl IntoView {
 
 In other words, if this is being compiled to WASM, it has three items; otherwise it’s empty.
 
-When I load the page in the browser, I see nothing. If I open the console I see a bunch of warnings:
+When I load the page in the browser, I see nothing. If I open the console I see a panic:
 
 ```
-element with id 0-3 not found, ignoring it for hydration
-element with id 0-4 not found, ignoring it for hydration
-element with id 0-5 not found, ignoring it for hydration
-component with id _0-6c not found, ignoring it for hydration
-component with id _0-6o not found, ignoring it for hydration
+ssr_modes.js:423 panicked at /.../tachys/src/html/element/mod.rs:352:14:
+called `Option::unwrap()` on a `None` value
 ```
 
-The WASM version of your app, running in the browser, expects to find three items; but the HTML has none.
+The WASM version of your app, running in the browser, is expecting to find an element (in fact, it’s expecting three elements!) But the HTML sent from the server has none.
 
 #### Solution
 
@@ -107,7 +104,7 @@ There are a few ways to avoid this:
 
 1. Only use libraries that can run on both the server and the client. [`reqwest`](https://docs.rs/reqwest/latest/reqwest/), for example, works for making HTTP requests in both settings.
 2. Use different libraries on the server and the client, and gate them using the `#[cfg]` macro. ([Click here for an example](https://github.com/leptos-rs/leptos/blob/main/examples/hackernews/src/api.rs).)
-3. Wrap client-only code in `create_effect`. Because `create_effect` only runs on the client, this can be an effective way to access browser APIs that are not needed for initial rendering.
+3. Wrap client-only code in `Effect::new`. Because effects only run on the client, this can be an effective way to access browser APIs that are not needed for initial rendering.
 
 For example, say that I want to store something in the browser’s `localStorage` whenever a signal changes.
 
@@ -128,9 +125,9 @@ But if I wrap it in an effect...
 #[component]
 pub fn App() -> impl IntoView {
     use gloo_storage::Storage;
-    create_effect(move |_| {
+    Effect::new(move |_| {
         let storage = gloo_storage::LocalStorage::raw();
-		logging::log!("{storage:?}");
+		log!("{storage:?}");
     });
 }
 ```

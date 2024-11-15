@@ -12,29 +12,29 @@ The process is simple:
 > **Note:** `<ActionForm/>` only works with the default URL-encoded `POST` encoding for server functions, to ensure graceful degradation/correct behavior as an HTML form.
 
 ```rust
-#[server(AddTodo, "/api")]
+#[server]
 pub async fn add_todo(title: String) -> Result<(), ServerFnError> {
     todo!()
 }
 
 #[component]
 fn AddTodo() -> impl IntoView {
-	let add_todo = create_server_action::<AddTodo>();
-	// holds the latest *returned* value from the server
-	let value = add_todo.value();
-	// check if the server has returned an error
-	let has_error = move || value.with(|val| matches!(val, Some(Err(_))));
+    let add_todo = ServerAction::<AddTodo>::new();
+    // holds the latest *returned* value from the server
+    let value = add_todo.value();
+    // check if the server has returned an error
+    let has_error = move || value.with(|val| matches!(val, Some(Err(_))));
 
-	view! {
-		<ActionForm action=add_todo>
-			<label>
-				"Add a Todo"
-				// `title` matches the `title` argument to `add_todo`
-				<input type="text" name="title"/>
-			</label>
-			<input type="submit" value="Add"/>
-		</ActionForm>
-	}
+    view! {
+        <ActionForm action=add_todo>
+            <label>
+                "Add a Todo"
+                // `title` matches the `title` argument to `add_todo`
+                <input type="text" name="title"/>
+            </label>
+            <input type="submit" value="Add"/>
+        </ActionForm>
+    }
 }
 ```
 
@@ -62,9 +62,6 @@ let on_submit = move |ev| {
 Server function arguments that are structs with nested serializable fields should make use of indexing notation of `serde_qs`.
 
 ```rust
-use leptos::*;
-use leptos_router::*;
-
 #[derive(serde::Serialize, serde::Deserialize, Debug, Clone)]
 struct HeftyData {
     first_name: String,
@@ -73,7 +70,7 @@ struct HeftyData {
 
 #[component]
 fn ComplexInput() -> impl IntoView {
-    let submit = Action::<VeryImportantFn, _>::server();
+    let submit = ServerAction::<VeryImportantFn>::new();
 
     view! {
       <ActionForm action=submit>
@@ -89,12 +86,9 @@ fn ComplexInput() -> impl IntoView {
 }
 
 #[server]
-async fn very_important_fn(
-    hefty_arg: HeftyData,
-) -> Result<(), ServerFnError> {
+async fn very_important_fn(hefty_arg: HeftyData) -> Result<(), ServerFnError> {
     assert_eq!(hefty_arg.first_name.as_str(), "leptos");
     assert_eq!(hefty_arg.last_name.as_str(), "closures-everywhere");
     Ok(())
 }
-
 ```

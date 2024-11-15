@@ -5,7 +5,7 @@ You don’t need to know very much about how the reactive system actually works 
 The reactive primitives you use are divided into three sets:
 
 - **Signals** (`ReadSignal`/`WriteSignal`, `RwSignal`, `Resource`, `Trigger`) Values you can actively change to trigger reactive updates.
-- **Computations** (`Memo`s) Values that depend on signals (or other computations) and derive a new reactive value through some pure computation.
+- **Computations** (`Memo`) Values that depend on signals (or other computations) and derive a new reactive value through some pure computation.
 - **Effects** Observers that listen to changes in some signals or computations and run a function, causing some side effect.
 
 Derived signals are a kind of non-primitive computation: as plain closures, they simply allow you to refactor some repeated signal-based computation into a reusable function that can be called in multiple places, but they are not represented in the reactive system itself.
@@ -32,26 +32,29 @@ Signals, memos, and effects all share three characteristics:
 
 In reality then, signals, memos, and effects are just conventional names for one generic concept of a “node” in a reactive graph. Signals are always “root nodes,” with no sources/parents. Effects are always “leaf nodes,” with no subscribers. Memos typically have both sources and subscribers.
 
+> In the following examples, I’m going to use the `nightly` syntax, simply for the sake of reducing verbosity in a document that’s intended for you to read, not to copy-and-paste from!
+
 ### Simple Dependencies
 
 So imagine the following code:
 
 ```rust
 // A
-let (name, set_name) = create_signal("Alice");
+let (name, set_name) = signal("Alice");
 
 // B
-let name_upper = create_memo(move |_| name.with(|n| n.to_uppercase()));
+let name_upper = Memo::new(move |_| name.with(|n| n.to_uppercase()));
 
 // C
-create_effect(move |_| {
+Effect::new(move |_| {
 	log!("{}", name_upper());
 });
 
 set_name("Bob");
 ```
 
-You can easily imagine the reactive graph here: `name` is the only signal/origin node, the `create_effect` is the only effect/terminal node, and there’s one intervening memo.
+
+You can easily imagine the reactive graph here: `name` is the only signal/origin node, the `Effect::new` is the only effect/terminal node, and there’s one intervening memo.
 
 ```
 A   (name)
@@ -67,21 +70,21 @@ Let’s make it a little more complex.
 
 ```rust
 // A
-let (name, set_name) = create_signal("Alice");
+let (name, set_name) = signal("Alice");
 
 // B
-let name_upper = create_memo(move |_| name.with(|n| n.to_uppercase()));
+let name_upper = Memo::new(move |_| name.with(|n| n.to_uppercase()));
 
 // C
-let name_len = create_memo(move |_| name.len());
+let name_len = Memo::new(move |_| name.len());
 
 // D
-create_effect(move |_| {
+Effect::new(move |_| {
 	log!("len = {}", name_len());
 });
 
 // E
-create_effect(move |_| {
+Effect::new(move |_| {
 	log!("name = {}", name_upper());
 });
 ```
@@ -131,16 +134,16 @@ One more example, of what’s sometimes called **the diamond problem**.
 
 ```rust
 // A
-let (name, set_name) = create_signal("Alice");
+let (name, set_name) = signal("Alice");
 
 // B
-let name_upper = create_memo(move |_| name.with(|n| n.to_uppercase()));
+let name_upper = Memo::new(move |_| name.with(|n| n.to_uppercase()));
 
 // C
-let name_len = create_memo(move |_| name.len());
+let name_len = Memo::new(move |_| name.len());
 
 // D
-create_effect(move |_| {
+Effect::new(move |_| {
 	log!("{} is {} characters long", name_upper(), name_len());
 });
 ```
@@ -218,7 +221,7 @@ All of this is cool, and memos are pretty great. But most actual applications ha
 In cases in which the computation itself is cheaper than this reactive work, you should avoid “over-wrapping” with memos and simply use derived signals. Here’s a great example in which you should never use a memo:
 
 ```rust
-let (a, set_a) = create_signal(1);
+let (a, set_a) = signal(1);
 // none of these make sense as memos
 let b = move || a() + 2;
 let c = move || b() % 2 == 0;
@@ -234,10 +237,10 @@ Even though memoizing would technically save an extra calculation of `d` between
 At the very most, you might consider memoizing the final node before running some expensive side effect:
 
 ```rust
-let text = create_memo(move |_| {
+let text = Memo::new(move |_| {
     d()
 });
-create_effect(move |_| {
+Effect::new(move |_| {
     engrave_text_into_bar_of_gold(&text());
 });
 ```
