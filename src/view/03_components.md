@@ -386,6 +386,49 @@ type, and each of the fields used to add props. It can be a little hard to
 understand how powerful this is until you hover over the component name or props
 and see the power of the `#[component]` macro combined with rust-analyzer here.
 
+## Spreading Attributes onto Components
+
+Sometimes you want users to be able to add additional attributes to a component. For example, you might want users to be able to add their own `class` or `id` attributes for styling or other purposes.
+
+You *could* do this by creating `class` or `id` props that you then apply to the appropriate element. But Leptos also supports “spreading” additional attributes onto components. Attributes added to a component will be applied to all top-level HTML elements that components returns from its view.
+
+```rust
+// you can create attribute lists by using the view macro with a spread {..} as the tag name
+let spread_onto_component = view! {
+    <{..} aria-label="a component with attribute spreading"/>
+};
+
+
+view! {
+    // attributes that are spread onto a component will be applied to *all* elements returned as part of
+    // the component's view. to apply attributes to a subset of the component, pass them via a component prop
+    <ComponentThatTakesSpread
+        // plain identifiers are for props 
+        some_prop="foo"
+        another_prop=42
+
+        // the class:, style:, prop:, on: syntaxes work just as they do on elements
+        class:foo=true
+        style:font-weight="bold"
+        prop:cool=42
+        on:click=move |_| alert("clicked ComponentThatTakesSpread")
+
+        // to pass a plain HTML attribute, prefix it with attr:
+        attr:id="foo"
+
+        // or, if you want to include multiple attributes, rather than prefixing each with
+        // attr:, you can separate them from component props with the spread {..}
+        {..} // everything after this is treated as an HTML attribute
+        title="ooh, a title!"
+        
+        // we can add the whole list of attributes defined above
+        {..spread_onto_component}
+    />
+}
+```
+
+See the [`spread` example](https://github.com/leptos-rs/leptos/blob/main/examples/spread/src/lib.rs) for more examples.
+
 ```admonish sandbox title="Live example" collapsible=true
 
 [Click to open CodeSandbox.](https://codesandbox.io/p/devbox/3-components-0-7-rkjn3j?file=%2Fsrc%2Fmain.rs%3A39%2C10)

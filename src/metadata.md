@@ -28,15 +28,14 @@ There’s a very simple way to determine whether you should use a capital-S `<Sc
 
 ## `<Body/>` and `<Html/>`
 
-There are even a couple elements designed to make semantic HTML and styling easier. [`<Html/>`](https://docs.rs/leptos_meta/latest/leptos_meta/fn.Html.html) lets you set the `lang` and `dir` on your `<html>` tag from your application code. `<Html/>` and [`<Body/>`](https://docs.rs/leptos_meta/latest/leptos_meta/fn.Body.html) both have `class` props that let you set their respective `class` attributes, which is sometimes needed by CSS frameworks for styling.
-
-`<Body/>` and `<Html/>` both also have `attributes` props which can be used to set any number of additional attributes on them via the `attr:` syntax:
+There are even a couple elements designed to make semantic HTML and styling easier. `<Body/>` and `<Html/>` are designed to allow you to add arbitrary attributes to the `<html>` and `<body>` tags on your page. You can add any number of attributes using the usual Leptos syntax after the spread operator (`{..}`) and those will be added directly to the appropriate element.
 
 ```rust
 <Html
-	lang="he"
-	dir="rtl"
-	attr:data-theme="dark"
+    {..}
+    lang="he"
+    dir="rtl"
+    data-theme="dark"
 />
 ```
 

@@ -15,7 +15,7 @@ This allows you to write components like this:
 ```rust
 #[component]
 fn Home() -> impl IntoView {
-    let (count, set_count) = create_signal(0);
+    let (count, set_count) = signal(0);
 
     view! {
         <main class="my-0 mx-auto max-w-3xl text-center">
@@ -23,12 +23,12 @@ fn Home() -> impl IntoView {
             <p class="px-10 pb-10 text-left">"Tailwind will scan your Rust files for Tailwind class names and compile them into a CSS file."</p>
             <button
                 class="bg-sky-600 hover:bg-sky-700 px-5 py-3 text-white rounded-lg"
-                on:click=move |_| set_count.update(|count| *count += 1)
+                on:click=move |_| *set_count.write() += 1
             >
-                {move || if count() == 0 {
+                {move || if count.get() == 0 {
                     "Click me!".to_string()
                 } else {
-                    count().to_string()
+                    count.get().to_string()
                 }}
             </button>
         </main>
@@ -36,7 +36,7 @@ fn Home() -> impl IntoView {
 }
 ```
 
-It can be a little complicated to set up the Tailwind integration at first, but you can check out our two examples of how to use Tailwind with a [client-side-rendered `trunk` application](https://github.com/leptos-rs/leptos/tree/leptos_0.6/examples/tailwind_csr) or with a [server-rendered `cargo-leptos` application](https://github.com/leptos-rs/leptos/tree/leptos_0.6/examples/tailwind_actix). `cargo-leptos` also has some [built-in Tailwind support](https://github.com/leptos-rs/cargo-leptos#site-parameters) that you can use as an alternative to Tailwind’s CLI.
+It can be a little complicated to set up the Tailwind integration at first, but you can check out our two examples of how to use Tailwind with a [client-side-rendered `trunk` application](https://github.com/leptos-rs/leptos/tree/main/examples/tailwind_csr) or with a [server-rendered `cargo-leptos` application](https://github.com/leptos-rs/leptos/tree/main/examples/tailwind_actix). `cargo-leptos` also has some [built-in Tailwind support](https://github.com/leptos-rs/cargo-leptos#site-parameters) that you can use as an alternative to Tailwind’s CLI.
 
 ## Stylers: Compile-time CSS Extraction
 
@@ -107,28 +107,6 @@ You can edit the CSS directly without causing a Rust recompile.
 ```css
 .jumbotron {
   background: blue;
-}
-```
-
-## Styled: Runtime CSS Scoping
-
-[Styled](https://github.com/eboody/styled) is a runtime scoped CSS library that integrates well with Leptos. It lets you declare scoped CSS in the body of your component function, and then applies those styles at runtime.
-
-```rust
-use styled::style;
-
-#[component]
-pub fn MyComponent() -> impl IntoView {
-    let styles = style!(
-      div {
-        background-color: red;
-        color: white;
-      }
-    );
-
-    styled::view! { styles,
-        <div>"This text should be red with white text."</div>
-    }
 }
 ```
 
