@@ -3,7 +3,7 @@
 We just defined the following set of routes:
 
 ```rust,no_run
-{{#rustdoc_include 17_nested_routing.rs:s1}}
+{{#rustdoc_include c17_nested_routing.rs:s1}}
 ```
 
 There’s a certain amount of duplication here: `/users` and `/users/:id`. This is fine for a small app, but you can probably already tell it won’t scale well. Wouldn’t it be nice if we could nest these routes?
@@ -11,13 +11,7 @@ There’s a certain amount of duplication here: `/users` and `/users/:id`. This 
 Well... you can!
 
 ```rust
-<Routes fallback=|| "Not found.">
-  <Route path=path!("/") view=Home/>
-  <ParentRoute path=path!("/users") view=Users>
-    <Route path=path!(":id") view=UserProfile/>
-  </ParentRoute>
-  <Route path=path!("/*any") view=|| view! { <h1>"Not Found"</h1> }/>
-</Routes>
+{{#rustdoc_include c17_nested_routing.rs:s2}}
 ```
 
 You can nest a `<Route/>` inside a `<ParentRoute/>`. Seems straightforward.
@@ -35,10 +29,7 @@ Let me put that another way: The goal of defining nested routes is not primarily
 Let’s look back at our practical example.
 
 ```rust
-<Routes fallback=|| "Not found.">
-  <Route path=path!("/users") view=Users/>
-  <Route path=path!("/users/:id") view=UserProfile/>
-</Routes>
+{{#rustdoc_include c17_nested_routing.rs:s3}}
 ```
 
 This means:
@@ -49,11 +40,7 @@ This means:
 Let’s say I use nested routes instead:
 
 ```rust
-<Routes fallback=|| "Not found.">
-  <ParentRoute path=path!("/users") view=Users>
-    <Route path=path!(":id") view=UserProfile/>
-  </ParentRoute>
-</Routes>
+{{#rustdoc_include c17_nested_routing.rs:s4}}
 ```
 
 This means:
@@ -64,12 +51,7 @@ This means:
 I actually need to add a fallback route
 
 ```rust
-<Routes>
-  <Route path="/users" view=Users>
-    <Route path=":id" view=UserProfile/>
-    <Route path="" view=NoUser/>
-  </Route>
-</Routes>
+{{#rustdoc_include c17_nested_routing.rs:s5}}
 ```
 
 Now:
