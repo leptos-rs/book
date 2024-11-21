@@ -20,22 +20,29 @@ Elements are created by calling a function with the same name as the HTML elemen
 p()
 ```
 
-You can add children to the element with [`.child()`](https://docs.rs/leptos/latest/leptos/struct.HtmlElement.html#method.child), which takes a single child or a tuple or array of types that implement [`IntoView`](https://docs.rs/leptos/latest/leptos/trait.IntoView.html).
+You can add children to the element with [`.child()`](https://docs.rs/leptos/0.7.0-gamma3/leptos/html/trait.ElementChild.html#tymethod.child), which takes a single child or a tuple or array of types that implement [`IntoView`](https://docs.rs/leptos/0.7.0-gamma3/leptos/trait.IntoView.html).
 
 ```rust
 p().child((em().child("Big, "), strong().child("bold "), "text"))
 ```
 
-Attributes are added with [`.attr()`](https://docs.rs/leptos/latest/leptos/struct.HtmlElement.html#method.attr). This can take any of the same types that you could pass as an attribute into the view macro (types that implement [`IntoAttribute`](https://docs.rs/leptos/latest/leptos/trait.IntoAttribute.html)).
+Attributes are added with [`.attr()`](https://docs.rs/leptos/0.7.0-gamma3/leptos/attr/custom/trait.CustomAttribute.html#method.attr). This can take any of the same types that you could pass as an attribute into the view macro (types that implement [`Attribute`](https://docs.rs/leptos/0.7.0-gamma3/leptos/attr/trait.Attribute.html)).
 
 ```rust
 p().attr("id", "foo")
     .attr("data-count", move || count.get().to_string())
 ```
 
-Similarly, the `class:`, `prop:`, and `style:` syntaxes map directly onto [`.class()`](https://docs.rs/leptos/latest/leptos/struct.HtmlElement.html#method.class), [`.prop()`](https://docs.rs/leptos/latest/leptos/struct.HtmlElement.html#method.prop), and [`.style()`](https://docs.rs/leptos/latest/leptos/struct.HtmlElement.html#method.style) methods.
+They can also be added with attribute methods, which are available for any built-in HTML attribute name:
 
-Event listeners can be added with [`.on()`](https://docs.rs/leptos/latest/leptos/struct.HtmlElement.html#method.on). Typed events found in [`leptos::ev`](https://docs.rs/leptos/latest/leptos/ev/index.html) prevent typos in event names and allow for correct type inference in the callback function.
+```rust
+p().id("foo")
+    .attr("data-count", move || count.get().to_string())
+```
+
+Similarly, the `class:`, `prop:`, and `style:` syntaxes map directly onto [`.class()`](https://docs.rs/leptos/0.7.0-gamma3/leptos/attr/global/trait.ClassAttribute.html#tymethod.class), [`.prop()`](https://docs.rs/leptos/0.7.0-gamma3/leptos/attr/global/trait.PropAttribute.html#tymethod.prop), and [`.style()`](https://docs.rs/leptos/0.7.0-gamma3/leptos/attr/global/trait.StyleAttribute.html#tymethod.style) methods.
+
+Event listeners can be added with [`.on()`](https://docs.rs/leptos/0.7.0-gamma3/leptos/attr/global/trait.OnAttribute.html#tymethod.on). Typed events found in [`leptos::ev`](https://docs.rs/leptos/0.7.0-gamma3/leptos/tachys/html/event/index.html) prevent typos in event names and allow for correct type inference in the callback function.
 
 ```rust
 button()

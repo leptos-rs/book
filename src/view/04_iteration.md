@@ -55,9 +55,11 @@ You can render dynamic items as part of a static list.
 let length = 5;
 let counters = (1..=length).map(|idx| RwSignal::new(idx));
 ```
+
 Note here that instead of calling `signal()` to get a tuple with a reader and a writer,
 here we use `RwSignal::new()` to get a single, read-write signal. This is just more convenient
 for a situation where we’d otherwise be passing the tuples around.
+
 ```
 // each item manages a reactive view
 // but the list itself will never change
@@ -86,7 +88,7 @@ Fortunately, there’s a better way.
 
 ## Dynamic Rendering with the `<For/>` Component
 
-The [`<For/>`](https://docs.rs/leptos/latest/leptos/fn.For.html) component is a
+The [`<For/>`](https://docs.rs/leptos/0.7.0-gamma3/leptos/control_flow/fn.For.html) component is a
 keyed dynamic list. It takes three props:
 
 - `each`: a reactive function that returns the items `T` to be iterated over
@@ -214,10 +216,10 @@ fn DynamicList(
 
     let add_counter = move |_| {
         // create a signal for the new counter
-        // we use ArcRwSignal here, instead of RwSignal 
-        // ArcRwSignal is a reference-counted type, rather than the arena-allocated 
+        // we use ArcRwSignal here, instead of RwSignal
+        // ArcRwSignal is a reference-counted type, rather than the arena-allocated
         // signal types we've been using so far.
-        // When we're creating a collection of signals like this, using ArcRwSignal 
+        // When we're creating a collection of signals like this, using ArcRwSignal
         // allows each signal to be deallocated when its row is removed.
         let sig = ArcRwSignal::new(next_counter_id + 1);
         // add this counter to the list of counters
@@ -251,7 +253,7 @@ fn DynamicList(
                     // `children` receives each item from your `each` iterator
                     // and returns a view
                     children=move |(id, count)| {
-                        // we can convert our ArcRwSignal to a Copy-able RwSignal 
+                        // we can convert our ArcRwSignal to a Copy-able RwSignal
                         // for nicer DX when moving it into the view
                         let count = RwSignal::from(count);
                         view! {

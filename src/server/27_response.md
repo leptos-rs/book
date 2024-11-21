@@ -1,6 +1,6 @@
 # Responses and Redirects
 
-Extractors provide an easy way to access request data inside server functions. Leptos also provides a way to modify the HTTP response, using the `ResponseOptions` type (see docs for [Actix](https://docs.rs/leptos_actix/latest/leptos_actix/struct.ResponseOptions.html) or [Axum](https://docs.rs/leptos_axum/latest/leptos_axum/struct.ResponseOptions.html)) types and the `redirect` helper function (see docs for [Actix](https://docs.rs/leptos_actix/latest/leptos_actix/fn.redirect.html) or [Axum](https://docs.rs/leptos_axum/latest/leptos_axum/fn.redirect.html)).
+Extractors provide an easy way to access request data inside server functions. Leptos also provides a way to modify the HTTP response, using the `ResponseOptions` type (see docs for [Actix](https://docs.rs/leptos_actix/0.7.0-gamma3/leptos_actix/struct.ResponseOptions.html) or [Axum](https://docs.rs/leptos_axum/0.7.0-gamma3/leptos_axum/struct.ResponseOptions.html)) types and the `redirect` helper function (see docs for [Actix](https://docs.rs/leptos_actix/0.7.0-gamma3/leptos_actix/fn.redirect.html) or [Axum](https://docs.rs/leptos_axum/0.7.0-gamma3/leptos_axum/fn.redirect.html)).
 
 ## `ResponseOptions`
 
@@ -33,7 +33,7 @@ pub async fn tea_and_cookies() -> Result<(), ServerFnError> {
 
 ## `redirect`
 
-One common modification to an HTTP response is to redirect to another page. The Actix and Axum integrations provide a `redirect` function to make this easy to do. 
+One common modification to an HTTP response is to redirect to another page. The Actix and Axum integrations provide a `redirect` function to make this easy to do.
 
 ```rust
 #[server]

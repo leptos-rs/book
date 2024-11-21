@@ -186,7 +186,7 @@ that the `progress` prop takes `ReadSignal<i32>`, and `double_count` is not
 it’s a closure that returns an `i32`.
 
 There are a couple ways to handle this. One would be to say: “Well, I know that
-for the view to be reactive, it needs to take a function or a signal. I can always 
+for the view to be reactive, it needs to take a function or a signal. I can always
 turn a signal into a function by wrapping it in a closure... Maybe I could
 just take any function?” If you’re savvy, you may know that both these
 implement the trait `Fn() -> i32`. So you could use a generic component:
@@ -212,7 +212,7 @@ fn ProgressBar(
 This is a perfectly reasonable way to write this component: `progress` now takes
 any value that implements this `Fn()` trait.
 
-> Generic props can also be specified using a `where` clause, or using inline generics like `ProgressBar<F: Fn() -> i32 + 'static>`. 
+> Generic props can also be specified using a `where` clause, or using inline generics like `ProgressBar<F: Fn() -> i32 + 'static>`.
 
 Generics need to be used somewhere in the component props. This is because props are built into a struct, so all generic types must be used somewhere in the struct. This is often easily accomplished using an optional `PhantomData` prop. You can then specify a generic in the view using the syntax for expressing types: `<Component<T>/>` (not with the turbofish-style `<Component::<T>/>`).
 
@@ -240,10 +240,10 @@ This attribute automatically calls `.into()` on the values you pass as props,
 which allows you to easily pass props with different values.
 
 In this case, it’s helpful to know about the
-[`Signal`](https://docs.rs/leptos/latest/leptos/struct.Signal.html) type. `Signal`
-is an enumerated type that represents any kind of readable reactive signal, or a plain value. 
+[`Signal`](https://docs.rs/leptos/0.7.0-gamma3/leptos/reactive/wrappers/read/struct.Signal.html) type. `Signal`
+is an enumerated type that represents any kind of readable reactive signal, or a plain value.
 It can be useful when defining APIs for components you’ll want to reuse while passing
-different sorts of signals. 
+different sorts of signals.
 
 ```rust
 #[component]
@@ -390,7 +390,7 @@ and see the power of the `#[component]` macro combined with rust-analyzer here.
 
 Sometimes you want users to be able to add additional attributes to a component. For example, you might want users to be able to add their own `class` or `id` attributes for styling or other purposes.
 
-You *could* do this by creating `class` or `id` props that you then apply to the appropriate element. But Leptos also supports “spreading” additional attributes onto components. Attributes added to a component will be applied to all top-level HTML elements that components returns from its view.
+You _could_ do this by creating `class` or `id` props that you then apply to the appropriate element. But Leptos also supports “spreading” additional attributes onto components. Attributes added to a component will be applied to all top-level HTML elements that components returns from its view.
 
 ```rust
 // you can create attribute lists by using the view macro with a spread {..} as the tag name
@@ -403,7 +403,7 @@ view! {
     // attributes that are spread onto a component will be applied to *all* elements returned as part of
     // the component's view. to apply attributes to a subset of the component, pass them via a component prop
     <ComponentThatTakesSpread
-        // plain identifiers are for props 
+        // plain identifiers are for props
         some_prop="foo"
         another_prop=42
 
@@ -420,7 +420,7 @@ view! {
         // attr:, you can separate them from component props with the spread {..}
         {..} // everything after this is treated as an HTML attribute
         title="ooh, a title!"
-        
+
         // we can add the whole list of attributes defined above
         {..spread_onto_component}
     />

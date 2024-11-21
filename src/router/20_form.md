@@ -10,7 +10,7 @@ In plain HTML, there are three ways to navigate to another page:
 
 Since we have a client-side router, we can do client-side link navigations without reloading the page, i.e., without a full round-trip to the server and back. It makes sense that we can do client-side form navigations in the same way.
 
-The router provides a [`<Form>`](https://docs.rs/leptos_router/latest/leptos_router/fn.Form.html) component, which works like the HTML `<form>` element, but uses client-side navigations instead of full page reloads. `<Form/>` works with both `GET` and `POST` requests. With `method="GET"`, it will navigate to the URL encoded in the form data. With `method="POST"` it will make a `POST` request and handle the server’s response.
+The router provides a [`<Form>`](https://docs.rs/leptos_router/0.7.0-gamma3/leptos_router/components/fn.Form.html) component, which works like the HTML `<form>` element, but uses client-side navigations instead of full page reloads. `<Form/>` works with both `GET` and `POST` requests. With `method="GET"`, it will navigate to the URL encoded in the form data. With `method="POST"` it will make a `POST` request and handle the server’s response.
 
 `<Form/>` provides the basis for some components like `<ActionForm/>` and `<MultiActionForm/>` that we’ll see in later chapters. But it also enables some powerful patterns of its own.
 

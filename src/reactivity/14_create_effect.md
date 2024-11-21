@@ -6,7 +6,7 @@ Reactivity works in two halves: updating individual reactive values (“signals�
 
 The renderer uses effects to update parts of the DOM in response to changes in signals. You can create your own effects to synchronize the reactive system with the outside world in other ways.
 
-[`Effect::new`](https://docs.rs/leptos_reactive/latest/leptos_reactive/fn.create_effect.html) takes a function as its argument. It runs this function on the next “tick” of the reactive system. (So for example, if you use it in a component, it will run just *after* that component has been rendered.) If you access any reactive signal inside that function, it registers the fact that the effect depends on that signal. Whenever one of the signals that the effect depends on changes, the effect runs again.
+[`Effect::new`](https://docs.rs/leptos/0.7.0-gamma3/leptos/reactive/effect/struct.Effect.html) takes a function as its argument. It runs this function on the next “tick” of the reactive system. (So for example, if you use it in a component, it will run just _after_ that component has been rendered.) If you access any reactive signal inside that function, it registers the fact that the effect depends on that signal. Whenever one of the signals that the effect depends on changes, the effect runs again.
 
 ```rust
 let (a, set_a) = signal(0);
@@ -20,7 +20,7 @@ Effect::new(move |_| {
 
 The effect function is called with an argument containing whatever value it returned the last time it ran. On the initial run, this is `None`.
 
-By default, effects **do not run on the server**. This means you can call browser-specific APIs within the effect function without causing issues. If you need an effect to run on the server, use [`Effect::new_isomorphic`](https://docs.rs/leptos_reactive/latest/leptos_reactive/fn.create_isomorphic_effect.html).
+By default, effects **do not run on the server**. This means you can call browser-specific APIs within the effect function without causing issues. If you need an effect to run on the server, use [`Effect::new_isomorphic`](https://docs.rs/leptos/0.7.0-gamma3/leptos/reactive/effect/struct.Effect.html#method.new_isomorphic).
 
 ## Auto-tracking and Dynamic Dependencies
 
@@ -65,7 +65,7 @@ If `use_last` is `true`, effect should rerun whenever `first`, `last`, or `use_l
 
 Effects are intended to synchronize the reactive system with the non-reactive world outside, not to synchronize between different reactive values. In other words: using an effect to read a value from one signal and set it in another is always sub-optimal.
 
-If you need to define a signal that depends on the value of other signals, use a derived signal or a [`Memo`](https://docs.rs/leptos_reactive/latest/leptos_reactive/struct.Memo.html). Writing to a signal inside an effect isn’t the end of the world, and it won’t cause your computer to light on fire, but a derived signal or memo is always better—not only because the dataflow is clear, but because the performance is better.
+If you need to define a signal that depends on the value of other signals, use a derived signal or a [`Memo`](https://docs.rs/leptos/0.7.0-gamma3/leptos/reactive/computed/struct.Memo.html). Writing to a signal inside an effect isn’t the end of the world, and it won’t cause your computer to light on fire, but a derived signal or memo is always better—not only because the dataflow is clear, but because the performance is better.
 
 ```rust
 let (a, set_a) = signal(0);
@@ -124,7 +124,7 @@ Every time `count` is updated, this effect will rerun. This is what allows react
 
 ## Explicit Tracking with `Effect::watch()`
 
-In addition to `Effect::new()`, Leptos provides an [`Effect::watch()`](https://docs.rs/leptos_reactive/latest/leptos_reactive/fn.watch.html) function, which can be used to separate racking and responding to changes by explicitly passing in a set of values to track.
+In addition to `Effect::new()`, Leptos provides an [`Effect::watch()`](https://docs.rs/leptos/0.7.0-gamma3/leptos/reactive/effect/struct.Effect.html#method.watch) function, which can be used to separate racking and responding to changes by explicitly passing in a set of values to track.
 
 `watch` takes a first argument, which is reactively tracked, and a second, which is not. Whenever a reactive value in its `deps` argument is changed, the `callback` is run. `watch` returns an `Effect`, which can be called with `.stop()` to stop tracking the dependencies.
 
