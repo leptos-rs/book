@@ -1,3 +1,11 @@
+[book]
+title = "Leptos book"
+src = "src"
+language = "en"
+
+[rust]
+edition = "2021"
+
 [output.html]
 additional-css = [
     "./mdbook-admonish.css",

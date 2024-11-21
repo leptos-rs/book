@@ -2,13 +2,8 @@
 
 We just defined the following set of routes:
 
-```rust
-<Routes fallback=|| "Not found.">
-  <Route path=path!("/") view=Home/>
-  <Route path=path!("/users") view=Users/>
-  <Route path=path!("/users/:id") view=UserProfile/>
-  <Route path=path!("/*any") view=|| view! { <h1>"Not Found"</h1> }/>
-</Routes>
+```rust,no_run
+{{#rustdoc_include 17_nested_routing.rs:s1}}
 ```
 
 There’s a certain amount of duplication here: `/users` and `/users/:id`. This is fine for a small app, but you can probably already tell it won’t scale well. Wouldn’t it be nice if we could nest these routes?
