@@ -185,7 +185,7 @@ unnecessary work.
 
 ### `<Show/>`
 
-The [`<Show/>`](https://docs.rs/leptos/latest/leptos/fn.Show.html) component is
+The [`<Show/>`](https://docs.rs/leptos/0.7.0-gamma3/leptos/control_flow/fn.Show.html) component is
 the answer. You pass it a `when` condition function, a `fallback` to be shown if
 the `when` function returns `false`, and children to be rendered if `when` is `true`.
 
@@ -217,8 +217,8 @@ efficient. But if it’s at all expensive to render either branch, reach for
 
 There‘s one final thing it’s important to say in this section.
 
-Leptos uses a statically-typed view tree. The `view` macro returns different types 
-for different kinds of view. 
+Leptos uses a statically-typed view tree. The `view` macro returns different types
+for different kinds of view.
 
 This won’t compile, because the different HTML elements are different types.
 

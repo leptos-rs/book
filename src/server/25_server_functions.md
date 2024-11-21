@@ -64,7 +64,7 @@ move |_| {
 
 There are a few things to note about the way you define a server function, too.
 
-- Server functions are created by using the [`#[server]` macro](https://docs.rs/leptos_server/latest/leptos_server/index.html#server) to annotate a top-level function, which can be defined anywhere.
+- Server functions are created by using the [`#[server]` macro](https://docs.rs/leptos/0.7.0-gamma3/leptos/attr.server.html) to annotate a top-level function, which can be defined anywhere.
 
 Server functions work by using conditional compilation. On the server, the server function creates an HTTP endpoint that receives its arguments as an HTTP request, and returns its result as an HTTP response. For the client-side/browser build, the body of the server function is stubbed out with an HTTP request.
 
@@ -80,13 +80,13 @@ By default, server functions encode their arguments as an HTTP POST request (usi
 
 However, there are many ways to customize server functions, with a variety of supported input and output encodings, the ability to set specific endpoints, and so on.
 
-Take a look at the docs for the [`#[server]` macro](https://docs.rs/leptos/0.7.0-gamma3/leptos/attr.server.html) and [`server_fn` crate](https://docs.rs/server_fn/latest/server_fn/), and the extensive [`server_fns_axum` example](https://github.com/leptos-rs/leptos/blob/main/examples/server_fns_axum/src/app.rs) in the repo for more information and examples.
+Take a look at the docs for the [`#[server]` macro](https://docs.rs/leptos/0.7.0-gamma3/leptos/attr.server.html) and [`server_fn` crate](https://docs.rs/server_fn/0.7.0-gamma3/server_fn/), and the extensive [`server_fns_axum` example](https://github.com/leptos-rs/leptos/blob/main/examples/server_fns_axum/src/app.rs) in the repo for more information and examples.
 
 ## Integrating Server Functions with Leptos
 
 So far, everything I’ve said is actually framework agnostic. (And in fact, the Leptos server function crate has been integrated into Dioxus as well!) Server functions are simply a way of defining a function-like RPC call that leans on Web standards like HTTP requests and URL encoding.
 
-But in a way, they also provide the last missing primitive in our story so far. Because a server function is just a plain Rust async function, it integrates perfectly with the async Leptos primitives we discussed [earlier](https://leptos-rs.github.io/leptos/async/index.html). So you can easily integrate your server functions with the rest of your applications:
+But in a way, they also provide the last missing primitive in our story so far. Because a server function is just a plain Rust async function, it integrates perfectly with the async Leptos primitives we discussed [earlier](../async/index.html). So you can easily integrate your server functions with the rest of your applications:
 
 - Create **resources** that call the server function to load data from the server
 - Read these resources under `<Suspense/>` or `<Transition/>` to enable streaming SSR and fallback states while data loads.

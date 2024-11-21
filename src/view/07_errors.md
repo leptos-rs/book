@@ -46,11 +46,11 @@ You entered
 This is not great. It saves us using `.unwrap_or_default()` or something, but it would be
 much nicer if we could catch the error and do something with it.
 
-You can do that, with the [`<ErrorBoundary/>`](https://docs.rs/leptos/latest/leptos/fn.ErrorBoundary.html)
+You can do that, with the [`<ErrorBoundary/>`](https://docs.rs/leptos/0.7.0-gamma3/leptos/error/fn.ErrorBoundary.html)
 component.
 
 ```admonish note
-People often try to point out that `<input type="number">` prevents you from typing a string 
+People often try to point out that `<input type="number">` prevents you from typing a string
 like `foo`, or anything else that's not a number. This is true in some browsers, but not in all!
 Moreover, there are a variety of things that can be typed into a plain number input that are not an
 `i32`: a floating-point number, a larger-than-32-bit number, the letter `e`, and so on. The browser

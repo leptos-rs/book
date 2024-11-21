@@ -73,11 +73,11 @@ view! {
 
 In an "uncontrolled input," the browser controls the state of the input element.
 Rather than continuously updating a signal to hold its value, we use a
-[`NodeRef`](https://docs.rs/leptos/latest/leptos/struct.NodeRef.html) to access
+[`NodeRef`](https://docs.rs/leptos/0.7.0-gamma3/leptos/prelude/struct.NodeRef.html) to access
 the input when we want to get its value.
 
 In this example, we only notify the framework when the `<form>` fires a `submit` event.
-Note the use of the [`leptos::html`](https://docs.rs/leptos/latest/leptos/html/index.html#) module, which provides a bunch of types for every HTML element.
+Note the use of the [`leptos::html`](https://docs.rs/leptos/0.7.0-gamma3/leptos/html/index.html) module, which provides a bunch of types for every HTML element.
 
 ```rust
 let (name, set_name) = signal("Uncontrolled".to_string());
@@ -238,7 +238,7 @@ fn ControlledComponent() -> impl IntoView {
     view! {
         <input type="text"
             // fire an event whenever the input changes
-            // adding :target after the event gives us access to 
+            // adding :target after the event gives us access to
             // a correctly-typed element at ev.target()
             on:input:target=move |ev| {
                 set_name.set(ev.target().value());

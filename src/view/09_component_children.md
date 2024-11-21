@@ -51,7 +51,7 @@ pub fn TakesChildren<F, IV>(
     /// Takes a function (type F) that returns anything that can be
     /// converted into a View (type IV)
     render_prop: F,
-    /// `children` can take one of several different types, each of which 
+    /// `children` can take one of several different types, each of which
     /// is a function that returns some view type
     children: Children,
 ) -> impl IntoView
@@ -73,8 +73,8 @@ where
 `render_prop` and `children` are both functions, so we can call them to generate
 the appropriate views. `children`, in particular, is an alias for
 `Box<dyn FnOnce() -> AnyView>`. (Aren't you glad we named it `Children` instead?)
-The `AnyView` returned here is an opaque, type-erased view: you can’t do anything to 
-inspect it. There are a variety of other child types: for example, `ChildrenFragment` 
+The `AnyView` returned here is an opaque, type-erased view: you can’t do anything to
+inspect it. There are a variety of other child types: for example, `ChildrenFragment`
 will return a `Fragment`, which is a collection whose children can be iterated over.
 
 > If you need a `Fn` or `FnMut` here because you need to call `children` more than once,
@@ -94,7 +94,7 @@ view! {
 
 ## Manipulating Children
 
-The [`Fragment`](https://docs.rs/leptos/latest/leptos/struct.Fragment.html) type is
+The [`Fragment`](https://docs.rs/leptos/0.7.0-gamma3/leptos/tachys/view/fragment/struct.Fragment.html) type is
 basically a way of wrapping a `Vec<AnyView>`. You can insert it anywhere into your view.
 
 But you can also access those inner views directly to manipulate them. For example, here’s

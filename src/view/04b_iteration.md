@@ -221,7 +221,7 @@ each field in a signal.
 
 ## Option 3: Memoized Slices
 
-Leptos provides a primitive called a [`Memo`](https://docs.rs/leptos/latest/leptos/struct.Memo.html),
+Leptos provides a primitive called a [`Memo`](https://docs.rs/leptos/0.7.0-gamma3/leptos/reactive/computed/struct.Memo.html),
 which creates a derived computation that only triggers a reactive update when its value
 has changed.
 
@@ -266,7 +266,7 @@ wrap the data in signals.
 
 It’s a bit more complex to set up this memo-per-row inside the `<For/>` loop rather than
 using nested signals. For example, you’ll notice that we have to guard against the possibility
-that the `data[index]` would panic by using `data.get(index)`, because this memo may be 
+that the `data[index]` would panic by using `data.get(index)`, because this memo may be
 triggered to re-run once just after the row is removed. (This is because the memo for each row
 and the whole `<For/>` both depend on the same `data` signal, and the order of execution for
 multiple reactive values that depend on the same signal isn’t guaranteed.)
@@ -274,7 +274,6 @@ multiple reactive values that depend on the same signal isn’t guaranteed.)
 Note also that while memos memoize their reactive changes, the same
 calculation does need to re-run to check the value every time, so nested reactive signals
 will still be more efficient for pinpoint updates here.
-
 
 ## Option 4: Stores
 

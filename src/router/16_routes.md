@@ -6,7 +6,6 @@ It’s easy to get started with the router.
 
 First things first, make sure you’ve added the `leptos_router` package to your dependencies. Unlike `leptos`, this does not have separate `csr` and `hydrate` features; it does have an `ssr` feature, intended for use only on the server side, so activate that for your server-side build.
 
-
 > It’s important that the router is a separate package from `leptos` itself. This means that everything in the router can be defined in user-land code. If you want to create your own router, or use no router, you’re completely free to do that!
 
 And import the relevant types from the router, either with something like
@@ -17,7 +16,7 @@ use leptos_router::components::{Router, Route, Routes};
 
 ## Providing the `<Router/>`
 
-Routing behavior is provided by the [`<Router/>`](https://docs.rs/leptos_router/latest/leptos_router/fn.Router.html) component. This should usually be somewhere near the root of your application, wrapping the rest of the app.
+Routing behavior is provided by the [`<Router/>`](https://docs.rs/leptos_router/0.7.0-gamma3/leptos_router/components/fn.Router.html) component. This should usually be somewhere near the root of your application, wrapping the rest of the app.
 
 > You shouldn’t try to use multiple `<Router/>`s in your app. Remember that the router drives global state: if you have multiple routers, which one decides what to do when the URL changes?
 
@@ -45,7 +44,7 @@ pub fn App() -> impl IntoView {
 
 ## Defining `<Routes/>`
 
-The [`<Routes/>`](https://docs.rs/leptos_router/latest/leptos_router/fn.Routes.html) component is where you define all the routes to which a user can navigate in your application. Each possible route is defined by a [`<Route/>`](https://docs.rs/leptos_router/latest/leptos_router/fn.Route.html) component.
+The [`<Routes/>`](https://docs.rs/leptos_router/0.7.0-gamma3/leptos_router/components/fn.Routes.html) component is where you define all the routes to which a user can navigate in your application. Each possible route is defined by a [`<Route/>`](https://docs.rs/leptos_router/0.7.0-gamma3/leptos_router/components/fn.Route.html) component.
 
 You should place the `<Routes/>` component at the location within your app where you want routes to be rendered. Everything outside `<Routes/>` will be present on every page, so you can leave things like a navigation bar or menu outside the `<Routes/>`.
 
