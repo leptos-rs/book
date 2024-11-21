@@ -73,7 +73,7 @@ view! {
 
 In an "uncontrolled input," the browser controls the state of the input element.
 Rather than continuously updating a signal to hold its value, we use a
-[`NodeRef`](https://docs.rs/leptos/0.7.0-gamma3/leptos/prelude/struct.NodeRef.html) to access
+[`NodeRef`](https://docs.rs/leptos/0.7.0-gamma3/leptos/tachys/reactive_graph/node_ref/struct.NodeRef.html) to access
 the input when we want to get its value.
 
 In this example, we only notify the framework when the `<form>` fires a `submit` event.

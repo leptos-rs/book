@@ -14,8 +14,8 @@ It’s easy to communicate state from a parent component to a child component. W
 covered some of this in the material on [components and props](./03_components.md).
 Basically if you want the parent to communicate to the child, you can pass a
 [`ReadSignal`](https://docs.rs/leptos/0.7.0-gamma3/leptos/reactive/signal/struct.ReadSignal.html), a
-[`Signal`](https://docs.rs/leptos/0.7.0-gamma3/leptos/prelude/struct.Signal.html), or even a
-[`MaybeSignal`](https://docs.rs/leptos/0.7.0-gamma3/leptos/prelude/enum.MaybeSignal.html) as a prop.
+[`Signal`](https://docs.rs/leptos/0.7.0-gamma3/leptos/reactive/wrappers/read/struct.Signal.html), or even a
+[`MaybeSignal`](https://docs.rs/leptos/0.7.0-gamma3/leptos/reactive/wrappers/read/enum.MaybeSignal.html) as a prop.
 
 But what about the other direction? How can a child send notifications about events
 or state changes back up to the parent?

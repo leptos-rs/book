@@ -5,7 +5,7 @@
 The process is simple:
 
 1. Define a server function using the [`#[server]` macro](https://docs.rs/leptos/0.7.0-gamma3/leptos/attr.server.html) (see [Server Functions](../server/25_server_functions.md).)
-2. Create an action using [`ServerAction::new()`](https://docs.rs/leptos/0.7.0-gamma3/leptos/prelude/struct.ServerAction.html), specifying the type of the server function you’ve defined.
+2. Create an action using [`ServerAction::new()`](https://docs.rs/leptos/0.7.0-gamma3/leptos/server/struct.ServerAction.html), specifying the type of the server function you’ve defined.
 3. Create an `<ActionForm/>`, providing the server action in the `action` prop.
 4. Pass the named arguments to the server function as form fields with the same names.
 

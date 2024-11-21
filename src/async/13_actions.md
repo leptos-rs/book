@@ -89,7 +89,7 @@ view! {
 }
 ```
 
-Now, there’s a chance this all seems a little over-complicated, or maybe too restricted. I wanted to include actions here, alongside resources, as the missing piece of the puzzle. In a real Leptos app, you’ll actually most often use actions alongside server functions, [`ServerAction`](https://docs.rs/leptos/0.7.0-gamma3/leptos/prelude/struct.ServerAction.html), and the [`<ActionForm/>`](https://docs.rs/leptos/0.7.0-gamma3/leptos/form/fn.ActionForm.html) component to create really powerful progressively-enhanced forms. So if this primitive seems useless to you... Don’t worry! Maybe it will make sense later. (Or check out our [`todo_app_sqlite`](https://github.com/leptos-rs/leptos/blob/main/examples/todo_app_sqlite/src/todo.rs) example now.)
+Now, there’s a chance this all seems a little over-complicated, or maybe too restricted. I wanted to include actions here, alongside resources, as the missing piece of the puzzle. In a real Leptos app, you’ll actually most often use actions alongside server functions, [`ServerAction`](https://docs.rs/leptos/0.7.0-gamma3/leptos/server/struct.ServerAction.html), and the [`<ActionForm/>`](https://docs.rs/leptos/0.7.0-gamma3/leptos/form/fn.ActionForm.html) component to create really powerful progressively-enhanced forms. So if this primitive seems useless to you... Don’t worry! Maybe it will make sense later. (Or check out our [`todo_app_sqlite`](https://github.com/leptos-rs/leptos/blob/main/examples/todo_app_sqlite/src/todo.rs) example now.)
 
 ```admonish sandbox title="Live example" collapsible=true
 

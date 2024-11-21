@@ -240,7 +240,7 @@ This attribute automatically calls `.into()` on the values you pass as props,
 which allows you to easily pass props with different values.
 
 In this case, it’s helpful to know about the
-[`Signal`](https://docs.rs/leptos/0.7.0-gamma3/leptos/prelude/struct.Signal.html) type. `Signal`
+[`Signal`](https://docs.rs/leptos/0.7.0-gamma3/leptos/reactive/wrappers/read/struct.Signal.html) type. `Signal`
 is an enumerated type that represents any kind of readable reactive signal, or a plain value.
 It can be useful when defining APIs for components you’ll want to reuse while passing
 different sorts of signals.
