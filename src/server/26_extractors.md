@@ -6,7 +6,7 @@ The server functions we looked at in the last chapter showed how to run code on 
 
 We call Leptos a “full-stack” framework, but “full-stack” is always a misnomer (after all, it never means everything from the browser to your power company.) For us, “full stack” means that your Leptos app can run in the browser, and can run on the server, and can integrate the two, drawing together the unique features available in each; as we’ve seen in the book so far, a button click on the browser can drive a database read on the server, both written in the same Rust module. But Leptos itself doesn’t provide the server (or the database, or the operating system, or the firmware, or the electrical cables...)
 
-Instead, Leptos provides integrations for the two most popular Rust web server frameworks, Actix Web ([`leptos_actix`](https://docs.rs/leptos_actix/latest/leptos_actix/)) and Axum ([`leptos_axum`](https://docs.rs/leptos_axum/latest/leptos_axum/)). We’ve built integrations with each server’s router so that you can simply plug your Leptos app into an existing server with `.leptos_routes()`, and easily handle server function calls.
+Instead, Leptos provides integrations for the two most popular Rust web server frameworks, Actix Web ([`leptos_actix`](https://docs.rs/leptos_actix/0.7.0-gamma3/leptos_actix/)) and Axum ([`leptos_axum`](https://docs.rs/leptos_axum/0.7.0-gamma3/leptos_axum/)). We’ve built integrations with each server’s router so that you can simply plug your Leptos app into an existing server with `.leptos_routes()`, and easily handle server function calls.
 
 > If you haven’t seen our [Actix](https://github.com/leptos-rs/start) and [Axum](https://github.com/leptos-rs/start-axum) templates, now’s a good time to check them out.
 
@@ -18,7 +18,7 @@ Leptos provides `extract` helper functions to let you use these extractors direc
 
 ### Actix Extractors
 
-The [`extract` function in `leptos_actix`](https://docs.rs/leptos_actix/latest/leptos_actix/fn.extract.html) takes a handler function as its argument. The handler follows similar rules to an Actix handler: it is an async function that receives arguments that will be extracted from the request and returns some value. The handler function receives that extracted data as its arguments, and can do further `async` work on them inside the body of the `async move` block. It returns whatever value you return back out into the server function.
+The [`extract` function in `leptos_actix`](https://docs.rs/leptos_actix/0.7.0-gamma3/leptos_actix/fn.extract.html) takes a handler function as its argument. The handler follows similar rules to an Actix handler: it is an async function that receives arguments that will be extracted from the request and returns some value. The handler function receives that extracted data as its arguments, and can do further `async` work on them inside the body of the `async move` block. It returns whatever value you return back out into the server function.
 
 ```rust
 use serde::Deserialize;
@@ -31,7 +31,7 @@ struct MyQuery {
 #[server]
 pub async fn actix_extract() -> Result<String, ServerFnError> {
     use actix_web::dev::ConnectionInfo;
-    use actix_web::web::{Data, Query};
+    use actix_web::web::Query;
     use leptos_actix::extract;
 
     let (Query(search), connection): (Query<MyQuery>, ConnectionInfo) = extract().await?;
@@ -41,7 +41,7 @@ pub async fn actix_extract() -> Result<String, ServerFnError> {
 
 ### Axum Extractors
 
-The syntax for the [`leptos_axum::extract`](https://docs.rs/leptos_axum/latest/leptos_axum/fn.extract.html) function is very similar. 
+The syntax for the [`leptos_axum::extract`](https://docs.rs/leptos_axum/0.7.0-gamma3/leptos_axum/fn.extract.html) function is very similar.
 
 ```rust
 use serde::Deserialize;
@@ -64,7 +64,7 @@ pub async fn axum_extract() -> Result<String, ServerFnError> {
 
 These are relatively simple examples accessing basic data from the server. But you can use extractors to access things like headers, cookies, database connection pools, and more, using the exact same `extract()` pattern.
 
-The Axum `extract` function only supports extractors for which the state is `()`. If you need an extractor that uses `State`, you should use [`extract_with_state`](https://docs.rs/leptos_axum/latest/leptos_axum/fn.extract_with_state.html). This requires you to provide the state. You can do this by extending the existing `LeptosOptions` state using the Axum `FromRef` pattern, which providing the state as context during render and server functions with custom handlers.
+The Axum `extract` function only supports extractors for which the state is `()`. If you need an extractor that uses `State`, you should use [`extract_with_state`](https://docs.rs/leptos_axum/0.7.0-gamma3/leptos_axum/fn.extract_with_state.html). This requires you to provide the state. You can do this by extending the existing `LeptosOptions` state using the Axum `FromRef` pattern, which providing the state as context during render and server functions with custom handlers.
 
 ```rust
 use axum::extract::FromRef;
@@ -99,7 +99,7 @@ let app = Router::new()
 
 This context can then be accessed with a simple `use_context::<T>()` inside your server functions.
 
-If you *need* to use `State` in a server function—for example, if you have an existing Axum extractor that requires `State`—that is also possible using Axum's [`FromRef`](https://docs.rs/axum/latest/axum/extract/derive.FromRef.html) pattern and [`extract_with_state`](https://docs.rs/leptos_axum/latest/leptos_axum/fn.extract_with_state.html). Essentially you'll need to provide the state both via context and via Axum router state:
+If you _need_ to use `State` in a server function—for example, if you have an existing Axum extractor that requires `State`—that is also possible using Axum's [`FromRef`](https://docs.rs/axum/latest/axum/extract/derive.FromRef.html) pattern and [`extract_with_state`](https://docs.rs/leptos_axum/0.7.0-gamma3/leptos_axum/fn.extract_with_state.html). Essentially you'll need to provide the state both via context and via Axum router state:
 
 ```rust
 #[derive(FromRef, Debug, Clone)]
@@ -127,8 +127,8 @@ let app = Router::new()
     .fallback(file_and_error_handler)
     .with_state(app_state);
 
-// ... 
-#[server] 
+// ...
+#[server]
 pub async fn uses_state() -> Result<(), ServerFnError> {
     let state = expect_context::<AppState>();
     let SomeStateExtractor(data) = extract_with_state(&state).await?;

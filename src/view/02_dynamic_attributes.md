@@ -13,22 +13,22 @@ increment a counter.
 ```rust
 #[component]
 fn App() -> impl IntoView {
-    let (count, set_count) = create_signal(0);
+    let (count, set_count) = signal(0);
 
     view! {
         <button
             on:click=move |_| {
-                set_count.update(|n| *n += 1);
+                *set_count.write() += 1;
             }
         >
             "Click me: "
-            {move || count()}
+            {count}
         </button>
     }
 }
 ```
 
-So far, this is just the example from the last chapter.
+So far, we’ve covered all of this in the previous chapter.
 
 ## Dynamic Classes
 
@@ -37,7 +37,7 @@ For example, let’s say I want to add the class `red` when the count is odd. I 
 do this using the `class:` syntax.
 
 ```rust
-class:red=move || count() % 2 == 1
+class:red=move || count.get() % 2 == 1
 ```
 
 `class:` attributes take
@@ -55,11 +55,11 @@ the number switches between even and odd.
 ```rust
 <button
     on:click=move |_| {
-        set_count.update(|n| *n += 1);
+        *set_count.write() += 1;
     }
     // the class: syntax reactively updates a single class
     // here, we'll set the `red` class when `count` is odd
-    class:red=move || count() % 2 == 1
+    class:red=move || count.get() % 2 == 1
 >
     "Click me"
 </button>
@@ -78,7 +78,7 @@ the number switches between even and odd.
 Some CSS class names can’t be directly parsed by the `view` macro, especially if they include a mix of dashes and numbers or other characters. In that case, you can use a tuple syntax: `class=("name", value)` still directly updates a single class.
 
 ```rust
-class=("button-20", move || count() % 2 == 1)
+class=("button-20", move || count.get() % 2 == 1)
 ```
 
 The tuple syntax also allows to specify multiple classes under a single condition using an array as the first tuple element.
@@ -92,24 +92,25 @@ class=(["button-20", "rounded"], move || count() % 2 == 1)
 Individual CSS properties can be directly updated with a similar `style:` syntax.
 
 ```rust
-    let (x, set_x) = create_signal(0);
-        view! {
-            <button
-                on:click={move |_| {
-                    set_x.update(|n| *n += 10);
-                }}
-                // set the `style` attribute
-                style="position: absolute"
-                // and toggle individual CSS properties with `style:`
-                style:left=move || format!("{}px", x() + 100)
-                style:background-color=move || format!("rgb({}, {}, 100)", x(), 100)
-                style:max-width="400px"
-                // Set a CSS variable for stylesheet use
-                style=("--columns", x)
-            >
-                "Click to Move"
-            </button>
-    }
+let (x, set_x) = signal(0);
+
+view! {
+    <button
+        on:click=move |_| {
+            *set_count.write() += 10;
+        }
+        // set the `style` attribute
+        style="position: absolute"
+        // and toggle individual CSS properties with `style:`
+        style:left=move || format!("{}px", x.get() + 100)
+        style:background-color=move || format!("rgb({}, {}, 100)", x.get(), 100)
+        style:max-width="400px"
+        // Set a CSS variable for stylesheet use
+        style=("--columns", move || x.get().to_string())
+    >
+        "Click to Move"
+    </button>
+}
 ```
 
 ## Dynamic Attributes
@@ -143,7 +144,7 @@ suppose we want it to move twice as fast:
 ```rust
 <progress
     max="50"
-    value=move || count() * 2
+    value=move || count.get() * 2
 />
 ```
 
@@ -151,7 +152,7 @@ But imagine we want to reuse that calculation in more than one place. You can do
 using a **derived signal**: a closure that accesses a signal.
 
 ```rust
-let double_count = move || count() * 2;
+let double_count = move || count.get() * 2;
 
 /* insert the rest of the view */
 <progress
@@ -190,18 +191,18 @@ for expensive calculations.
 > }
 > ```
 >
-> [Click here for the full `view` macros docs](https://docs.rs/leptos/latest/leptos/macro.view.html).
+> [Click here for the full `view` macros docs](https://docs.rs/leptos/0.7.0-gamma3/leptos/macro.view.html).
 
 ```admonish sandbox title="Live example" collapsible=true
 
-[Click to open CodeSandbox.](https://codesandbox.io/p/sandbox/2-dynamic-attributes-0-5-lwdrpm?file=%2Fsrc%2Fmain.rs%3A1%2C1)
+[Click to open CodeSandbox.](https://codesandbox.io/p/devbox/2-dynamic-attributes-0-7-wddqfp?file=%2Fsrc%2Fmain.rs%3A1%2C1-58%2C1)
 
 <noscript>
   Please enable JavaScript to view examples.
 </noscript>
 
 <template>
-  <iframe src="https://codesandbox.io/p/sandbox/2-dynamic-attributes-0-5-lwdrpm?file=%2Fsrc%2Fmain.rs%3A1%2C1" width="100%" height="1000px" style="max-height: 100vh"></iframe>
+  <iframe src="https://codesandbox.io/p/devbox/2-dynamic-attributes-0-7-wddqfp?file=%2Fsrc%2Fmain.rs%3A1%2C1-58%2C1" width="100%" height="1000px" style="max-height: 100vh"></iframe>
 </template>
 
 ```
@@ -210,26 +211,26 @@ for expensive calculations.
 <summary>CodeSandbox Source</summary>
 
 ```rust
-use leptos::*;
+use leptos::prelude::*;
 
 #[component]
 fn App() -> impl IntoView {
-    let (count, set_count) = create_signal(0);
+    let (count, set_count) = signal(0);
 
     // a "derived signal" is a function that accesses other signals
     // we can use this to create reactive values that depend on the
     // values of one or more other signals
-    let double_count = move || count() * 2;
+    let double_count = move || count.get() * 2;
 
     view! {
         <button
             on:click=move |_| {
-                set_count.update(|n| *n += 1);
+                *set_count.write() += 1;
             }
-
             // the class: syntax reactively updates a single class
             // here, we'll set the `red` class when `count` is odd
-            class:red=move || count() % 2 == 1
+            class:red=move || count.get() % 2 == 1
+            class=("button-20", move || count.get() % 2 == 1)
         >
             "Click me"
         </button>
@@ -246,7 +247,8 @@ fn App() -> impl IntoView {
             // signals are functions, so `value=count` and `value=move || count.get()`
             // are interchangeable.
             value=count
-        ></progress>
+        >
+        </progress>
         <br/>
 
         // This progress bar will use `double_count`
@@ -256,14 +258,15 @@ fn App() -> impl IntoView {
             // derived signals are functions, so they can also
             // reactively update the DOM
             value=double_count
-        ></progress>
+        >
+        </progress>
         <p>"Count: " {count}</p>
         <p>"Double Count: " {double_count}</p>
     }
 }
 
 fn main() {
-    leptos::mount_to_body(App)
+    leptos::mount::mount_to_body(App)
 }
 ```
 

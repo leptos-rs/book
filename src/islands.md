@@ -1,6 +1,6 @@
 # Guide: Islands
 
-Leptos 0.5 introduces the new `experimental-islands` feature. This guide will walk through the islands feature and core concepts, while implementing a demo app using the islands architecture.
+Leptos 0.5 introduced the new `islands` feature. This guide will walk through the islands feature and core concepts, while implementing a demo app using the islands architecture.
 
 ## The Islands Architecture
 
@@ -28,10 +28,10 @@ The phrase “islands architecture” has emerged recently to describe the appro
 Let’s start with a fresh `cargo-leptos` app:
 
 ```bash
-cargo leptos new --git leptos-rs/start
+cargo leptos new --git leptos-rs/start-axum
 ```
 
-> I’m using Actix because I like it. Feel free to use Axum; there should be approximately no server-specific differences in this guide.
+> There should be no real differences between Actix and Axum in this example.
 
 I’m just going to run
 
@@ -41,22 +41,24 @@ cargo leptos build
 
 in the background while I fire up my editor and keep writing.
 
-The first thing I’ll do is to add the `experimental-islands` feature in my `Cargo.toml`. I need to add this to both `leptos` and `leptos_actix`:
+The first thing I’ll do is to add the `islands` feature in my `Cargo.toml`. I only need to add this to the `leptos` crate.
 
 ```toml
-leptos = { version = "0.5", features = ["nightly", "experimental-islands"] }
-leptos_actix = { version = "0.5", optional = true, features = [
-  "experimental-islands",
-] }
+leptos = { version = "0.7", features = ["islands"] }
 ```
 
-Next I’m going to modify the `hydrate` function exported from `src/lib.rs`. I’m going to remove the line that calls `leptos::mount_to_body(App)` and replace it with
+Next I’m going to modify the `hydrate` function exported from `src/lib.rs`. I’m going to remove the line that calls `leptos::mount::mount_to_body(App)` and replace it with
 
 ```rust
-leptos::leptos_dom::HydrationCtx::stop_hydrating();
+leptos::mount::hydrate_islands();
 ```
 
-Each “island” we create will actually act as its own entrypoint, so our `hydrate()` function just says “okay, hydration’s done now.”
+Rather than running the whole application and hydrating the view that it creates, this will hydrate each individual island, in order.
+
+In `app.rs`, in the `shell` functions, we’ll also need to add `islands=true` to the `HydrationScripts` component:
+```rust
+<HydrationScripts options islands=true/>
+```
 
 Okay, now fire up your `cargo leptos watch` and go to [`http://localhost:3000`](http://localhost:3000) (or wherever).
 
@@ -76,7 +78,7 @@ However, this can cause issues if you are using a workspace setup. We use `wasm-
 
 Nothing happens because we’ve just totally inverted the mental model of our app. Rather than being interactive by default and hydrating everything, the app is now plain HTML by default, and we need to opt into interactivity.
 
-This has a big effect on WASM binary sizes: if I compile in release mode, this app is a measly 24kb of WASM (uncompressed), compared to 355kb in non-islands mode. (355kb is quite large for a “Hello, world!” It’s really just all the code related to client-side routing, which isn’t being used in the demo.)
+This has a big effect on WASM binary sizes: if I compile in release mode, this app is a measly 24kb of WASM (uncompressed), compared to 274kb in non-islands mode. (274kb is quite large for a “Hello, world!” It’s really just all the code related to client-side routing, which isn’t being used in the demo.)
 
 When we click the button, nothing happens, because our whole page is static.
 
@@ -90,8 +92,8 @@ Here was the non-interactive version:
 #[component]
 fn HomePage() -> impl IntoView {
     // Creates a reactive value to update the button
-    let (count, set_count) = create_signal(0);
-    let on_click = move |_| set_count.update(|count| *count += 1);
+    let count = RwSignal::new(0);
+    let on_click = move |_| *count.write() += 1;
 
     view! {
         <h1>"Welcome to Leptos!"</h1>
@@ -106,8 +108,8 @@ Here’s the interactive version:
 #[island]
 fn HomePage() -> impl IntoView {
     // Creates a reactive value to update the button
-    let (count, set_count) = create_signal(0);
-    let on_click = move |_| set_count.update(|count| *count += 1);
+    let count = RwSignal::new(0);
+    let on_click = move |_| *count.write() += 1;
 
     view! {
         <h1>"Welcome to Leptos!"</h1>
@@ -123,16 +125,13 @@ The `#[island]` macro works exactly like the `#[component]` macro, except that i
 If you open up the source for the page now, you’ll see that your `HomePage` island has been rendered as a special `<leptos-island>` HTML element which specifies which component should be used to hydrate it:
 
 ```html
-<leptos-island data-component="HomePage" data-hkc="0-0-0">
-  <h1 data-hk="0-0-2">Welcome to Leptos!</h1>
-  <button data-hk="0-0-3">
-    Click Me:
-    <!-- <DynChild> -->11<!-- </DynChild> -->
-  </button>
+<leptos-island data-component="HomePage_7432294943247405892">
+    <h1>Welcome to Leptos!</h1>
+    <button>Click Me: <!>0</button>
 </leptos-island>
 ```
 
-The typical Leptos hydration keys and markers are only present inside the island, only the island is hydrated.
+Only code for what's inside this `<leptos-island>` is compiled to WASM, only only that code runs when hydrating.
 
 ## Using Islands Effectively
 
@@ -150,8 +149,8 @@ fn HomePage() -> impl IntoView {
 #[island]
 fn Counter() -> impl IntoView {
     // Creates a reactive value to update the button
-    let (count, set_count) = create_signal(0);
-    let on_click = move |_| set_count.update(|count| *count += 1);
+    let (count, set_count) = signal(0);
+    let on_click = move |_| *set_count.write() += 1;
 
     view! {
         <button on:click=on_click>"Click Me: " {count}</button>
@@ -169,10 +168,12 @@ So, this 50% reduction in WASM binary size is nice. But really, what’s the poi
 
 The point comes when you combine two key facts:
 
-1. Code inside `#[component]` functions now _only_ runs on the server.
+1. Code inside `#[component]` functions now _only_ runs on the server, unless you use it in an island.\*
 2. Children and props can be passed from the server to islands, without being included in the WASM binary.
 
 This means you can run server-only code directly in the body of a component, and pass it directly into the children. Certain tasks that take a complex blend of server functions and Suspense in fully-hydrated apps can be done inline in islands.
+
+> \* This “unless you use it in an island” is important. It is *not* the case that `#[component]` components only run on the server. Rather, they are “shared components” that are only compiled into the WASM binary if they’re used in the body of an `#[island]`. But if you don’t use them in an island, they won’t run in the browser.
 
 We’re going to rely on a third fact in the rest of this demo:
 
@@ -237,11 +238,17 @@ fn HomePage() -> impl IntoView {
 If you take a look in the DOM inspector, you’ll see the island is now something like
 
 ```html
-<leptos-island
-  data-component="Tabs"
-  data-hkc="0-0-0"
-  data-props='{"labels":["a.txt","b.txt","c.txt"]}'
-></leptos-island>
+<leptos-island 
+    data-component="Tabs_1030591929019274801"
+    data-props="{&quot;labels&quot;:[&quot;a.txt&quot;,&quot;b.txt&quot;,&quot;c.txt&quot;]}"
+>
+    <div style="display: flex; width: 100%; justify-content: space-between;;">
+        <button>a.txt</button>
+        <button>b.txt</button>
+        <button>c.txt</button>
+        <!---->
+    </div>
+</leptos-island>
 ```
 
 Our `labels` prop is getting serialized to JSON and stored in an HTML attribute so it can be used to hydrate the island.
@@ -335,14 +342,14 @@ We’ll modify `Tabs` to create a simple `selected` signal. We provide the read 
 ```rust
 #[island]
 fn Tabs(labels: Vec<String>, children: Children) -> impl IntoView {
-    let (selected, set_selected) = create_signal(0);
+    let (selected, set_selected) = signal(0);
     provide_context(selected);
 
     let buttons = labels
         .into_iter()
         .enumerate()
         .map(|(index, label)| view! {
-            <button on:click=move |_| set_selected(index)>
+            <button on:click=move |_| set_selected.set(index)>
                 {label}
             </button>
         })
@@ -360,7 +367,7 @@ fn Tab(index: usize, children: Children) -> impl IntoView {
         <div
             style:background-color="lightgreen"
             style:padding="10px"
-            style:display=move || if selected() == index {
+            style:display=move || if selected.get() == index {
                 "block"
             } else {
                 "none"
@@ -376,21 +383,20 @@ Now the tabs behave exactly as I’d expect. `Tabs` passes the signal via contex
 
 > That’s why in `HomePage`, I made `let tabs = move ||` a function, and called it like `{tabs()}`: creating the tabs lazily this way meant that the `Tabs` island would already have provided the `selected` context by the time each `Tab` went looking for it.
 
-Our complete tabs demo is about 220kb uncompressed: not the smallest demo in the world, but still about a third smaller than the counter button! Just for kicks, I built the same demo without islands mode, using `#[server]` functions and `Suspense`. and it was 429kb. So again, this was about a 50% savings in binary size. And this app includes quite minimal server-only content: remember that as we add additional server-only components and pages, this 220 will not grow.
+Our complete tabs demo is about 200kb uncompressed: not the smallest demo in the world, but still significantly smaller than the “Hello, world” using client side routing that we started with! Just for kicks, I built the same demo without islands mode, using `#[server]` functions and `Suspense`. and it was over 400kb. So again, this was about a 50% savings in binary size. And this app includes quite minimal server-only content: remember that as we add additional server-only components and pages, this 200kb will not grow.
 
 ## Overview
 
 This demo may seem pretty basic. It is. But there are a number of immediate takeaways:
 
 - **50% WASM binary size reduction**, which means measurable improvements in time to interactivity and initial load times for clients.
-- **Reduced HTML page size.** This one is less obvious, but it’s true and important: HTML generated from `#[component]`s doesn’t need all the hydration IDs and other boilerplate added.
 - **Reduced data serialization costs.** Creating a resource and reading it on the client means you need to serialize the data, so it can be used for hydration. If you’ve also read that data to create HTML in a `Suspense`, you end up with “double data,” i.e., the same exact data is both rendered to HTML and serialized as JSON, increasing the size of responses, and therefore slowing them down.
 - **Easily use server-only APIs** inside a `#[component]` as if it were a normal, native Rust function running on the server—which, in islands mode, it is!
 - **Reduced `#[server]`/`create_resource`/`Suspense` boilerplate** for loading server data.
 
 ## Future Exploration
 
-The `experimental-islands` feature included in 0.5 reflects work at the cutting edge of what frontend web frameworks are exploring right now. As it stands, our islands approach is very similar to Astro (before its recent View Transitions support): it allows you to build a traditional server-rendered, multi-page app and pretty seamlessly integrate islands of interactivity.
+The `islands` feature reflects work at the cutting edge of what frontend web frameworks are exploring right now. As it stands, our islands approach is very similar to Astro (before its recent View Transitions support): it allows you to build a traditional server-rendered, multi-page app and pretty seamlessly integrate islands of interactivity.
 
 There are some small improvements that will be easy to add. For example, we can do something very much like Astro's View Transitions approach:
 
@@ -402,7 +408,7 @@ There are other, larger architectural changes that I’m [not sold on yet](https
 
 ## Additional Information
 
-Check out the [islands PR](https://github.com/leptos-rs/leptos/pull/1660), [roadmap](https://github.com/leptos-rs/leptos/issues/1830), and [Hackernews demo](https://github.com/leptos-rs/leptos/tree/leptos_0.6/examples/hackernews_islands_axum) for additional discussion.
+Check out the [`islands` example](https://github.com/leptos-rs/leptos/blob/main/examples/islands/src/app.rs), [roadmap](https://github.com/leptos-rs/leptos/issues/1830), and [Hackernews demo](https://github.com/leptos-rs/leptos/tree/leptos_0.6/examples/hackernews_islands_axum) for additional discussion.
 
 ## Demo Code
 

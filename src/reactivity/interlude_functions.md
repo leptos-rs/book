@@ -6,11 +6,11 @@ application. It sometimes looks a little silly:
 
 ```rust
 // a signal holds a value, and can be updated
-let (count, set_count) = create_signal(0);
+let (count, set_count) = signal(0);
 
 // a derived signal is a function that accesses other signals
-let double_count = move || count() * 2;
-let count_is_odd = move || count() & 1 == 1;
+let double_count = move || count.get() * 2;
+let count_is_odd = move || count.get() & 1 == 1;
 let text = move || if count_is_odd() {
     "odd"
 } else {
@@ -19,7 +19,7 @@ let text = move || if count_is_odd() {
 
 // an effect automatically tracks the signals it depends on
 // and reruns when they change
-create_effect(move |_| {
+Effect::new(move |_| {
     logging::log!("text = {}", text());
 });
 
@@ -54,9 +54,9 @@ Take our typical `<SimpleCounter/>` example in its simplest form:
 ```rust
 #[component]
 pub fn SimpleCounter() -> impl IntoView {
-    let (value, set_value) = create_signal(0);
+    let (value, set_value) = signal(0);
 
-    let increment = move |_| set_value.update(|value| *value += 1);
+    let increment = move |_| *set_value.write() += 1;
 
     view! {
         <button on:click=increment>
@@ -68,9 +68,17 @@ pub fn SimpleCounter() -> impl IntoView {
 
 The `SimpleCounter` function itself runs once. The `value` signal is created once. The framework hands off the `increment` function to the browser as an event listener. When you click the button, the browser calls `increment`, which updates `value` via `set_value`. And that updates the single text node represented in our view by `{value}`.
 
-Closures are key to reactivity. They provide the framework with the ability to rerun the smallest possible unit of your application in response to a change.
+Functions are key to reactivity. They provide the framework with the ability to rerun the smallest possible unit of your application in response to a change.
 
 So remember two things:
 
 1. Your component function is a setup function, not a render function: it only runs once.
-2. For values in your view template to be reactive, they must be functions: either signals (which implement the `Fn` traits) or closures.
+2. For values in your view template to be reactive, they must be reactive functions: either signals or closures that capture and read from signals.
+
+```admonish note
+This is actually the primary difference between the stable and nightly versions of Leptos. As you may know, using the nightly compiler and the `nightly` feature allows you to call a signal directly, as a function: so, `value()` instead of `value.get()`.
+
+But this isn’t just syntax sugar. It allows for an extremely consistent semantic model: Reactive things are functions. Signals are accessed by calling functions. To say “give me a signal as an argument” you can take anything that `impl Fn() -> T`. And this function-based interface makes no distinction between signals, memos, and derived signals: any of them can be accessed by calling them as functions.
+
+Unfortunately implementing the `Fn` traits on arbitrary structs like signals requires nightly Rust, although this particular feature has mostly just languished and is not likely to change (or be stabilized) any time soon. Many people avoid nightly, for one reason or another. So, over time we’ve moved the defaults for things like documentation toward stable. Unfortunately, this makes the simple mental model of “signals are functions” a bit less straightforward.
+```

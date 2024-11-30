@@ -11,12 +11,12 @@ Because of the way URLs are built, you can access the query from _any_ `<Route/>
 
 Accessing params and queries is pretty simple with a couple of hooks:
 
-- [`use_query`](https://docs.rs/leptos_router/latest/leptos_router/fn.use_query.html) or [`use_query_map`](https://docs.rs/leptos_router/latest/leptos_router/fn.use_query_map.html)
-- [`use_params`](https://docs.rs/leptos_router/latest/leptos_router/fn.use_params.html) or [`use_params_map`](https://docs.rs/leptos_router/latest/leptos_router/fn.use_params_map.html)
+- [`use_query`](https://docs.rs/leptos_router/0.7.0-gamma3/leptos_router/hooks/fn.use_query.html) or [`use_query_map`](https://docs.rs/leptos_router/0.7.0-gamma3/leptos_router/hooks/fn.use_query_map.html)
+- [`use_params`](https://docs.rs/leptos_router/0.7.0-gamma3/leptos_router/hooks/fn.use_params.html) or [`use_params_map`](https://docs.rs/leptos_router/0.7.0-gamma3/leptos_router/hooks/fn.use_params_map.html)
 
 Each of these comes with a typed option (`use_query` and `use_params`) and an untyped option (`use_query_map` and `use_params_map`).
 
-The untyped versions hold a simple key-value map. To use the typed versions, derive the [`Params`](https://docs.rs/leptos_router/0.2.3/leptos_router/trait.Params.html) trait on a struct.
+The untyped versions hold a simple key-value map. To use the typed versions, derive the [`Params`](https://docs.rs/leptos_router/0.7.0-gamma3/leptos_router/params/trait.Params.html) trait on a struct.
 
 > `Params` is a very lightweight trait to convert a flat key-value map of strings into a struct by applying `FromStr` to each field. Because of the flat structure of route params and URL queries, it’s significantly less flexible than something like `serde`; it also adds much less weight to your binary.
 
@@ -26,24 +26,19 @@ use leptos_router::*;
 
 #[derive(Params, PartialEq)]
 struct ContactParams {
-	id: usize
+	id: Option<usize>
 }
 
 #[derive(Params, PartialEq)]
 struct ContactSearch {
-	q: String
+	q: Option<String>
 }
 ```
 
-> Note: The `Params` derive macro is located at `leptos::Params`, and the `Params` trait is at `leptos_router::Params`. If you avoid using glob imports like `use leptos::*;`, make sure you’re importing the right one for the derive macro.
+> Note: The `Params` derive macro is located at `leptos_router::params::Params`.
 >
-> If you are not using the `nightly` feature, you will get the error
->
-> ```
-> no function or associated item named `into_param` found for struct `std::string::String` in the current scope
-> ```
->
-> At the moment, supporting both `T: FromStr` and `Option<T>` for typed params requires a nightly feature. You can fix this by simply changing the struct to use `q: Option<String>` instead of `q: String`.
+> Using stable, you can only use `Option<T>` in params. If you are using the `nightly` feature,
+> you can use either `T` or `Option<T>`.
 
 Now we can use them in a component. Imagine a URL that has both params and a query, like `/contacts/:id?q=Search`.
 
@@ -55,24 +50,23 @@ let query = use_query::<ContactSearch>();
 
 // id: || -> usize
 let id = move || {
-	params.with(|params| {
-		params.as_ref()
-			.map(|params| params.id)
-			.unwrap_or_default()
-	})
+    params
+        .read()
+        .as_ref()
+        .ok()
+        .and_then(|params| params.id)
+        .unwrap_or_default()
 };
 ```
 
-The untyped versions return `Memo<ParamsMap>`. Again, it’s memo to react to changes in the URL. [`ParamsMap`](https://docs.rs/leptos_router/0.2.3/leptos_router/struct.ParamsMap.html) behaves a lot like any other map type, with a `.get()` method that returns `Option<&String>`.
+The untyped versions return `Memo<ParamsMap>`. Again, it’s memo to react to changes in the URL. [`ParamsMap`](https://docs.rs/leptos_router/0.7.0-gamma3/leptos_router/params/struct.ParamsMap.html) behaves a lot like any other map type, with a `.get()` method that returns `Option<String>`.
 
 ```rust
 let params = use_params_map();
 let query = use_query_map();
 
 // id: || -> Option<String>
-let id = move || {
-	params.with(|params| params.get("id").cloned())
-};
+let id = move || params.read().get("id");
 ```
 
 This can get a little messy: deriving a signal that wraps an `Option<_>` or `Result<_>` can involve a couple steps. But it’s worth doing this for two reasons:

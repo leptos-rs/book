@@ -10,7 +10,7 @@ In plain HTML, there are three ways to navigate to another page:
 
 Since we have a client-side router, we can do client-side link navigations without reloading the page, i.e., without a full round-trip to the server and back. It makes sense that we can do client-side form navigations in the same way.
 
-The router provides a [`<Form>`](https://docs.rs/leptos_router/latest/leptos_router/fn.Form.html) component, which works like the HTML `<form>` element, but uses client-side navigations instead of full page reloads. `<Form/>` works with both `GET` and `POST` requests. With `method="GET"`, it will navigate to the URL encoded in the form data. With `method="POST"` it will make a `POST` request and handle the server’s response.
+The router provides a [`<Form>`](https://docs.rs/leptos_router/0.7.0-gamma3/leptos_router/components/fn.Form.html) component, which works like the HTML `<form>` element, but uses client-side navigations instead of full page reloads. `<Form/>` works with both `GET` and `POST` requests. With `method="GET"`, it will navigate to the URL encoded in the form data. With `method="POST"` it will make a `POST` request and handle the server’s response.
 
 `<Form/>` provides the basis for some components like `<ActionForm/>` and `<MultiActionForm/>` that we’ll see in later chapters. But it also enables some powerful patterns of its own.
 
@@ -20,27 +20,28 @@ It turns out that the patterns we’ve learned so far make this easy to implemen
 
 ```rust
 async fn fetch_results() {
-	// some async function to fetch our search results
+    // some async function to fetch our search results
 }
 
 #[component]
 pub fn FormExample() -> impl IntoView {
     // reactive access to URL query strings
     let query = use_query_map();
-	// search stored as ?q=
-    let search = move || query().get("q").cloned().unwrap_or_default();
-	// a resource driven by the search string
-	let search_results = create_resource(search, fetch_results);
+    // search stored as ?q=
+    let search = move || query.read().get("q").unwrap_or_default();
+    // a resource driven by the search string
+    let search_results = Resource::new(search, |_| fetch_results());
 
-	view! {
-		<Form method="GET" action="">
-			<input type="search" name="q" value=search/>
-			<input type="submit"/>
-		</Form>
-		<Transition fallback=move || ()>
-			/* render search results */
-		</Transition>
-	}
+    view! {
+        <Form method="GET" action="">
+            <input type="search" name="q" value=search/>
+            <input type="submit"/>
+        </Form>
+        <Transition fallback=move || ()>
+            /* render search results */
+            {todo!()}
+        </Transition>
+    }
 }
 ```
 
@@ -64,14 +65,14 @@ You’ll notice that this version drops the `Submit` button. Instead, we add an 
 
 ```admonish sandbox title="Live example" collapsible=true
 
-[Click to open CodeSandbox.](https://codesandbox.io/p/sandbox/20-form-0-5-9g7v9p?file=%2Fsrc%2Fmain.rs%3A1%2C1)
+[Click to open CodeSandbox.](https://codesandbox.io/p/devbox/20-form-0-7-m73jsz)
 
 <noscript>
   Please enable JavaScript to view examples.
 </noscript>
 
 <template>
-  <iframe src="https://codesandbox.io/p/sandbox/20-form-0-5-9g7v9p?file=%2Fsrc%2Fmain.rs%3A1%2C1" width="100%" height="1000px" style="max-height: 100vh"></iframe>
+  <iframe src="https://codesandbox.io/p/devbox/20-form-0-7-m73jsz" width="100%" height="1000px" style="max-height: 100vh"></iframe>
 </template>
 
 ```
@@ -80,17 +81,19 @@ You’ll notice that this version drops the `Submit` button. Instead, we add an 
 <summary>CodeSandbox Source</summary>
 
 ```rust
-use leptos::*;
-use leptos_router::*;
+use leptos::prelude::*;
+use leptos_router::components::{Form, Route, Router, Routes};
+use leptos_router::hooks::use_query_map;
+use leptos_router::path;
 
 #[component]
-fn App() -> impl IntoView {
+pub fn App() -> impl IntoView {
     view! {
         <Router>
             <h1><code>"<Form/>"</code></h1>
             <main>
-                <Routes>
-                    <Route path="" view=FormExample/>
+                <Routes fallback=|| "Not found.">
+                    <Route path=path!("") view=FormExample/>
                 </Routes>
             </main>
         </Router>
@@ -101,9 +104,9 @@ fn App() -> impl IntoView {
 pub fn FormExample() -> impl IntoView {
     // reactive access to URL query
     let query = use_query_map();
-    let name = move || query().get("name").cloned().unwrap_or_default();
-    let number = move || query().get("number").cloned().unwrap_or_default();
-    let select = move || query().get("select").cloned().unwrap_or_default();
+    let name = move || query.read().get("name").unwrap_or_default();
+    let number = move || query.read().get("number").unwrap_or_default();
+    let select = move || query.read().get("select").unwrap_or_default();
 
     view! {
         // read out the URL query strings
@@ -182,7 +185,7 @@ pub fn FormExample() -> impl IntoView {
 }
 
 fn main() {
-    leptos::mount_to_body(App)
+    leptos::mount::mount_to_body(App)
 }
 ```
 

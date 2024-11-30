@@ -38,13 +38,9 @@ special knowledge.
 For example, let’s start with a simple signal and derived signal:
 
 ```rust
-let (value, set_value) = create_signal(0);
-let is_odd = move || value() & 1 == 1;
+let (value, set_value) = signal(0);
+let is_odd = move || value.get() % 2 == 0;
 ```
-
-> If you don’t recognize what’s going on with `is_odd`, don’t worry about it
-> too much. It’s just a simple way to test whether an integer is odd by doing a
-> bitwise `AND` with `1`.
 
 We can use these signals and ordinary Rust to build most control flow.
 
@@ -56,11 +52,11 @@ if it’s even. Well, how about this?
 ```rust
 view! {
     <p>
-    {move || if is_odd() {
-        "Odd"
-    } else {
-        "Even"
-    }}
+        {move || if is_odd() {
+            "Odd"
+        } else {
+            "Even"
+        }}
     </p>
 }
 ```
@@ -105,7 +101,7 @@ pattern matching at your disposal.
 
 ```rust
 let message = move || {
-    match value() {
+    match value.get() {
         0 => "Zero",
         1 => "One",
         n if is_odd() => "Odd",
@@ -131,9 +127,9 @@ above, where the value switches from even to odd on every change, this is fine.
 But consider the following example:
 
 ```rust
-let (value, set_value) = create_signal(0);
+let (value, set_value) = signal(0);
 
-let message = move || if value() > 5 {
+let message = move || if value.get() > 5 {
     "Big"
 } else {
     "Small"
@@ -147,7 +143,7 @@ view! {
 This _works_, for sure. But if you added a log, you might be surprised
 
 ```rust
-let message = move || if value() > 5 {
+let message = move || if value.get() > 5 {
     logging::log!("{}: rendering Big", value());
     "Big"
 } else {
@@ -176,7 +172,7 @@ the `if` statement and rerendering isn’t a big deal. But imagine it were
 like this:
 
 ```rust
-let message = move || if value() > 5 {
+let message = move || if value.get() > 5 {
     <Big/>
 } else {
     <Small/>
@@ -189,16 +185,16 @@ unnecessary work.
 
 ### `<Show/>`
 
-The [`<Show/>`](https://docs.rs/leptos/latest/leptos/fn.Show.html) component is
+The [`<Show/>`](https://docs.rs/leptos/0.7.0-gamma3/leptos/control_flow/fn.Show.html) component is
 the answer. You pass it a `when` condition function, a `fallback` to be shown if
 the `when` function returns `false`, and children to be rendered if `when` is `true`.
 
 ```rust
-let (value, set_value) = create_signal(0);
+let (value, set_value) = signal(0);
 
 view! {
   <Show
-    when=move || { value() > 5 }
+    when=move || { value.get() > 5 }
     fallback=|| view! { <Small/> }
   >
     <Big/>
@@ -221,46 +217,35 @@ efficient. But if it’s at all expensive to render either branch, reach for
 
 There‘s one final thing it’s important to say in this section.
 
-The `view` macro doesn’t return the most-generic wrapping type
-[`View`](https://docs.rs/leptos/latest/leptos/enum.View.html).
-Instead, it returns things with types like `Fragment` or `HtmlElement<Input>`. This
-can be a little annoying if you’re returning different HTML elements from
-different branches of a conditional:
+Leptos uses a statically-typed view tree. The `view` macro returns different types
+for different kinds of view.
+
+This won’t compile, because the different HTML elements are different types.
 
 ```rust,compile_error
 view! {
     <main>
         {move || match is_odd() {
-            true if value() == 1 => {
-                // returns HtmlElement<Pre>
+            true if value.get() == 1 => {
                 view! { <pre>"One"</pre> }
             },
-            false if value() == 2 => {
-                // returns HtmlElement<P>
+            false if value.get() == 2 => {
                 view! { <p>"Two"</p> }
             }
             // returns HtmlElement<Textarea>
-            _ => view! { <textarea>{value()}</textarea> }
+            _ => view! { <textarea>{value.get()}</textarea> }
         }}
     </main>
 }
 ```
 
-This strong typing is actually very powerful, because
-[`HtmlElement`](https://docs.rs/leptos/0.1.3/leptos/struct.HtmlElement.html) is,
-among other things, a smart pointer: each `HtmlElement<T>` type implements
-`Deref` for the appropriate underlying `web_sys` type. In other words, in the browser
-your `view` returns real DOM elements, and you can access native DOM methods on
-them.
-
+This strong typing is very powerful, because it enables all sorts of compile-time optimizations.
 But it can be a little annoying in conditional logic like this, because you can’t
 return different types from different branches of a condition in Rust. There are two ways
 to get yourself out of this situation:
 
-1. If you have multiple `HtmlElement` types, convert them to `HtmlElement<AnyElement>`
-   with [`.into_any()`](https://docs.rs/leptos/latest/leptos/struct.HtmlElement.html#method.into_any)
-2. If you have a variety of view types that are not all `HtmlElement`, convert them to
-   `View`s with [`.into_view()`](https://docs.rs/leptos/latest/leptos/trait.IntoView.html#tymethod.into_view).
+1. Use the enum `Either` (and `EitherOf3`, `EitherOf4`, etc.) to convert the different types to the same type.
+2. Use `.into_any()` to convert multiple types into one typed-erased `AnyView`.
 
 Here’s the same example, with the conversion added:
 
@@ -285,14 +270,14 @@ view! {
 
 ```admonish sandbox title="Live example" collapsible=true
 
-[Click to open CodeSandbox.](https://codesandbox.io/p/sandbox/6-control-flow-0-5-4yn7qz?file=%2Fsrc%2Fmain.rs%3A1%2C1)
+[Click to open CodeSandbox.](https://codesandbox.io/p/devbox/6-control-flow-0-7-3m4c9j?file=%2Fsrc%2Fmain.rs%3A1%2C1-91%2C2&workspaceId=478437f3-1f86-4b1e-b665-5c27a31451fb)
 
 <noscript>
   Please enable JavaScript to view examples.
 </noscript>
 
 <template>
-  <iframe src="https://codesandbox.io/p/sandbox/6-control-flow-0-5-4yn7qz?file=%2Fsrc%2Fmain.rs%3A1%2C1" width="100%" height="1000px" style="max-height: 100vh"></iframe>
+  <iframe src="https://codesandbox.io/p/devbox/6-control-flow-0-7-3m4c9j?file=%2Fsrc%2Fmain.rs%3A1%2C1-91%2C2&workspaceId=478437f3-1f86-4b1e-b665-5c27a31451fb" width="100%" height="1000px" style="max-height: 100vh"></iframe>
 </template>
 
 ```
@@ -301,19 +286,23 @@ view! {
 <summary>CodeSandbox Source</summary>
 
 ```rust
-use leptos::*;
+use leptos::prelude::*;
 
 #[component]
 fn App() -> impl IntoView {
-    let (value, set_value) = create_signal(0);
-    let is_odd = move || value() & 1 == 1;
-    let odd_text = move || if is_odd() { Some("How odd!") } else { None };
+    let (value, set_value) = signal(0);
+    let is_odd = move || value.get() & 1 == 1;
+    let odd_text = move || if is_odd() {
+        Some("How odd!")
+    } else {
+        None
+    };
 
     view! {
         <h1>"Control Flow"</h1>
 
         // Simple UI to update and show a value
-        <button on:click=move |_| set_value.update(|n| *n += 1)>
+        <button on:click=move |_| *set_value.write() += 1>
             "+1"
         </button>
         <p>"Value is: " {value}</p>
@@ -371,22 +360,22 @@ fn App() -> impl IntoView {
         //    `.into_any()` (for different HTML element types)
         //    or `.into_view()` (for all view types)
         {move || match is_odd() {
-            true if value() == 1 => {
+            true if value.get() == 1 => {
                 // <pre> returns HtmlElement<Pre>
                 view! { <pre>"One"</pre> }.into_any()
             },
-            false if value() == 2 => {
+            false if value.get() == 2 => {
                 // <p> returns HtmlElement<P>
                 // so we convert into a more generic type
                 view! { <p>"Two"</p> }.into_any()
             }
-            _ => view! { <textarea>{value()}</textarea> }.into_any()
+            _ => view! { <textarea>{value.get()}</textarea> }.into_any()
         }}
     }
 }
 
 fn main() {
-    leptos::mount_to_body(App)
+    leptos::mount::mount_to_body(App)
 }
 ```
 

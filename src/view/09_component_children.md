@@ -31,7 +31,7 @@ In fact, you’ve already seen these both in action in the [`<Show/>`](/view/06_
 view! {
   <Show
     // `when` is a normal prop
-    when=move || value() > 5
+    when=move || value.get() > 5
     // `fallback` is a "render prop": a function that returns a view
     fallback=|| view! { <Small/> }
   >
@@ -45,12 +45,14 @@ view! {
 Let’s define a component that takes some children and a render prop.
 
 ```rust
+/// Displays a `render_prop` and some children within markup.
 #[component]
 pub fn TakesChildren<F, IV>(
     /// Takes a function (type F) that returns anything that can be
     /// converted into a View (type IV)
     render_prop: F,
-    /// `children` takes the `Children` type
+    /// `children` can take one of several different types, each of which
+    /// is a function that returns some view type
     children: Children,
 ) -> impl IntoView
 where
@@ -58,9 +60,10 @@ where
     IV: IntoView,
 {
     view! {
+        <h1><code>"<TakesChildren/>"</code></h1>
         <h2>"Render Prop"</h2>
         {render_prop()}
-
+        <hr/>
         <h2>"Children"</h2>
         {children()}
     }
@@ -69,7 +72,10 @@ where
 
 `render_prop` and `children` are both functions, so we can call them to generate
 the appropriate views. `children`, in particular, is an alias for
-`Box<dyn FnOnce() -> Fragment>`. (Aren't you glad we named it `Children` instead?)
+`Box<dyn FnOnce() -> AnyView>`. (Aren't you glad we named it `Children` instead?)
+The `AnyView` returned here is an opaque, type-erased view: you can’t do anything to
+inspect it. There are a variety of other child types: for example, `ChildrenFragment`
+will return a `Fragment`, which is a collection whose children can be iterated over.
 
 > If you need a `Fn` or `FnMut` here because you need to call `children` more than once,
 > we also provide `ChildrenFn` and `ChildrenMut` aliases.
@@ -88,23 +94,29 @@ view! {
 
 ## Manipulating Children
 
-The [`Fragment`](https://docs.rs/leptos/latest/leptos/struct.Fragment.html) type is
-basically a way of wrapping a `Vec<View>`. You can insert it anywhere into your view.
+The [`Fragment`](https://docs.rs/leptos/0.7.0-gamma3/leptos/tachys/view/fragment/struct.Fragment.html) type is
+basically a way of wrapping a `Vec<AnyView>`. You can insert it anywhere into your view.
 
 But you can also access those inner views directly to manipulate them. For example, here’s
 a component that takes its children and turns them into an unordered list.
 
 ```rust
+/// Wraps each child in an `<li>` and embeds them in a `<ul>`.
 #[component]
-pub fn WrapsChildren(children: Children) -> impl IntoView {
-    // Fragment has `nodes` field that contains a Vec<View>
+pub fn WrapsChildren(children: ChildrenFragment) -> impl IntoView {
+    // children() returns a `Fragment`, which has a
+    // `nodes` field that contains a Vec<View>
+    // this means we can iterate over the children
+    // to create something new!
     let children = children()
         .nodes
         .into_iter()
         .map(|child| view! { <li>{child}</li> })
-        .collect_view();
+        .collect::<Vec<_>>();
 
     view! {
+        <h1><code>"<WrapsChildren/>"</code></h1>
+        // wrap our wrapped children in a UL
         <ul>{children}</ul>
     }
 }
@@ -124,14 +136,14 @@ view! {
 
 ```admonish sandbox title="Live example" collapsible=true
 
-[Click to open CodeSandbox.](https://codesandbox.io/p/sandbox/9-component-children-0-5-m4jwhp?file=%2Fsrc%2Fmain.rs%3A1%2C1)
+[Click to open CodeSandbox.](https://codesandbox.io/p/devbox/9-component-children-0-7-736s9r?file=%2Fsrc%2Fmain.rs%3A1%2C1-90%2C2&workspaceId=478437f3-1f86-4b1e-b665-5c27a31451fb)
 
 <noscript>
   Please enable JavaScript to view examples.
 </noscript>
 
 <template>
-  <iframe src="https://codesandbox.io/p/sandbox/9-component-children-0-5-m4jwhp?file=%2Fsrc%2Fmain.rs%3A1%2C1" width="100%" height="1000px" style="max-height: 100vh"></iframe>
+  <iframe src="https://codesandbox.io/p/devbox/9-component-children-0-7-736s9r?file=%2Fsrc%2Fmain.rs%3A1%2C1-90%2C2&workspaceId=478437f3-1f86-4b1e-b665-5c27a31451fb" width="100%" height="1000px" style="max-height: 100vh"></iframe>
 </template>
 
 ```
@@ -140,7 +152,7 @@ view! {
 <summary>CodeSandbox Source</summary>
 
 ```rust
-use leptos::*;
+use leptos::prelude::*;
 
 // Often, you want to pass some kind of child view to another
 // component. There are two basic patterns for doing this:
@@ -152,12 +164,9 @@ use leptos::*;
 
 #[component]
 pub fn App() -> impl IntoView {
-    let (items, set_items) = create_signal(vec![0, 1, 2]);
+    let (items, set_items) = signal(vec![0, 1, 2]);
     let render_prop = move || {
-        // items.with(...) reacts to the value without cloning
-        // by applying a function. Here, we pass the `len` method
-        // on a `Vec<_>` directly
-        let len = move || items.with(Vec::len);
+        let len = move || items.read().len();
         view! {
             <p>"Length: " {len}</p>
         }
@@ -212,7 +221,7 @@ where
 
 /// Wraps each child in an `<li>` and embeds them in a `<ul>`.
 #[component]
-pub fn WrapsChildren(children: Children) -> impl IntoView {
+pub fn WrapsChildren(children: ChildrenFragment) -> impl IntoView {
     // children() returns a `Fragment`, which has a
     // `nodes` field that contains a Vec<View>
     // this means we can iterate over the children
@@ -231,7 +240,7 @@ pub fn WrapsChildren(children: Children) -> impl IntoView {
 }
 
 fn main() {
-    leptos::mount_to_body(App)
+    leptos::mount::mount_to_body(App)
 }
 ```
 

@@ -26,7 +26,7 @@ Leptos supports all the major ways of rendering HTML that includes asynchronous 
 
 If you’re using server-side rendering, the synchronous mode is almost never what you actually want, from a performance perspective. This is because it misses out on an important optimization. If you’re loading async resources during server rendering, you can actually begin loading the data on the server. Rather than waiting for the client to receive the HTML response, then loading its JS + WASM, _then_ realize it needs the resources and begin loading them, server rendering can actually begin loading the resources when the client first makes the response. In this sense, during server rendering an async resource is like a `Future` that begins loading on the server and resolves on the client. As long as the resources are actually serializable, this will always lead to a faster total load time.
 
-> This is why [`create_resource`](https://docs.rs/leptos/latest/leptos/fn.create_resource.html) requires resources data to be serializable by default, and why you need to explicitly use [`create_local_resource`](https://docs.rs/leptos/latest/leptos/fn.create_local_resource.html) for any async data that is not serializable and should therefore only be loaded in the browser itself. Creating a local resource when you could create a serializable resource is always a deoptimization.
+> This is why a `Resource` needs its data to be serializable, and why you should use `LocalResource` for any async data that is not serializable and should therefore only be loaded in the browser itself. Creating a local resource when you could create a serializable resource is always a deoptimization.
 
 ## Async Rendering
 
@@ -82,14 +82,14 @@ This is useful when you have multiple `<Suspense/>` on the page, and one is more
 Because it offers the best blend of performance characteristics, Leptos defaults to out-of-order streaming. But it’s really simple to opt into these different modes. You do it by adding an `ssr` property onto one or more of your `<Route/>` components, like in the [`ssr_modes` example](https://github.com/leptos-rs/leptos/blob/main/examples/ssr_modes/src/app.rs).
 
 ```rust
-<Routes>
+<Routes fallback=|| "Not found.">
 	// We’ll load the home page with out-of-order streaming and <Suspense/>
-	<Route path="" view=HomePage/>
+	<Route path=path!("") view=HomePage/>
 
 	// We'll load the posts with async rendering, so they can set
 	// the title and metadata *after* loading the data
 	<Route
-		path="/post/:id"
+		path=path!("/post/:id")
 		view=Post
 		ssr=SsrMode::Async
 	/>
@@ -100,9 +100,9 @@ For a path that includes multiple nested routes, the most restrictive mode will 
 
 ## Blocking Resources
 
-Any Leptos versions later than `0.2.5` (i.e., git main and `0.3.x` or later) introduce a new resource primitive with `create_blocking_resource`. A blocking resource still loads asynchronously like any other `async`/`.await` in Rust; it doesn’t block a server thread or anything. Instead, reading from a blocking resource under a `<Suspense/>` blocks the HTML _stream_ from returning anything, including its initial synchronous shell, until that `<Suspense/>` has resolved.
+Blocking resources can be created with `Resource::new_blocking`. A blocking resource still loads asynchronously like any other `async`/`.await` in Rust. It doesn’t block a server thread, or anything liek that. Instead, reading from a blocking resource under a `<Suspense/>` blocks the HTML _stream_ from returning anything, including its initial synchronous shell, until that `<Suspense/>` has resolved.
 
-Now from a performance perspective, this is not ideal. None of the synchronous shell for your page will load until that resource is ready. However, rendering nothing means that you can do things like set the `<title>` or `<meta>` tags in your `<head>` in actual HTML. This sounds a lot like `async` rendering, but there’s one big difference: if you have multiple `<Suspense/>` sections, you can block on _one_ of them but still render a placeholder and then stream in the other.
+From a performance perspective, this is not ideal. None of the synchronous shell for your page will load until that resource is ready. However, rendering nothing means that you can do things like set the `<title>` or `<meta>` tags in your `<head>` in actual HTML. This sounds a lot like `async` rendering, but there’s one big difference: if you have multiple `<Suspense/>` sections, you can block on _one_ of them but still render a placeholder and then stream in the other.
 
 For example, think about a blog post. For SEO and for social sharing, I definitely want my blog post’s title and metadata in the initial HTML `<head>`. But I really don’t care whether comments have loaded yet or not; I’d like to load those as lazily as possible.
 
@@ -111,26 +111,28 @@ With blocking resources, I can do something like this:
 ```rust
 #[component]
 pub fn BlogPost() -> impl IntoView {
-	let post_data = create_blocking_resource(/* load blog post */);
-	let comments_data = create_resource(/* load blog comments */);
-	view! {
-		<Suspense fallback=|| ()>
-			{move || {
-				post_data.with(|data| {
-					view! {
-						<Title text=data.title/>
-						<Meta name="description" content=data.excerpt/>
-						<article>
-							/* render the post content */
-						</article>
-					}
-				})
-			}}
-		</Suspense>
-		<Suspense fallback=|| "Loading comments...">
-			/* render comments data here */
-		</Suspense>
-	}
+    let post_data = Resource::new_blocking(/* load blog post */);
+    let comments_data = Resource::new(/* load blog comments */);
+    view! {
+        <Suspense fallback=|| ()>
+            {move || Suspend::new(async move {
+                let data = post_data.await;
+                view! {
+                    <Title text=data.title/>
+                    <Meta name="description" content=data.excerpt/>
+                    <article>
+                        /* render the post content */
+                    </article>
+                }
+            })}
+        </Suspense>
+        <Suspense fallback=|| "Loading comments...">
+            {move || Suspend::new(async move {
+                let comments = comments_data.await;
+                todo!()
+            })}
+        </Suspense>
+    }
 }
 ```
 
@@ -139,14 +141,14 @@ The first `<Suspense/>`, with the body of the blog post, will block my HTML stre
 Combined with the following route definition, which uses `SsrMode::PartiallyBlocked`, the blocking resource will be fully rendered on the server side, making it accessible to users who disable WebAssembly or JavaScript.
 
 ```rust
-<Routes>
+<Routes fallback=|| "Not found.">
 	// We’ll load the home page with out-of-order streaming and <Suspense/>
-	<Route path="" view=HomePage/>
+	<Route path=path!("") view=HomePage/>
 
 	// We'll load the posts with async rendering, so they can set
 	// the title and metadata *after* loading the data
 	<Route
-		path="/post/:id"
+		path=path!("/post/:id")
 		view=Post
 		ssr=SsrMode::PartiallyBlocked
 	/>
