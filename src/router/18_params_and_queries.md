@@ -21,17 +21,17 @@ The untyped versions hold a simple key-value map. To use the typed versions, der
 > `Params` is a very lightweight trait to convert a flat key-value map of strings into a struct by applying `FromStr` to each field. Because of the flat structure of route params and URL queries, it’s significantly less flexible than something like `serde`; it also adds much less weight to your binary.
 
 ```rust
-use leptos::*;
-use leptos_router::*;
+use leptos::Params;
+use leptos_router::params::Params;
 
 #[derive(Params, PartialEq)]
 struct ContactParams {
-	id: Option<usize>
+    id: Option<usize>,
 }
 
 #[derive(Params, PartialEq)]
 struct ContactSearch {
-	q: Option<String>
+    q: Option<String>,
 }
 ```
 
@@ -45,6 +45,8 @@ Now we can use them in a component. Imagine a URL that has both params and a que
 The typed versions return `Memo<Result<T, _>>`. It’s a Memo so it reacts to changes in the URL. It’s a `Result` because the params or query need to be parsed from the URL, and may or may not be valid.
 
 ```rust
+use leptos_router::hooks::{use_params, use_query};
+
 let params = use_params::<ContactParams>();
 let query = use_query::<ContactSearch>();
 
@@ -62,6 +64,8 @@ let id = move || {
 The untyped versions return `Memo<ParamsMap>`. Again, it’s memo to react to changes in the URL. [`ParamsMap`](https://docs.rs/leptos_router/0.7.0-gamma3/leptos_router/params/struct.ParamsMap.html) behaves a lot like any other map type, with a `.get()` method that returns `Option<String>`.
 
 ```rust
+use leptos_router::hooks::{use_params_map, use_query_map};
+
 let params = use_params_map();
 let query = use_query_map();
 
@@ -78,14 +82,14 @@ This can get a little messy: deriving a signal that wraps an `Option<_>` or `Res
 
 ```admonish sandbox title="Live example" collapsible=true
 
-[Click to open CodeSandbox.]([https://codesandbox.io/p/sandbox/16-router-0-5-4xp4zz?file=%2Fsrc%2Fmain.rs%3A102%2C2](https://codesandbox.io/p/devbox/16-router-0-7-csm8t5?file=%2Fsrc%2Fmain.rs))
+[Click to open CodeSandbox.]([https://codesandbox.io/p/devbox/16-router-0-7-csm8t5?file=%2Fsrc%2Fmain.rs](https://codesandbox.io/p/devbox/16-router-0-7-csm8t5?file=%2Fsrc%2Fmain.rs))
 
 <noscript>
   Please enable JavaScript to view examples.
 </noscript>
 
 <template>
-  <iframe src="[https://codesandbox.io/p/sandbox/16-router-0-5-4xp4zz?file=%2Fsrc%2Fmain.rs%3A102%2C2](https://codesandbox.io/p/devbox/16-router-0-7-csm8t5?file=%2Fsrc%2Fmain.rs)" width="100%" height="1000px" style="max-height: 100vh"></iframe>
+  <iframe src="[https://codesandbox.io/p/devbox/16-router-0-7-csm8t5?file=%2Fsrc%2Fmain.rs](https://codesandbox.io/p/devbox/16-router-0-7-csm8t5?file=%2Fsrc%2Fmain.rs)" width="100%" height="1000px" style="max-height: 100vh"></iframe>
 </template>
 
 ```

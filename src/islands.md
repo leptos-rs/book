@@ -56,6 +56,7 @@ leptos::mount::hydrate_islands();
 Rather than running the whole application and hydrating the view that it creates, this will hydrate each individual island, in order.
 
 In `app.rs`, in the `shell` functions, we’ll also need to add `islands=true` to the `HydrationScripts` component:
+
 ```rust
 <HydrationScripts options islands=true/>
 ```
@@ -126,8 +127,11 @@ If you open up the source for the page now, you’ll see that your `HomePage` is
 
 ```html
 <leptos-island data-component="HomePage_7432294943247405892">
-    <h1>Welcome to Leptos!</h1>
-    <button>Click Me: <!>0</button>
+  <h1>Welcome to Leptos!</h1>
+  <button>
+    Click Me:
+    <!>0
+  </button>
 </leptos-island>
 ```
 
@@ -173,7 +177,7 @@ The point comes when you combine two key facts:
 
 This means you can run server-only code directly in the body of a component, and pass it directly into the children. Certain tasks that take a complex blend of server functions and Suspense in fully-hydrated apps can be done inline in islands.
 
-> \* This “unless you use it in an island” is important. It is *not* the case that `#[component]` components only run on the server. Rather, they are “shared components” that are only compiled into the WASM binary if they’re used in the body of an `#[island]`. But if you don’t use them in an island, they won’t run in the browser.
+> \* This “unless you use it in an island” is important. It is _not_ the case that `#[component]` components only run on the server. Rather, they are “shared components” that are only compiled into the WASM binary if they’re used in the body of an `#[island]`. But if you don’t use them in an island, they won’t run in the browser.
 
 We’re going to rely on a third fact in the rest of this demo:
 
@@ -238,16 +242,16 @@ fn HomePage() -> impl IntoView {
 If you take a look in the DOM inspector, you’ll see the island is now something like
 
 ```html
-<leptos-island 
-    data-component="Tabs_1030591929019274801"
-    data-props="{&quot;labels&quot;:[&quot;a.txt&quot;,&quot;b.txt&quot;,&quot;c.txt&quot;]}"
+<leptos-island
+  data-component="Tabs_1030591929019274801"
+  data-props='{"labels":["a.txt","b.txt","c.txt"]}'
 >
-    <div style="display: flex; width: 100%; justify-content: space-between;;">
-        <button>a.txt</button>
-        <button>b.txt</button>
-        <button>c.txt</button>
-        <!---->
-    </div>
+  <div style="display: flex; width: 100%; justify-content: space-between;;">
+    <button>a.txt</button>
+    <button>b.txt</button>
+    <button>c.txt</button>
+    <!---->
+  </div>
 </leptos-island>
 ```
 
@@ -413,19 +417,14 @@ Check out the [`islands` example](https://github.com/leptos-rs/leptos/blob/main/
 ## Demo Code
 
 ```rust
-use leptos::*;
-use leptos_router::*;
+use leptos::prelude::*;
 
 #[component]
 pub fn App() -> impl IntoView {
     view! {
-        <Router>
-            <main style="background-color: lightblue; padding: 10px">
-                <Routes>
-                    <Route path="" view=HomePage/>
-                </Routes>
-            </main>
-        </Router>
+        <main style="background-color: lightblue; padding: 10px">
+            <HomePage/>
+        </main>
     }
 }
 
@@ -463,7 +462,7 @@ fn HomePage() -> impl IntoView {
 
 #[island]
 fn Tabs(labels: Vec<String>, children: Children) -> impl IntoView {
-    let (selected, set_selected) = create_signal(0);
+    let (selected, set_selected) = signal(0);
     provide_context(selected);
 
     let buttons = labels
@@ -471,7 +470,7 @@ fn Tabs(labels: Vec<String>, children: Children) -> impl IntoView {
         .enumerate()
         .map(|(index, label)| {
             view! {
-                <button on:click=move |_| set_selected(index)>
+                <button on:click=move |_| set_selected.set(index)>
                     {label}
                 </button>
             }
@@ -495,7 +494,7 @@ fn Tab(index: usize, children: Children) -> impl IntoView {
         <div
             style:background-color="lightgreen"
             style:padding="10px"
-            style:display=move || if selected() == index {
+            style:display=move || if selected.get() == index {
                 "block"
             } else {
                 "none"
