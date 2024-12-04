@@ -100,7 +100,7 @@ For a path that includes multiple nested routes, the most restrictive mode will 
 
 ## Blocking Resources
 
-Blocking resources can be created with `Resource::new_blocking`. A blocking resource still loads asynchronously like any other `async`/`.await` in Rust. It doesn’t block a server thread, or anything liek that. Instead, reading from a blocking resource under a `<Suspense/>` blocks the HTML _stream_ from returning anything, including its initial synchronous shell, until that `<Suspense/>` has resolved.
+Blocking resources can be created with `Resource::new_blocking`. A blocking resource still loads asynchronously like any other `async`/`.await` in Rust. It doesn’t block a server thread, or anything like that. Instead, reading from a blocking resource under a `<Suspense/>` blocks the HTML _stream_ from returning anything, including its initial synchronous shell, until that `<Suspense/>` has resolved.
 
 From a performance perspective, this is not ideal. None of the synchronous shell for your page will load until that resource is ready. However, rendering nothing means that you can do things like set the `<title>` or `<meta>` tags in your `<head>` in actual HTML. This sounds a lot like `async` rendering, but there’s one big difference: if you have multiple `<Suspense/>` sections, you can block on _one_ of them but still render a placeholder and then stream in the other.
 
