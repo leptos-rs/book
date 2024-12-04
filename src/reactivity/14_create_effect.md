@@ -124,7 +124,7 @@ Every time `count` is updated, this effect will rerun. This is what allows react
 
 ## Explicit Tracking with `Effect::watch()`
 
-In addition to `Effect::new()`, Leptos provides an [`Effect::watch()`](https://docs.rs/leptos/0.7.0-gamma3/leptos/reactive/effect/struct.Effect.html#method.watch) function, which can be used to separate racking and responding to changes by explicitly passing in a set of values to track.
+In addition to `Effect::new()`, Leptos provides an [`Effect::watch()`](https://docs.rs/leptos/0.7.0-gamma3/leptos/reactive/effect/struct.Effect.html#method.watch) function, which can be used to separate tracking and responding to changes by explicitly passing in a set of values to track.
 
 `watch` takes a first argument, which is reactively tracked, and a second, which is not. Whenever a reactive value in its `deps` argument is changed, the `callback` is run. `watch` returns an `Effect`, which can be called with `.stop()` to stop tracking the dependencies.
 
