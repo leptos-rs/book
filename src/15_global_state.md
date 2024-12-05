@@ -81,6 +81,8 @@ fn FancyMath() -> impl IntoView {
 
 ## Option #3: Create a Global State Store
 
+> Some of this content is duplicated from the section on complex iteration with stores [here](../view/04b_iteration.md#option-4-stores). Both sections are intermediate/optional content, so I thought some duplication couldn’t hurt.
+
 Stores are a new reactive primitive, available in Leptos 0.7 through the accompanying `reactive_stores` crate. (This crate is shipped separately for now so we can continue to develop it without requiring a version change to the whole framework.)
 
 Stores allow you to wrap an entire struct, and reactively read from and update individual fields without tracking changes to other fields.

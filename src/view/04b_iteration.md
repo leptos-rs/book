@@ -277,7 +277,115 @@ will still be more efficient for pinpoint updates here.
 
 ## Option 4: Stores
 
+> Some of this content is duplicated in the section on global state management with stores [here](../15_global_state.md#option-3-create-a-global-state-store). Both sections are intermediate/optional content, so I thought some duplication couldn’t hurt.
+
 Leptos 0.7 introduces a new reactive primitive called “stores.” Stores are designed to address
 the issues described in this chapter so far. They’re a bit experimental, so they require an additional dependency called `reactive_stores` in your `Cargo.toml`.
 
-**TODO finish stores example for this chapter.**
+Stores give you fine-grained reactive access to the individual fields of a struct, and to individual items in collections like `Vec<_>`, without needing to create nested signals or memos manually, as in the options given above.
+
+Stores are built on top of the `Store` derive macro, which creates a getter for each field of a struct. Calling this getter gives reactive access to that particular field. Reading from it will track only that field and its parents/children, and updating it will only notify that field and its parents/children, but not siblings. In other words, mutating `value` will not notify `key`, and so on.
+
+We can adapt the data types we used in the examples above.
+
+The top level of a store always needs to be a struct, so we’ll create a `Data` wrapper with a single `rows` field.
+```rust
+#[derive(Store, Debug, Clone)]
+pub struct Data {
+    #[store(key: String = |row| row.key.clone())]
+    rows: Vec<DatabaseEntry>,
+}
+
+#[derive(Store, Debug, Clone)]
+struct DatabaseEntry {
+    key: String,
+    value: i32,
+}
+```
+Adding `#[store(key)]` to the `rows` field allows us to have keyed access to the fields of the store, which will be useful in the `<For/>` component below. We can simply use `key`, the same key that we’ll use in `<For/>`.
+
+The `<For/>` component is pretty straightforward:
+```rust
+<For
+    each=move || data.rows()
+    key=|row| row.read().key.clone()
+    children=|child| {
+        let value = child.value();
+        view! { <p>{move || value.get()}</p> }
+    }
+/>
+```
+Because `rows` is a keyed field, it implements `IntoIterator`, and we can simply use `move || data.rows()` as the `each` prop. This will react to any changes to the `rows` list, just as `move || data.get()` did in our nested-signal version.
+
+The `key` field calls `.read()` to get access to the current value of the row, then clones and returns the `key` field.
+
+In `children` prop, calling `child.value()` gives us reactive access to the `value` field for the row with this key. If rows are reordered, added, or removed, the keyed store field will keep in sync so that this `value` is always associated with the correct key. 
+
+In the update button handler, we’ll iterate over the entries in `rows`, updating each one:
+```rust
+for row in data.rows().iter_unkeyed() {
+    *row.value().write() *= 2;
+}
+```
+
+### Pros 
+
+We get the fine-grained reactivity of the nested-signal and memo versions, without needing to manually create nested signals or memoized slices. We can work with plain data (a struct and `Vec<_>`), annotated with a derive macro, rather than special nested reactive types.
+
+Personally, I think the stores version is the nicest one here. And no surprise, as it’s the newest API. We’ve had a few years to think about these things and stores include some of the lessons we’ve learned!
+
+### Cons
+
+On the other hand, it’s the newest API. As of writing this sentence (December 2024), stores have only been released for a few weeks; I am sure that there are still some bugs or edge cases to be figured out.
+
+
+### Full Example
+
+Here’s the complete store example. You can find another, more complete example [here](https://github.com/leptos-rs/leptos/blob/main/examples/stores/src/lib.rs), and more discussion in the book [here](../15_global_state.md).
+```
+#[component]
+pub fn App() -> impl IntoView {
+    // instead of a single with the rows, we create a store for Data
+    let data = Store::new(Data {
+        rows: vec![
+            DatabaseEntry {
+                key: "foo".to_string(),
+                value: 10,
+            },
+            DatabaseEntry {
+                key: "bar".to_string(),
+                value: 20,
+            },
+            DatabaseEntry {
+                key: "baz".to_string(),
+                value: 15,
+            },
+        ],
+    });
+
+    view! {
+        // when we click, update each row,
+        // doubling its value
+        <button on:click=move |_| {
+            // calling rows() gives us access to the rows 
+            // .iter_unkeyed
+            for row in data.rows().iter_unkeyed() {
+                *row.value().write() *= 2;
+            }
+            // log the new value of the signal
+            leptos::logging::log!("{:?}", data.get());
+        }>
+            "Update Values"
+        </button>
+        // iterate over the rows and display each value
+        <For
+            each=move || data.rows()
+            key=|row| row.read().key.clone()
+            children=|child| {
+                let value = child.value();
+                view! { <p>{move || value.get()}</p> }
+            }
+        />
+    }
+}
+```
