@@ -14,14 +14,14 @@ And then to create a new project, you can run either
 
 ```bash
 # for an Actix template
-cargo leptos new --git leptos-rs/start
+cargo leptos new --git https://github.com/leptos-rs/start-actix
 ```
 
 or
 
 ```bash
 # for an Axum template
-cargo leptos new --git leptos-rs/start-axum
+cargo leptos new --git https://github.com/leptos-rs/start-axum
 ```
 
 Make sure you've added the wasm32-unknown-unknown target so that Rust can compile your code to WebAssembly to run in the browser.
