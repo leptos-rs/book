@@ -275,6 +275,11 @@ in `<ButtonD/>` and a single text node in `<App/>`. It’s as if the components
 themselves don’t exist at all. And, well... at runtime, they don’t. It’s just
 signals and effects, all the way down.
 
+Note that this approach makes an important tradeoff: You don't have type-safety
+anymore between `provide_context` and `use_context`. Receiving the right context
+in the child component is a runtime check (see `use_context.expect(...)`). The
+compiler won't guide you during a refactoring, as it does with the earlier approaches. 
+
 ```admonish sandbox title="Live example" collapsible=true
 
 [Click to open CodeSandbox.](https://codesandbox.io/p/devbox/8-parent-child-0-7-cgcgk9?file=%2Fsrc%2Fmain.rs%3A1%2C1-116%2C2&workspaceId=478437f3-1f86-4b1e-b665-5c27a31451fb)
