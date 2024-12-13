@@ -84,6 +84,107 @@ The WASM version of your app, running in the browser, is expecting to find an el
 
 It’s pretty rare that you do this intentionally, but it could happen from somehow running different logic on the server and in the browser. If you’re seeing warnings like this and you don’t think it’s your fault, it’s much more likely that it’s a bug with `<Suspense/>` or something. Feel free to go ahead and open an [issue](https://github.com/leptos-rs/leptos/issues) or [discussion](https://github.com/leptos-rs/leptos/discussions) on GitHub for help.
 
+### Invalid/edge-case HTML, and mismatches between HTML and the DOM
+
+Servers respond to requests with HTML. The browser then parses that HTML into a tree called the Document Object Model (DOM). During hydration, Leptos walks over the view tree of your application, hydrating an element, then moving into its children, hydrating the first child, then moving to its siblings, and so on. This assumes that the tree of HTML produced by the your application on the server maps directly onto the DOM tree into which the browser parses that HTML.
+
+There are a few cases to be aware of in which the tree of HTML created by your `view` and the DOM tree might not correspond exactly: these can cause hydration errors.
+
+#### Invalid HTML
+
+Here’s a very simple application that causes a hydration error:
+```rust
+#[component]
+pub fn App() -> impl IntoView {
+    let count = RwSignal::new(0);
+
+    view! {
+        <p>
+            <div class:blue=move || count.get() == 2>
+                 "First"
+            </div>
+        </p>
+    }
+}
+```
+
+This will give an error message like 
+```
+A hydration error occurred while trying to hydrate an element defined at src/app.rs:6:14.
+
+The framework expected a text node, but found this instead:  <p></p>
+
+The hydration mismatch may have occurred slightly earlier, but this is the first time the framework found a node of an unexpected type.
+```
+
+(In most browser devtools, you can right-click on that `<p></p>` to show where it appears in the DOM, which is handy.)
+
+If you look in the DOM inspector, you’ll see that it instead of a `<div>` inside a `<p>`, it shows:
+```html
+<p></p>
+<div>First</div>
+<p></p>
+```
+That’s because this is invalid HTML! A `<div>` cannot go inside a `<p>`. When the browser parses that `<div>`, it actually closes the preceding `<p>`, then opens the `<div>`; then, when it sees the (now-unmatched) closing `</p>`, it treats it as a new, empty `<p>`.
+
+As a result, our DOM tree no longer matches the expected view tree, and a hydration error ensues.
+
+Unfortunately, it is difficult to ensure the validity of HTML in the view at compile time using our current model, and without an effect on compile times across the board. For now, if you run into issues like this, consider running the HTML output through a validator. (In the case above, the W3C HTML Validator does in fact show an error!)
+
+```admonish info
+You may notice some bugs of this arise when migrating from 0.6 to 0.7. This is due to a change in how hydration works.
+
+Leptos 0.1-0.6 used a method of hydration in which each HTML element was given a unique ID, which was then used to find it in the DOM by ID. Leptos 0.7 instead began walking over the DOM directly, hydrating each element as it came. This has much better performance characteristics (shorter, cleaner HTML output and faster hydration times) but is less resilient to the invalid or edge-case HTML examples above. Perhaps more importantly, this approach also fixes a number of *other* edge cases and bugs in hydration, making the framework more resilient on net.
+```
+
+#### `<table>` without `<tbody>`
+
+There’s one additional edge case I’m aware of, in which *valid* HTML produces a DOM tree that differs from the view tree, and that’s `<table>`. When (most) browsers parse an HTML `<table>`, they insert a `<tbody>` into the DOM, whether you included one or not.
+
+```rust
+#[component]
+pub fn App() -> impl IntoView {
+    let count = RwSignal::new(0);
+
+    view! {
+        <table>
+            <tr>
+                <td class:blue=move || count.get() == 0>"First"</td>
+            </tr>
+        </table>
+    }
+}
+```
+
+Again, this generates a hydration error, because the browser has inserted an additional `<tbody>` into the DOM tree that was not in your view.
+
+Here, the fix is simple: adding `<tbody>`:
+```rust
+#[component]
+pub fn App() -> impl IntoView {
+    let count = RwSignal::new(0);
+
+    view! {
+        <table>
+            <tbody>
+                <tr>
+                    <td class:blue=move || count.get() == 0>"First"</td>
+                </tr>
+            </tbody>
+        </table>
+    }
+}
+```
+
+(It would be worth exploring in the future whether we can lint for this particular quirk more easily than linting for valid HTML.)
+
+#### General Advice
+
+These kind of mismatches can be tricky. In general, my recommendation for debugging:
+1. Right-click on the element in the message to see where the framework first *notices* the problem.
+2. Compare the DOM at that point and above it, checking for mismatches with your view tree. Are there extra elements? Missing elements?
+
+
 ### Not all client code can run on the server
 
 Imagine you happily import a dependency like `gloo-net` that you’ve been used to using to make requests in the browser, and use it in a `create_resource` in a server-rendered app.
