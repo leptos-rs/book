@@ -62,7 +62,7 @@ Now our function simply takes `names` by reference to run `is_empty()`, avoiding
 
 ## Local Reactivity
 
-So far we have looked at a CSR-only application. This means our app will run on a single thread. However, if you look at the signature of [`signal`](https://docs.rs/leptos/latest/leptos/reactive/signal/fn.signal.html) it requires our value be `Send + Sync`, which is meant for multi-threaded applications. This requirement exists so [SSR applications](../ssr/README.md) can parallelize their work. If you only plan on having a CSR app, the reactive primatives are paired with local alternatives that alleviate the `Send + Sync` requirement.
+So far we have looked at a CSR-only application. This means our app will run on a single thread. However, if you look at the signature of [`signal`](https://docs.rs/leptos/latest/leptos/reactive/signal/fn.signal.html) it requires our value be `Send + Sync`, which is meant for multi-threaded applications. This requirement exists so [SSR applications](../ssr/README.md) can parallelize their work. If you have a CSR-only app, so don't need multi-threading, the reactive primatives are paired with local alternatives that alleviate the `Send + Sync` requirement.
 
 | Standard | Local |
 | -------- | ----- |
