@@ -39,7 +39,7 @@ For example, let’s start with a simple signal and derived signal:
 
 ```rust
 let (value, set_value) = signal(0);
-let is_odd = move || value.get() % 2 == 0;
+let is_odd = move || value.get() % 2 != 0;
 ```
 
 We can use these signals and ordinary Rust to build most control flow.
