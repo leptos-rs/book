@@ -221,7 +221,7 @@ each field in a signal.
 
 ## Option 3: Memoized Slices
 
-Leptos provides a primitive called a [`Memo`](https://docs.rs/leptos/0.7.0-gamma3/leptos/reactive/computed/struct.Memo.html),
+Leptos provides a primitive called a [`Memo`](https://docs.rs/leptos/latest/leptos/reactive/computed/struct.Memo.html),
 which creates a derived computation that only triggers a reactive update when its value
 has changed.
 

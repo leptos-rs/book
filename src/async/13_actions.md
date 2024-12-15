@@ -2,9 +2,9 @@
 
 We’ve talked about how to load `async` data with resources. Resources immediately load data and work closely with `<Suspense/>` and `<Transition/>` components to show whether data is loading in your app. But what if you just want to call some arbitrary `async` function and keep track of what it’s doing?
 
-Well, you could always use [`spawn_local`](https://docs.rs/leptos/0.7.0-gamma3/leptos/task/fn.spawn_local.html). This allows you to just spawn an `async` task in a synchronous environment by handing the `Future` off to the browser (or, on the server, Tokio or whatever other runtime you’re using). But how do you know if it’s still pending? Well, you could just set a signal to show whether it’s loading, and another one to show the result...
+Well, you could always use [`spawn_local`](https://docs.rs/leptos/latest/leptos/task/fn.spawn_local.html). This allows you to just spawn an `async` task in a synchronous environment by handing the `Future` off to the browser (or, on the server, Tokio or whatever other runtime you’re using). But how do you know if it’s still pending? Well, you could just set a signal to show whether it’s loading, and another one to show the result...
 
-All of this is true. Or you could use the final `async` primitive: [`Action`](https://docs.rs/leptos/0.7.0-gamma3/leptos/reactive/actions/struct.Action.html).
+All of this is true. Or you could use the final `async` primitive: [`Action`](https://docs.rs/leptos/latest/leptos/reactive/actions/struct.Action.html).
 
 Actions and resources seem similar, but they represent fundamentally different things. If you’re trying to load data by running an `async` function, either once or when some other value changes, you probably want to use a resource. If you’re trying to occasionally run an `async` function in response to something like a user clicking a button, you probably want to use an `Action`.
 
@@ -89,7 +89,7 @@ view! {
 }
 ```
 
-Now, there’s a chance this all seems a little over-complicated, or maybe too restricted. I wanted to include actions here, alongside resources, as the missing piece of the puzzle. In a real Leptos app, you’ll actually most often use actions alongside server functions, [`ServerAction`](https://docs.rs/leptos/0.7.0-gamma3/leptos/server/struct.ServerAction.html), and the [`<ActionForm/>`](https://docs.rs/leptos/0.7.0-gamma3/leptos/form/fn.ActionForm.html) component to create really powerful progressively-enhanced forms. So if this primitive seems useless to you... Don’t worry! Maybe it will make sense later. (Or check out our [`todo_app_sqlite`](https://github.com/leptos-rs/leptos/blob/main/examples/todo_app_sqlite/src/todo.rs) example now.)
+Now, there’s a chance this all seems a little over-complicated, or maybe too restricted. I wanted to include actions here, alongside resources, as the missing piece of the puzzle. In a real Leptos app, you’ll actually most often use actions alongside server functions, [`ServerAction`](https://docs.rs/leptos/latest/leptos/server/struct.ServerAction.html), and the [`<ActionForm/>`](https://docs.rs/leptos/latest/leptos/form/fn.ActionForm.html) component to create really powerful progressively-enhanced forms. So if this primitive seems useless to you... Don’t worry! Maybe it will make sense later. (Or check out our [`todo_app_sqlite`](https://github.com/leptos-rs/leptos/blob/main/examples/todo_app_sqlite/src/todo.rs) example now.)
 
 ```admonish sandbox title="Live example" collapsible=true
 

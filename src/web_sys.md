@@ -86,7 +86,7 @@ RUSTFLAGS = "--cfg=web_sys_unstable_apis"
 The declarative style of the framework means that you don’t need to directly manipulate DOM nodes to build up your user interface.
 However, in some cases you want direct access to the underlying DOM element that represents part of your view. The section of the book
 on [“uncontrolled inputs”](/view/05_forms.html?highlight=NodeRef#uncontrolled-inputs) showed how to do this using the
-[`NodeRef`](https://docs.rs/leptos/0.7.0-gamma3/leptos/tachys/reactive_graph/node_ref/struct.NodeRef.html) type.
+[`NodeRef`](https://docs.rs/leptos/latest/leptos/tachys/reactive_graph/node_ref/struct.NodeRef.html) type.
 
 `NodeRef::get` returns a correctly-typed
 `web-sys` element that can be directly manipulated.

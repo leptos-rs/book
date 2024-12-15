@@ -79,7 +79,7 @@ All components own their props; so the `<Show/>` in this case can’t be called 
 
 However, both `<Suspense/>` and `<Show/>` take `ChildrenFn`, i.e., their `children` should implement the `Fn` type so they can be called multiple times with only an immutable reference. This means we don’t need to own `children` or `fallback`; we just need to be able to pass `'static` references to them.
 
-We can solve this problem by using the [`StoredValue`](https://docs.rs/leptos/0.7.0-gamma3/leptos/reactive/owner/struct.StoredValue.html) primitive. This essentially stores a value in the reactive system, handing ownership off to the framework in exchange for a reference that is, like signals, `Copy` and `'static`, which we can access or modify through certain methods.
+We can solve this problem by using the [`StoredValue`](https://docs.rs/leptos/latest/leptos/reactive/owner/struct.StoredValue.html) primitive. This essentially stores a value in the reactive system, handing ownership off to the framework in exchange for a reference that is, like signals, `Copy` and `'static`, which we can access or modify through certain methods.
 
 In this case, it’s really simple:
 

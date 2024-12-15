@@ -88,7 +88,7 @@ Fortunately, there’s a better way.
 
 ## Dynamic Rendering with the `<For/>` Component
 
-The [`<For/>`](https://docs.rs/leptos/0.7.0-gamma3/leptos/control_flow/fn.For.html) component is a
+The [`<For/>`](https://docs.rs/leptos/latest/leptos/control_flow/fn.For.html) component is a
 keyed dynamic list. It takes three props:
 
 - `each`: a reactive function that returns the items `T` to be iterated over

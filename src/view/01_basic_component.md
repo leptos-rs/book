@@ -60,7 +60,7 @@ will provide helpful recommendations for each import.
 #[component]
 ```
 
-Like all component definitions, this begins with the [`#[component]`](https://docs.rs/leptos/0.7.0-gamma3/leptos/attr.component.html) macro. `#[component]` annotates a function so it can be
+Like all component definitions, this begins with the [`#[component]`](https://docs.rs/leptos/latest/leptos/attr.component.html) macro. `#[component]` annotates a function so it can be
 used as a component in your Leptos application. We’ll see some of the other features of
 this macro in a couple chapters.
 
@@ -88,17 +88,17 @@ changing, and describe the user interface.
 let (count, set_count) = signal(0);
 ```
 
-[`signal`](https://docs.rs/leptos/0.7.0-gamma3/leptos/reactive/signal/fn.signal.html)
+[`signal`](https://docs.rs/leptos/latest/leptos/reactive/signal/fn.signal.html)
 creates a signal, the basic unit of reactive change and state management in Leptos.
 This returns a `(getter, setter)` tuple. To access the current value, you’ll
 use `count.get()` (or, on `nightly` Rust, the shorthand `count()`). To set the
 current value, you’ll call `set_count.set(...)` (or, on nightly, `set_count(...)`).
 
-> `.get()` clones the value and `.set()` overwrites it. In many cases, it’s more efficient to use `.with()` or `.update()`; check out the docs for [`ReadSignal`](https://docs.rs/leptos/0.7.0-gamma3/leptos/reactive/signal/struct.ReadSignal.html) and [`WriteSignal`](https://docs.rs/leptos/0.7.0-gamma3/leptos/reactive/signal/struct.WriteSignal.html) if you’d like to learn more about those trade-offs at this point.
+> `.get()` clones the value and `.set()` overwrites it. In many cases, it’s more efficient to use `.with()` or `.update()`; check out the docs for [`ReadSignal`](https://docs.rs/leptos/latest/leptos/reactive/signal/struct.ReadSignal.html) and [`WriteSignal`](https://docs.rs/leptos/latest/leptos/reactive/signal/struct.WriteSignal.html) if you’d like to learn more about those trade-offs at this point.
 
 ## The View
 
-Leptos defines user interfaces using a JSX-like format via the [`view`](https://docs.rs/leptos/0.7.0-gamma3/leptos/macro.view.html) macro.
+Leptos defines user interfaces using a JSX-like format via the [`view`](https://docs.rs/leptos/latest/leptos/macro.view.html) macro.
 
 ```rust
 view! {
