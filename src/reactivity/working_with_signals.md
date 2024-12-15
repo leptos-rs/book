@@ -60,6 +60,17 @@ if names.read().is_empty() {
 
 Now our function simply takes `names` by reference to run `is_empty()`, avoiding that clone, and then mutates the `Vec<_>` in place.
 
+## Local Reactivity
+
+So far we have looked at a CSR-only application. This means our app will run on a single thread. However, if you look at the signature of [`signal`](https://docs.rs/leptos/latest/leptos/reactive/signal/fn.signal.html) it requires our value be `Send + Sync`, which is meant for multi-threaded applications. This requirement exists so [SSR applications](../ssr/README.md) can parallelize their work. If you only plan on having a CSR app, the reactive primatives are paired with local alternatives that alleviate the `Send + Sync` requirement.
+
+| Standard | Local |
+| -------- | ----- |
+| [`signal`](https://docs.rs/leptos/latest/leptos/reactive/signal/fn.signal.html) | [`signal_local`](https://docs.rs/leptos/latest/leptos/prelude/fn.signal_local.html) |
+| [`RwSignal::new`](https://docs.rs/leptos/latest/leptos/prelude/struct.RwSignal.html#method.new) | [`RwSignal::new_local`](https://docs.rs/leptos/latest/leptos/prelude/struct.RwSignal.html#method.new_local) |
+| [`Resource`](https://docs.rs/leptos/latest/leptos/prelude/struct.Resource.html) | [`LocalResource`](https://docs.rs/leptos/latest/leptos/prelude/struct.LocalResource.html) |
+| [`Action::new`](https://docs.rs/leptos/latest/leptos/prelude/struct.Action.html#method.new) | [`Action::new_local`](https://docs.rs/leptos/latest/leptos/prelude/struct.Action.html#method.new_local), [`Action::new_unsync`](https://docs.rs/leptos/latest/leptos/prelude/struct.Action.html#method.new_unsync) |
+
 ## Nightly Syntax
 
 When using the `nightly` feature and `nightly` syntax, calling a `ReadSignal` as a function is syntax sugar for `.get()`. Calling a `WriteSignal` as a function is syntax sugar for `.set()`. So
