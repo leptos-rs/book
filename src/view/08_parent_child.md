@@ -13,16 +13,16 @@ the two?
 It’s easy to communicate state from a parent component to a child component. We
 covered some of this in the material on [components and props](./03_components.md).
 Basically if you want the parent to communicate to the child, you can pass a
-[`ReadSignal`](https://docs.rs/leptos/0.7.0-gamma3/leptos/reactive/signal/struct.ReadSignal.html), a
-[`Signal`](https://docs.rs/leptos/0.7.0-gamma3/leptos/reactive/wrappers/read/struct.Signal.html), or even a
-[`MaybeSignal`](https://docs.rs/leptos/0.7.0-gamma3/leptos/reactive/wrappers/read/enum.MaybeSignal.html) as a prop.
+[`ReadSignal`](https://docs.rs/leptos/latest/leptos/reactive/signal/struct.ReadSignal.html), a
+[`Signal`](https://docs.rs/leptos/latest/leptos/reactive/wrappers/read/struct.Signal.html), or even a
+[`MaybeSignal`](https://docs.rs/leptos/latest/leptos/reactive/wrappers/read/enum.MaybeSignal.html) as a prop.
 
 But what about the other direction? How can a child send notifications about events
 or state changes back up to the parent?
 
 There are four basic patterns of parent-child communication in Leptos.
 
-## 1. Pass a [`WriteSignal`](https://docs.rs/leptos/0.7.0-gamma3/leptos/reactive/signal/struct.WriteSignal.html)
+## 1. Pass a [`WriteSignal`](https://docs.rs/leptos/latest/leptos/reactive/signal/struct.WriteSignal.html)
 
 One approach is simply to pass a `WriteSignal` from the parent down to the child, and update
 it in the child. This lets you manipulate the state of the parent from the child.
@@ -218,8 +218,8 @@ There is!
 
 ### 4.1 The Context API
 
-You can provide data that skips levels by using [`provide_context`](https://docs.rs/leptos/0.7.0-gamma3/leptos/context/fn.provide_context.html)
-and [`use_context`](https://docs.rs/leptos/0.7.0-gamma3/leptos/context/fn.use_context.html). Contexts are identified
+You can provide data that skips levels by using [`provide_context`](https://docs.rs/leptos/latest/leptos/context/fn.provide_context.html)
+and [`use_context`](https://docs.rs/leptos/latest/leptos/context/fn.use_context.html). Contexts are identified
 by the type of the data you provide (in this example, `WriteSignal<bool>`), and they exist in a top-down
 tree that follows the contours of your UI tree. In this example, we can use context to skip the
 unnecessary prop drilling.

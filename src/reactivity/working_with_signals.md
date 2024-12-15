@@ -1,6 +1,6 @@
 # Working with Signals
 
-So far we’ve used some simple examples of using [`signal`](https://docs.rs/leptos/0.7.0-gamma3/leptos/reactive/signal/fn.signal.html), which returns a [`ReadSignal`](https://docs.rs/leptos/0.7.0-gamma3/leptos/reactive/signal/struct.ReadSignal.html) getter and a [`WriteSignal`](https://docs.rs/leptos/0.7.0-gamma3/leptos/reactive/signal/struct.WriteSignal.html) setter.
+So far we’ve used some simple examples of using [`signal`](https://docs.rs/leptos/latest/leptos/reactive/signal/fn.signal.html), which returns a [`ReadSignal`](https://docs.rs/leptos/latest/leptos/reactive/signal/struct.ReadSignal.html) getter and a [`WriteSignal`](https://docs.rs/leptos/latest/leptos/reactive/signal/struct.WriteSignal.html) setter.
 
 ## Getting and Setting
 
@@ -8,17 +8,17 @@ There are a few basic signal operations:
 
 ### Getting
 
-1. [`.read()`](https://docs.rs/leptos/0.7.0-gamma3/leptos/reactive/signal/struct.ReadSignal.html#impl-Read-for-T) returns a read guard which dereferences to the value of the signal, and tracks any future changes to the value of the signal reactively. Note that you cannot update the value of the signal until this guard is dropped, or it will cause a runtime error.
-1. [`.with()`](https://docs.rs/leptos/0.7.0-gamma3/leptos/reactive/signal/struct.ReadSignal.html#impl-With-for-T) takes a function, which receives the current value of the signal by reference (`&T`), and tracks the signal.
-1. [`.get()`](https://docs.rs/leptos/0.7.0-gamma3/leptos/reactive/signal/struct.ReadSignal.html#impl-Get-for-T) clones the current value of the signal and tracks further changes to the value.
+1. [`.read()`](https://docs.rs/leptos/latest/leptos/reactive/signal/struct.ReadSignal.html#impl-Read-for-T) returns a read guard which dereferences to the value of the signal, and tracks any future changes to the value of the signal reactively. Note that you cannot update the value of the signal until this guard is dropped, or it will cause a runtime error.
+1. [`.with()`](https://docs.rs/leptos/latest/leptos/reactive/signal/struct.ReadSignal.html#impl-With-for-T) takes a function, which receives the current value of the signal by reference (`&T`), and tracks the signal.
+1. [`.get()`](https://docs.rs/leptos/latest/leptos/reactive/signal/struct.ReadSignal.html#impl-Get-for-T) clones the current value of the signal and tracks further changes to the value.
 
 `.get()` is the most common method of accessing a signal. `.read()` is useful for methods that take an immutable reference, without cloning the value (`my_vec_signal.read().len()`). `.with()` is useful if you need to do more with that reference, but want to make sure you don’t hold onto the lock longer than you need.
 
 ### Setting
 
-1. [`.write()`](https://docs.rs/leptos/0.7.0-gamma3/leptos/reactive/signal/struct.WriteSignal.html#impl-Write-for-WriteSignal%3CT,+S%3E) returns a write guard which is a mutable references to the value of the signal, and notifies any subscribers that they need to update. Note that you cannot read from the value of the signal until this guard is dropped, or it will cause a runtime error.
-1. [`.update()`](https://docs.rs/leptos/0.7.0-gamma3/leptos/reactive/signal/struct.WriteSignal.html#impl-Update-for-T) takes a function, which receives a mutable reference to the current value of the signal (`&mut T`), and notifies subscribers. (`.update()` doesn’t return the value returned by the closure, but you can use [`.try_update()`](https://docs.rs/leptos/latest/leptos/trait.SignalUpdate.html#tymethod.try_update) if you need to; for example, if you’re removing an item from a `Vec<_>` and want the removed item.)
-1. [`.set()`](https://docs.rs/leptos/0.7.0-gamma3/leptos/reactive/signal/struct.WriteSignal.html#impl-Set-for-T) replaces the current value of the signal and notifies subscribers.
+1. [`.write()`](https://docs.rs/leptos/latest/leptos/reactive/signal/struct.WriteSignal.html#impl-Write-for-WriteSignal%3CT,+S%3E) returns a write guard which is a mutable references to the value of the signal, and notifies any subscribers that they need to update. Note that you cannot read from the value of the signal until this guard is dropped, or it will cause a runtime error.
+1. [`.update()`](https://docs.rs/leptos/latest/leptos/reactive/signal/struct.WriteSignal.html#impl-Update-for-T) takes a function, which receives a mutable reference to the current value of the signal (`&mut T`), and notifies subscribers. (`.update()` doesn’t return the value returned by the closure, but you can use [`.try_update()`](https://docs.rs/leptos/latest/leptos/trait.SignalUpdate.html#tymethod.try_update) if you need to; for example, if you’re removing an item from a `Vec<_>` and want the removed item.)
+1. [`.set()`](https://docs.rs/leptos/latest/leptos/reactive/signal/struct.WriteSignal.html#impl-Set-for-T) replaces the current value of the signal and notifies subscribers.
 
 `.set()` is most common for setting a new value; `.write()` is very useful for updating a value in place. Just as is the case with `.read()` and `.with()`, `.update()` can be useful when you want to avoid the possibility of holding on the write lock longer than you intended to.
 
@@ -97,7 +97,7 @@ let derived_signal_double_count = move || count.get() * 2;
 let memoized_double_count = Memo::new(move |_| count.get() * 2);
 ```
 
-> For guidance on whether to use a derived signal or a memo, see the docs for [`Memo`](https://docs.rs/leptos/0.7.0-gamma3/leptos/reactive/computed/struct.Memo.html)
+> For guidance on whether to use a derived signal or a memo, see the docs for [`Memo`](https://docs.rs/leptos/latest/leptos/reactive/computed/struct.Memo.html)
 
 **2) C is a function of A and some other thing B.** Create signals for A and B and a derived signal or memo for C.
 
@@ -133,4 +133,4 @@ b) It increases your chances of accidentally creating things like infinite loops
 
 In most situations, it’s best to rewrite things such that there’s a clear, top-down data flow based on derived signals or memos. But this isn’t the end of the world.
 
-> I’m intentionally not providing an example here. Read the [`Effect`](https://docs.rs/leptos/0.7.0-gamma3/leptos/reactive/effect/struct.Effect.html) docs to figure out how this would work.
+> I’m intentionally not providing an example here. Read the [`Effect`](https://docs.rs/leptos/latest/leptos/reactive/effect/struct.Effect.html) docs to figure out how this would work.

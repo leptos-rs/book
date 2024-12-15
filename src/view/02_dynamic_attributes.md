@@ -191,7 +191,7 @@ for expensive calculations.
 > }
 > ```
 >
-> [Click here for the full `view` macros docs](https://docs.rs/leptos/0.7.0-gamma3/leptos/macro.view.html).
+> [Click here for the full `view` macros docs](https://docs.rs/leptos/latest/leptos/macro.view.html).
 
 ```admonish sandbox title="Live example" collapsible=true
 

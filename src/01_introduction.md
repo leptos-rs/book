@@ -15,6 +15,6 @@ to other frameworks like React (JavaScript), Svelte (JavaScript), Yew (Rust), an
 Dioxus (Rust), so knowledge of one of those frameworks may also make it easier to
 understand Leptos.
 
-You can find more detailed docs for each part of the API at [Docs.rs](https://docs.rs/leptos/0.7.0-gamma3/leptos/).
+You can find more detailed docs for each part of the API at [Docs.rs](https://docs.rs/leptos/latest/leptos/).
 
 > The source code for the book is available [here](https://github.com/leptos-rs/book). PRs for typos or clarification are always welcome.

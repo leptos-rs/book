@@ -37,7 +37,7 @@ view! {
 
 That’s not _so_ bad, but it’s kind of annoying. What if we could invert the flow of control?
 
-The [`<Suspense/>`](https://docs.rs/leptos/0.7.0-gamma3/leptos/suspense/fn.Suspense.html) component lets us do exactly that. You give it a `fallback` prop and children, one or more of which usually involves reading from a resource. Reading from a resource “under” a `<Suspense/>` (i.e., in one of its children) registers that resource with the `<Suspense/>`. If it’s still waiting for resources to load, it shows the `fallback`. When they’ve all loaded, it shows the children.
+The [`<Suspense/>`](https://docs.rs/leptos/latest/leptos/suspense/fn.Suspense.html) component lets us do exactly that. You give it a `fallback` prop and children, one or more of which usually involves reading from a resource. Reading from a resource “under” a `<Suspense/>` (i.e., in one of its children) registers that resource with the `<Suspense/>`. If it’s still waiting for resources to load, it shows the `fallback`. When they’ve all loaded, it shows the children.
 
 ```rust
 let (count, set_count) = signal(0);

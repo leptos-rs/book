@@ -73,11 +73,11 @@ view! {
 
 In an "uncontrolled input," the browser controls the state of the input element.
 Rather than continuously updating a signal to hold its value, we use a
-[`NodeRef`](https://docs.rs/leptos/0.7.0-gamma3/leptos/tachys/reactive_graph/node_ref/struct.NodeRef.html) to access
+[`NodeRef`](https://docs.rs/leptos/latest/leptos/tachys/reactive_graph/node_ref/struct.NodeRef.html) to access
 the input when we want to get its value.
 
 In this example, we only notify the framework when the `<form>` fires a `submit` event.
-Note the use of the [`leptos::html`](https://docs.rs/leptos/0.7.0-gamma3/leptos/html/index.html) module, which provides a bunch of types for every HTML element.
+Note the use of the [`leptos::html`](https://docs.rs/leptos/latest/leptos/html/index.html) module, which provides a bunch of types for every HTML element.
 
 ```rust
 let (name, set_name) = signal("Uncontrolled".to_string());

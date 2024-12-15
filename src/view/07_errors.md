@@ -46,7 +46,7 @@ You entered
 This is not great. It saves us using `.unwrap_or_default()` or something, but it would be
 much nicer if we could catch the error and do something with it.
 
-You can do that, with the [`<ErrorBoundary/>`](https://docs.rs/leptos/0.7.0-gamma3/leptos/error/fn.ErrorBoundary.html)
+You can do that, with the [`<ErrorBoundary/>`](https://docs.rs/leptos/latest/leptos/error/fn.ErrorBoundary.html)
 component.
 
 ```admonish note

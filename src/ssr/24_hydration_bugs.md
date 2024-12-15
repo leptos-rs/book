@@ -243,4 +243,4 @@ In particular, you’ll sometimes see errors about the crate `mio` or missing th
 
 You can use `create_effect` to specify that something should only run on the client, and not in the server. Is there a way to specify that something should run only on the server, and not the client?
 
-In fact, there is. The next chapter will cover the topic of server functions in some detail. (In the meantime, you can check out their docs [here](https://docs.rs/leptos/0.7.0-gamma3/leptos/attr.server.html).)
+In fact, there is. The next chapter will cover the topic of server functions in some detail. (In the meantime, you can check out their docs [here](https://docs.rs/leptos/latest/leptos/attr.server.html).)
