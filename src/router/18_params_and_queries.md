@@ -11,12 +11,12 @@ Because of the way URLs are built, you can access the query from _any_ `<Route/>
 
 Accessing params and queries is pretty simple with a couple of hooks:
 
-- [`use_query`](https://docs.rs/leptos_router/0.7.0-gamma3/leptos_router/hooks/fn.use_query.html) or [`use_query_map`](https://docs.rs/leptos_router/0.7.0-gamma3/leptos_router/hooks/fn.use_query_map.html)
-- [`use_params`](https://docs.rs/leptos_router/0.7.0-gamma3/leptos_router/hooks/fn.use_params.html) or [`use_params_map`](https://docs.rs/leptos_router/0.7.0-gamma3/leptos_router/hooks/fn.use_params_map.html)
+- [`use_query`](https://docs.rs/leptos_router/latest/leptos_router/hooks/fn.use_query.html) or [`use_query_map`](https://docs.rs/leptos_router/latest/leptos_router/hooks/fn.use_query_map.html)
+- [`use_params`](https://docs.rs/leptos_router/latest/leptos_router/hooks/fn.use_params.html) or [`use_params_map`](https://docs.rs/leptos_router/latest/leptos_router/hooks/fn.use_params_map.html)
 
 Each of these comes with a typed option (`use_query` and `use_params`) and an untyped option (`use_query_map` and `use_params_map`).
 
-The untyped versions hold a simple key-value map. To use the typed versions, derive the [`Params`](https://docs.rs/leptos_router/0.7.0-gamma3/leptos_router/params/trait.Params.html) trait on a struct.
+The untyped versions hold a simple key-value map. To use the typed versions, derive the [`Params`](https://docs.rs/leptos_router/latest/leptos_router/params/trait.Params.html) trait on a struct.
 
 > `Params` is a very lightweight trait to convert a flat key-value map of strings into a struct by applying `FromStr` to each field. Because of the flat structure of route params and URL queries, it’s significantly less flexible than something like `serde`; it also adds much less weight to your binary.
 
@@ -61,7 +61,7 @@ let id = move || {
 };
 ```
 
-The untyped versions return `Memo<ParamsMap>`. Again, it’s memo to react to changes in the URL. [`ParamsMap`](https://docs.rs/leptos_router/0.7.0-gamma3/leptos_router/params/struct.ParamsMap.html) behaves a lot like any other map type, with a `.get()` method that returns `Option<String>`.
+The untyped versions return `Memo<ParamsMap>`. Again, it’s memo to react to changes in the URL. [`ParamsMap`](https://docs.rs/leptos_router/latest/leptos_router/params/struct.ParamsMap.html) behaves a lot like any other map type, with a `.get()` method that returns `Option<String>`.
 
 ```rust
 use leptos_router::hooks::{use_params_map, use_query_map};

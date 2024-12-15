@@ -94,7 +94,7 @@ view! {
 
 ## Manipulating Children
 
-The [`Fragment`](https://docs.rs/leptos/0.7.0-gamma3/leptos/tachys/view/fragment/struct.Fragment.html) type is
+The [`Fragment`](https://docs.rs/leptos/latest/leptos/tachys/view/fragment/struct.Fragment.html) type is
 basically a way of wrapping a `Vec<AnyView>`. You can insert it anywhere into your view.
 
 But you can also access those inner views directly to manipulate them. For example, here’s
