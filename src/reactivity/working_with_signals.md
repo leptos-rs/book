@@ -107,7 +107,7 @@ let (first_name, set_first_name) = signal("Bridget".to_string());
 // B
 let (last_name, set_last_name) = signal("Jones".to_string());
 // C is a function of A and B
-let full_name = move || format!("{} {}", &*first_name.read(), &*last_name.read()));
+let full_name = move || format!("{} {}", &*first_name.read(), &*last_name.read());
 ```
 
 **3) A and B are independent signals, but sometimes updated at the same time.** When you make the call to update A, make a separate call to update B.

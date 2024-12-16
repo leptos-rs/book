@@ -14,7 +14,7 @@ let (b, set_b) = signal(0);
 
 Effect::new(move |_| {
   // immediately prints "Value: 0" and subscribes to `a`
-  log::debug!("Value: {}", a.get());
+  logging::log!("Value: {}", a.get());
 });
 ```
 
@@ -49,8 +49,8 @@ let (use_last, set_use_last) = signal(true);
 // this will add the name to the log
 // any time one of the source signals changes
 Effect::new(move |_| {
-    log(
-        if use_last.get() {
+    logging::log!(
+        "{}", if use_last.get() {
             format!("{} {}", first.get(), last.get())
         } else {
             first.get()
