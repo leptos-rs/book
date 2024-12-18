@@ -60,7 +60,7 @@ pub fn App() -> impl IntoView {
         <For
             each=move || data.get()
             key=|state| state.key.clone()
-            let:child
+            let(child)
         >
             <p>{child.value}</p>
         </For>
@@ -68,13 +68,23 @@ pub fn App() -> impl IntoView {
 }
 ```
 
-> Note the `let:child` syntax here. In the previous chapter we introduced `<For/>`
+> Note the `let(child)` syntax here. In the previous chapter we introduced `<For/>`
 > with a `children` prop. We can actually create this value directly in the children
 > of the `<For/>` component, without breaking out of the `view` macro: the `let:child`
 > combined with `<p>{child.value}</p>` above is the equivalent of
 >
 > ```rust
 > children=|child| view! { <p>{child.value}</p> }
+> ```
+>
+> For convenience, you can also choose to destructure the pattern of your data:
+>
+> ```rust
+> <For
+>     each=move || data.get()
+>     key=|state| state.key.clone()
+>     let(DatabaseEntry { key, value })
+> >
 > ```
 
 When you click the `Update Values` button... nothing happens. Or rather:
@@ -107,7 +117,7 @@ because the key didn’t change. So: why not just force the key to change?
 <For
 	each=move || data.get()
 	key=|state| (state.key.clone(), state.value)
-	let:child
+	let(child)
 >
 	<p>{child.value}</p>
 </For>
@@ -184,7 +194,7 @@ pub fn App() -> impl IntoView {
         <For
             each=move || data.get()
             key=|state| state.key.clone()
-            let:child
+            let(child)
         >
             <p>{child.value}</p>
         </For>
@@ -319,7 +329,7 @@ Because `rows` is a keyed field, it implements `IntoIterator`, and we can simply
 
 The `key` field calls `.read()` to get access to the current value of the row, then clones and returns the `key` field.
 
-In `children` prop, calling `child.value()` gives us reactive access to the `value` field for the row with this key. If rows are reordered, added, or removed, the keyed store field will keep in sync so that this `value` is always associated with the correct key. 
+In `children` prop, calling `child.value()` gives us reactive access to the `value` field for the row with this key. If rows are reordered, added, or removed, the keyed store field will keep in sync so that this `value` is always associated with the correct key.
 
 In the update button handler, we’ll iterate over the entries in `rows`, updating each one:
 ```rust
@@ -328,7 +338,7 @@ for row in data.rows().iter_unkeyed() {
 }
 ```
 
-### Pros 
+### Pros
 
 We get the fine-grained reactivity of the nested-signal and memo versions, without needing to manually create nested signals or memoized slices. We can work with plain data (a struct and `Vec<_>`), annotated with a derive macro, rather than special nested reactive types.
 
@@ -367,7 +377,7 @@ pub fn App() -> impl IntoView {
         // when we click, update each row,
         // doubling its value
         <button on:click=move |_| {
-            // calling rows() gives us access to the rows 
+            // calling rows() gives us access to the rows
             // .iter_unkeyed
             for row in data.rows().iter_unkeyed() {
                 *row.value().write() *= 2;
