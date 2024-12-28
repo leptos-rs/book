@@ -82,9 +82,16 @@ view! {
 }
 ```
 
-You _can_ render a `Fn() -> Vec<_>` reactively as well. But note that every time
-it changes, this will rerender every item in the list. This is quite inefficient!
-Fortunately, there’s a better way.
+You _can_ render a `Fn() -> Vec<_>` reactively as well. But note that this is an unkeyed
+list update: it will reuse the existing DOM elements, and update them with the new values,
+according to their order in the new `Vec<_>`. If you’re just adding and removing items at the 
+end of the list, this works well, but if you are moving items around or inserting items into 
+the middle of the list, this will cause the browser to do more work than it needs to, and may 
+have surprising effects on things like input state and CSS animations. (For more on the “keyed”
+vs. “unkeyed” distinction, and some practical examples, you can read
+[this article](https://www.stefankrause.net/wp/?p=342).)
+
+Luckily, there’s an efficient way to do keyed list iteration, as well.
 
 ## Dynamic Rendering with the `<For/>` Component
 
