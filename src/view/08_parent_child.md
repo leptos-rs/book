@@ -309,7 +309,7 @@ struct SmallcapsContext(WriteSignal<bool>);
 
 #[component]
 pub fn App() -> impl IntoView {
-    // just some signals to toggle three classes on our <p>
+    // just some signals to toggle four classes on our <p>
     let (red, set_red) = signal(false);
     let (right, set_right) = signal(false);
     let (italics, set_italics) = signal(false);
@@ -317,7 +317,7 @@ pub fn App() -> impl IntoView {
 
     // the newtype pattern isn't *necessary* here but is a good practice
     // it avoids confusion with other possible future `WriteSignal<bool>` contexts
-    // and makes it easier to refer to it in ButtonC
+    // and makes it easier to refer to it in ButtonD
     provide_context(SmallcapsContext(set_smallcaps));
 
     view! {
@@ -338,7 +338,7 @@ pub fn App() -> impl IntoView {
             // Button B: pass a closure
             <ButtonB on_click=move |_| set_right.update(|value| *value = !*value)/>
 
-            // Button B: use a regular event listener
+            // Button C: use a regular event listener
             // setting an event listener on a component like this applies it
             // to each of the top-level elements the component returns
             <ButtonC on:click=move |_| set_italics.update(|value| *value = !*value)/>
