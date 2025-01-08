@@ -57,6 +57,10 @@ let on_submit = move |ev| {
 }
 ```
 
+```admonish warning
+This pattern is temporarily broken on 0.7 due to changes in event delegation. If you want it to work, you can enable the `delegation` feature on the `leptos` crate in your `Cargo.toml`. [Read this issue](https://github.com/leptos-rs/leptos/issues/3457) for more context.
+```
+
 ## Complex Inputs
 
 Server function arguments that are structs with nested serializable fields should make use of indexing notation of `serde_qs`.
