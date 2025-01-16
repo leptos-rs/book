@@ -30,6 +30,10 @@ RUN wget https://github.com/cargo-bins/cargo-binstall/releases/latest/download/c
 RUN tar -xvf cargo-binstall-x86_64-unknown-linux-musl.tgz
 RUN cp cargo-binstall /usr/local/cargo/bin
 
+# Install required tools
+RUN apt-get update -y \
+  && apt-get install -y --no-install-recommends clang
+
 # Install cargo-leptos
 RUN cargo binstall cargo-leptos -y
 
