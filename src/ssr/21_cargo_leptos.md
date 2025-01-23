@@ -7,7 +7,7 @@ This is not an insurmountable task but it adds some complication. For convenienc
 Getting started is pretty easy. Just run
 
 ```bash
-cargo install cargo-leptos
+cargo install --locked cargo-leptos
 ```
 
 And then to create a new project, you can run either
