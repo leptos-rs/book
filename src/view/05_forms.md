@@ -211,7 +211,7 @@ let (value, set_value) = signal(0i32);
 view! {
   <select
     on:change:target=move |ev| {
-      set_value(ev.target().value().parse().unwrap());
+      set_value.set(ev.target().value().parse().unwrap());
     }
     prop:value=move || value.get().to_string()
   >
