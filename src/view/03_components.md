@@ -390,7 +390,7 @@ and see the power of the `#[component]` macro combined with rust-analyzer here.
 
 Sometimes you want users to be able to add additional attributes to a component. For example, you might want users to be able to add their own `class` or `id` attributes for styling or other purposes.
 
-You _could_ do this by creating `class` or `id` props that you then apply to the appropriate element. But Leptos also supports “spreading” additional attributes onto components. Attributes added to a component will be applied to all top-level HTML elements that components returns from its view.
+You _could_ do this by creating `class` or `id` props that you then apply to the appropriate element. But Leptos also supports “spreading” additional attributes onto components. Attributes added to a component will be applied to all top-level HTML elements returned from its view.
 
 ```rust
 // you can create attribute lists by using the view macro with a spread {..} as the tag name
