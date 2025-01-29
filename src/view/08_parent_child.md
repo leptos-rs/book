@@ -12,10 +12,9 @@ the two?
 
 It’s easy to communicate state from a parent component to a child component. We
 covered some of this in the material on [components and props](./03_components.md).
-Basically if you want the parent to communicate to the child, you can pass a
-[`ReadSignal`](https://docs.rs/leptos/latest/leptos/reactive/signal/struct.ReadSignal.html), a
-[`Signal`](https://docs.rs/leptos/latest/leptos/reactive/wrappers/read/struct.Signal.html), or even a
-[`MaybeSignal`](https://docs.rs/leptos/latest/leptos/reactive/wrappers/read/enum.MaybeSignal.html) as a prop.
+Basically if you want the parent to communicate to the child, you can pass either a
+[`ReadSignal`](https://docs.rs/leptos/latest/leptos/reactive/signal/struct.ReadSignal.html), or
+[`Signal`](https://docs.rs/leptos/latest/leptos/reactive/wrappers/read/struct.Signal.html) as a prop.
 
 But what about the other direction? How can a child send notifications about events
 or state changes back up to the parent?
