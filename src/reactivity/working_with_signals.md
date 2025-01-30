@@ -32,7 +32,7 @@ This is worth noting when reading docs: if you only see `ReadUntracked` and `Tra
 
 ## Working with Signals
 
-You might notice that `.get()` and `.set()` can be implemented in terms of `.read()` and `.write()`, or `.with()` and `.update()`. In other words, `count.get()` is identical with `count.with(|n| n.clone())` or `count.read().clone()`, and `count.set(1)` is implemented by doing `count.update(|n| *n = 1)` or `*count.write() = 1`.
+You might notice that `.get()` and `.set()` can be implemented in terms of `.read()` and `.write()`, or `.with()` and `.update()`. In other words, `count.get()` is identical to `count.with(|n| n.clone())` or `count.read().clone()`, and `count.set(1)` is implemented by doing `count.update(|n| *n = 1)` or `*count.write() = 1`.
 
 But of course, `.get()` and `.set()` are nicer syntax.
 
