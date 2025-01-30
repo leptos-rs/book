@@ -64,11 +64,11 @@ for a situation where we’d otherwise be passing the tuples around.
 // each item manages a reactive view
 // but the list itself will never change
 let counter_buttons = counters
-    .map(|(count, set_count)| {
+    .map(|count| {
         view! {
             <li>
                 <button
-                    on:click=move |_| *set_count.write() += 1
+                    on:click=move |_| *count.write() += 1
                 >
                     {count}
                 </button>
