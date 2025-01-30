@@ -367,6 +367,9 @@ pub fn App() -> impl IntoView {
         // when we click, update each row,
         // doubling its value
         <button on:click=move |_| {
+            // allows iterating over the entries in an iterable store field
+            use reactive_stores::StoreFieldIterator;
+
             // calling rows() gives us access to the rows 
             // .iter_unkeyed
             for row in data.rows().iter_unkeyed() {
