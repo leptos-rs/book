@@ -69,6 +69,39 @@ view! {
 >
 > Many other frontend frameworks conflate attributes and properties, or create a special case for inputs that sets the value correctly. Maybe Leptos should do this too; but for now, I prefer giving users the maximum amount of control over whether they’re setting an attribute or a property, and doing my best to educate people about the actual underlying browser behavior rather than obscuring it.
 
+### Simplifying Controlled Inputs with `bind:`
+
+Adherence to Web standards and a clear division between “reading from a signal” and ”writing to a signal” are good, but creating
+controlled inputs in this way can sometimes seem like more boilerplate than is really necessary.
+
+Leptos also includes a special `bind:` syntax for inputs that allows you to automatically bind signals to inputs. They do exactly the same thing as the “controlled input” pattern above: create an event listener that updates the signal, and a dynamic property that reads from the signal. You can use `bind:value` for text inputs, and `bind:checked` for checkboxes.
+
+```rust
+let (name, set_name) = signal("Controlled".to_string());
+let email = RwSignal::new("".to_string());
+let spam_me = RwSignal::new(true);
+
+view! {
+    <input type="text"
+        bind:value=(name, set_name)
+    />
+    <input type="email"
+        bind:value=email
+    />
+    <label>
+        "Please send me lots of spam email."
+        <input type="checkbox"
+            bind:checked=spam_me
+        />
+    </label>
+    <p>"Name is: " {name}</p>
+    <p>"Email is: " {email}</p>
+    <Show when=move || spam_me.get()>
+        <p>"You’ll receive cool bonus content!"</p>
+    </Show>
+}
+```
+
 ## Uncontrolled Inputs
 
 In an "uncontrolled input," the browser controls the state of the input element.
@@ -178,7 +211,7 @@ let (value, set_value) = signal(0i32);
 view! {
   <select
     on:change:target=move |ev| {
-      set_value(ev.target().value().parse().unwrap());
+      set_value.set(ev.target().value().parse().unwrap());
     }
     prop:value=move || value.get().to_string()
   >

@@ -12,10 +12,9 @@ the two?
 
 It’s easy to communicate state from a parent component to a child component. We
 covered some of this in the material on [components and props](./03_components.md).
-Basically if you want the parent to communicate to the child, you can pass a
-[`ReadSignal`](https://docs.rs/leptos/latest/leptos/reactive/signal/struct.ReadSignal.html), a
-[`Signal`](https://docs.rs/leptos/latest/leptos/reactive/wrappers/read/struct.Signal.html), or even a
-[`MaybeSignal`](https://docs.rs/leptos/latest/leptos/reactive/wrappers/read/enum.MaybeSignal.html) as a prop.
+Basically if you want the parent to communicate to the child, you can pass either a
+[`ReadSignal`](https://docs.rs/leptos/latest/leptos/reactive/signal/struct.ReadSignal.html) or
+[`Signal`](https://docs.rs/leptos/latest/leptos/reactive/wrappers/read/struct.Signal.html) as a prop.
 
 But what about the other direction? How can a child send notifications about events
 or state changes back up to the parent?
@@ -309,7 +308,7 @@ struct SmallcapsContext(WriteSignal<bool>);
 
 #[component]
 pub fn App() -> impl IntoView {
-    // just some signals to toggle three classes on our <p>
+    // just some signals to toggle four classes on our <p>
     let (red, set_red) = signal(false);
     let (right, set_right) = signal(false);
     let (italics, set_italics) = signal(false);
@@ -317,7 +316,7 @@ pub fn App() -> impl IntoView {
 
     // the newtype pattern isn't *necessary* here but is a good practice
     // it avoids confusion with other possible future `WriteSignal<bool>` contexts
-    // and makes it easier to refer to it in ButtonC
+    // and makes it easier to refer to it in ButtonD
     provide_context(SmallcapsContext(set_smallcaps));
 
     view! {
@@ -338,7 +337,7 @@ pub fn App() -> impl IntoView {
             // Button B: pass a closure
             <ButtonB on_click=move |_| set_right.update(|value| *value = !*value)/>
 
-            // Button B: use a regular event listener
+            // Button C: use a regular event listener
             // setting an event listener on a component like this applies it
             // to each of the top-level elements the component returns
             <ButtonC on:click=move |_| set_italics.update(|value| *value = !*value)/>

@@ -16,7 +16,7 @@ There are a few basic signal operations:
 
 ### Setting
 
-1. [`.write()`](https://docs.rs/leptos/latest/leptos/reactive/signal/struct.WriteSignal.html#impl-Write-for-WriteSignal%3CT,+S%3E) returns a write guard which is a mutable references to the value of the signal, and notifies any subscribers that they need to update. Note that you cannot read from the value of the signal until this guard is dropped, or it will cause a runtime error.
+1. [`.write()`](https://docs.rs/leptos/latest/leptos/reactive/signal/struct.WriteSignal.html#impl-Write-for-WriteSignal%3CT,+S%3E) returns a write guard which is a mutable reference to the value of the signal, and notifies any subscribers that they need to update. Note that you cannot read from the value of the signal until this guard is dropped, or it will cause a runtime error.
 1. [`.update()`](https://docs.rs/leptos/latest/leptos/reactive/signal/struct.WriteSignal.html#impl-Update-for-T) takes a function, which receives a mutable reference to the current value of the signal (`&mut T`), and notifies subscribers. (`.update()` doesn’t return the value returned by the closure, but you can use [`.try_update()`](https://docs.rs/leptos/latest/leptos/trait.SignalUpdate.html#tymethod.try_update) if you need to; for example, if you’re removing an item from a `Vec<_>` and want the removed item.)
 1. [`.set()`](https://docs.rs/leptos/latest/leptos/reactive/signal/struct.WriteSignal.html#impl-Set-for-T) replaces the current value of the signal and notifies subscribers.
 
@@ -32,7 +32,7 @@ This is worth noting when reading docs: if you only see `ReadUntracked` and `Tra
 
 ## Working with Signals
 
-You might notice that `.get()` and `.set()` can be implemented in terms of `.read()` and `.write()`, or `.with()` and `.update()`. In other words, `count.get()` is identical with `count.with(|n| n.clone())` or `count.read().clone()`, and `count.set(1)` is implemented by doing `count.update(|n| *n = 1)` or `*count.write() = 1`.
+You might notice that `.get()` and `.set()` can be implemented in terms of `.read()` and `.write()`, or `.with()` and `.update()`. In other words, `count.get()` is identical to `count.with(|n| n.clone())` or `count.read().clone()`, and `count.set(1)` is implemented by doing `count.update(|n| *n = 1)` or `*count.write() = 1`.
 
 But of course, `.get()` and `.set()` are nicer syntax.
 
