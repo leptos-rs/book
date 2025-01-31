@@ -60,9 +60,13 @@ if names.read().is_empty() {
 
 Now our function simply takes `names` by reference to run `is_empty()`, avoiding that clone, and then mutates the `Vec<_>` in place.
 
-## Local Reactivity
+## Thread Safety and Thread-Local Values
 
-So far we have looked at a CSR-only application. This means our app will run on a single thread. However, if you look at the signature of [`signal`](https://docs.rs/leptos/latest/leptos/reactive/signal/fn.signal.html) it requires our value be `Send + Sync`, which is meant for multi-threaded applications. This requirement exists so [SSR applications](../ssr/README.md) can parallelize their work. If you have a CSR-only app, so don't need multi-threading, the reactive primatives are paired with local alternatives that alleviate the `Send + Sync` requirement.
+You may have noticed, either by reading the docs or by experimenting with your own applications, that the values that are stored in signals must be `Send + Sync`. This is because the reactive system actually supports multi-threading: signals can be sent across threads, and the whole reactive graph can work across multiple threads. (This is especially useful when doing [server-side rendering](../ssr/README.md) with server frameworks like Axum, which use Tokio’s multi-threaded executor.) In most cases, this has no effect on what you do: ordinary Rust data types are `Send + Sync` by default.
+
+However, the browser environment is only single-threaded unless you use a Web Worker, and the JavaScript types provided by `wasm-bindgen` and `web-sys` are all explicitly `!Send`. This mean they can’t be stored in ordinary signals.
+
+As a result, we provide “local” alternatives for each of the signal primitives, which can be used to store `!Send` data. You should only reach for these when you have a `!Send` browser type you need to store in a signal.
 
 | Standard | Local |
 | -------- | ----- |
