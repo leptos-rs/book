@@ -70,9 +70,9 @@ I actually need to add a fallback route
 
 ```rust
 <Routes>
-  <ParentRoute path="/users" view=Users>
-    <Route path=":id" view=UserProfile/>
-    <Route path="" view=NoUser/>
+  <ParentRoute path=path!("/users") view=Users>
+    <Route path=path!(":id") view=UserProfile/>
+    <Route path=path!("") view=NoUser/>
   </ParentRoute>
 </Routes>
 ```
