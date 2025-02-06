@@ -70,10 +70,10 @@ I actually need to add a fallback route
 
 ```rust
 <Routes>
-  <Route path="/users" view=Users>
+  <ParentRoute path="/users" view=Users>
     <Route path=":id" view=UserProfile/>
     <Route path="" view=NoUser/>
-  </Route>
+  </ParentRoute>
 </Routes>
 ```
 
