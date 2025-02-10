@@ -156,7 +156,7 @@ let on_submit = move |ev: SubmitEvent| {
         // this means we can call`HtmlInputElement::value()`
         // to get the current value of the input
         .value();
-    set_name(value);
+    set_name.set(value);//You can use set_name(value) when using Nightly synatx.
 };
 ```
 
