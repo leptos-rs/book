@@ -160,7 +160,7 @@ let on_submit = move |ev: SubmitEvent| {
 };
 ```
 
-Our `on_submit` handler will access the input’s value and use it to call `set_name`.
+Our `on_submit` handler will access the input’s value and use it to call `set_name.set()`.
 To access the DOM node stored in the `NodeRef`, we can simply call it as a function
 (or using `.get()`). This will return `Option<leptos::HtmlElement<html::Input>>`, but we
 know that the element has already been mounted (how else did you fire this event!), so
