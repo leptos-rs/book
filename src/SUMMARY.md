@@ -48,7 +48,7 @@
   - [Extractors](./server/26_extractors.md)
   - [Responses and Redirects](./server/27_response.md)
 - [Progressive Enhancement and Graceful Degradation](./progressive_enhancement/README.md)
-  - [`<ActionForm/>`s](./progressive_enhancement/action_form.md)
+  - [`<ActionForm/>`](./progressive_enhancement/action_form.md)
 - [Deployment](./deployment/README.md)
   - [Deploying CSR Apps](./deployment/csr.md)
   - [Deploying SSR Apps](./deployment/ssr.md)
