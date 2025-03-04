@@ -70,7 +70,7 @@ pub fn App() -> impl IntoView {
 
 > Note the `let(child)` syntax here. In the previous chapter we introduced `<For/>`
 > with a `children` prop. We can actually create this value directly in the children
-> of the `<For/>` component, without breaking out of the `view` macro: the `let:child`
+> of the `<For/>` component, without breaking out of the `view` macro: the `let(child)`
 > combined with `<p>{child.value}</p>` above is the equivalent of
 >
 > ```rust
