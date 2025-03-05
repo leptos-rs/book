@@ -48,7 +48,7 @@ view! {
 >
 > One odd quirk is that there is a distinction between HTML attributes and DOM element properties, i.e., between something called an “attribute” which is parsed from HTML and can be set on a DOM element with `.setAttribute()`, and something called a “property” which is a field of the JavaScript class representation of that parsed HTML element.
 >
-> In the case of an `<input value=...>`, setting the `value` _attribute_ is defined as setting the initial value for the input, and setting `value` _property_ sets its current value. It maybe easiest to understand this by opening `about:blank` and running the following JavaScript in the browser console, line by line:
+> In the case of an `<input value=...>`, setting the `value` _attribute_ is defined as setting the initial value for the input, and setting `value` _property_ sets its current value. It may be easier to understand this by opening `about:blank` and running the following JavaScript in the browser console, line by line:
 >
 > ```js
 > // create an input and append it to the DOM
