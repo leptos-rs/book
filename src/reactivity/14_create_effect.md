@@ -126,7 +126,7 @@ Every time `count` is updated, this effect will rerun. This is what allows react
 
 In addition to `Effect::new()`, Leptos provides an [`Effect::watch()`](https://docs.rs/leptos/latest/leptos/reactive/effect/struct.Effect.html#method.watch) function, which can be used to separate tracking and responding to changes by explicitly passing in a set of values to track.
 
-`watch` takes three arguments. The `deps` argument is reactively tracked while `callback` and `immediate` are not. Whenever `deps` is changed, `callback` is run. If `immediate` is false, the callback will run only after the first change is detected of any signal that is accessed in deps. `watch` returns an `Effect`, which can be called with `.stop()` to stop tracking the dependencies.
+`watch` takes three arguments. The `dependency_fn` argument is reactively tracked while `handler` and `immediate` are not. Whenever `dependency_fn` is changed, `handler` is run. If `immediate` is false, the `handler` will run only after the first change is detected of any signal that is accessed in `dependency_fn`. `watch` returns an `Effect`, which can be called with `.stop()` to stop tracking the dependencies.
 
 ```rust
 let (num, set_num) = signal(0);
