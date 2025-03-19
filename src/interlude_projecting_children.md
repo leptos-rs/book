@@ -110,7 +110,7 @@ where
 }
 ```
 
-At the top level, we store both `fallback` and `children` in the reactive scope owned by `LoggedIn`. Now we can simply move those references down through the other layers into the `<Show/>` component and call them there.
+At the top level, we store both `fallback` and `children` in the reactive scope owned by `NestedShow`. Now we can simply move those references down through the other layers into the `<Show/>` component and call them there.
 
 ## A Final Note
 
