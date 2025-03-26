@@ -355,7 +355,7 @@ Here’s the complete store example. You can find another, more complete example
 ```
 #[component]
 pub fn App() -> impl IntoView {
-    // instead of a single with the rows, we create a store for Data
+    // instead of a signal with the rows, we create a store for Data
     let data = Store::new(Data {
         rows: vec![
             DatabaseEntry {
