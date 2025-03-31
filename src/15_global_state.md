@@ -49,7 +49,6 @@ fn App() -> impl IntoView {
 ```
 
 `<SetterButton/>` is the kind of counter we’ve written several times now.
-(See the sandbox below if you don’t understand what I mean.)
 
 `<FancyMath/>` and `<ListItems/>` both consume the signal we’re providing via
 `use_context` and do something with it.
