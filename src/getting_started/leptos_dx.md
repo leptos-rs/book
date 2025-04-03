@@ -142,7 +142,7 @@ Just note that it's recommended to set up your editor with `leptosfmt` on a per-
 
 ## 4) Use `--cfg=erase_components` during development
 
-Leptos 0.7 made a number of changes to the renderer that relied more heavily on the type system. For larger projects, this can lead to slower compile times. Most of the slowdown in compile times can be alleviated by using the custom configuration flag `--cfg=erase_components` during development. You can set this easily in the command line (`RUSTFLAGS="--cfg erase_components" trunk serve` or `RUSTFLAGS="--cfg erase_components" cargo leptos watch`), or in your `.cargo/config.toml`:
+Leptos 0.7 made a number of changes to the renderer that relied more heavily on the type system. For larger projects, this can lead to slower compile times. Most of the slowdown in compile times can be alleviated by using the custom configuration flag `--cfg=erase_components` during development. (This erases some of that type information to reduce the amount of work done and debug info emitted by the compiler, at the expense of additional binary size and runtime cost, so it’s best not to use it in release mode.) You can set this easily in the command line (`RUSTFLAGS="--cfg erase_components" trunk serve` or `RUSTFLAGS="--cfg erase_components" cargo leptos watch`), or in your `.cargo/config.toml`:
 ```toml
 # use your own native target
 [target.aarch64-apple-darwin]
