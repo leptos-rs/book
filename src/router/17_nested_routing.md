@@ -167,12 +167,12 @@ pub fn App() -> impl IntoView {
     view! {
       <Router>
         <Routes fallback=|| "Not found.">
-          <Route path=path!("/contacts") view=ContactList>
+          <ParentRoute path=path!("/contacts") view=ContactList>
             <ContactInfoRoutes/>
             <Route path=path!("") view=|| view! {
               <p>"Select a contact to view more info."</p>
             }/>
-          </Route>
+          </ParentRoute>
         </Routes>
       </Router>
     }
