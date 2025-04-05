@@ -39,4 +39,4 @@ Once your app has compiled you can open up your browser to [`http://localhost:30
 
 `cargo-leptos` has lots of additional features and built in tools. You can learn more [in its `README`](https://github.com/leptos-rs/cargo-leptos/blob/main/README.md).
 
-But what exactly is happening when you open our browser to `localhost:3000`? Well, read on to find out.
+But what exactly is happening when you open your browser to `localhost:3000`? Well, read on to find out.

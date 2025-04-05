@@ -71,7 +71,7 @@ view! {
 
 ### Simplifying Controlled Inputs with `bind:`
 
-Adherence to Web standards and a clear division between “reading from a signal” and ”writing to a signal” are good, but creating
+Adherence to Web standards and a clear division between “reading from a signal” and “writing to a signal” are good, but creating
 controlled inputs in this way can sometimes seem like more boilerplate than is really necessary.
 
 Leptos also includes a special `bind:` syntax for inputs that allows you to automatically bind signals to inputs. They do exactly the same thing as the “controlled input” pattern above: create an event listener that updates the signal, and a dynamic property that reads from the signal. You can use `bind:value` for text inputs, `bind:checked` for checkboxes, and `bind:group` for radio button groups.
