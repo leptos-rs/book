@@ -188,8 +188,10 @@ it’s a closure that returns an `i32`.
 There are a couple ways to handle this. One would be to say: “Well, I know that
 for the view to be reactive, it needs to take a function or a signal. I can always
 turn a signal into a function by wrapping it in a closure... Maybe I could
-just take any function?” If you’re savvy, you may know that both these
-implement the trait `Fn() -> i32`. So you could use a generic component:
+just take any function?” 
+
+If you’re using nightly Rust with the `nightly` feature, signals are functions,
+so you could use a generic component and take any `Fn() -> i32`:
 
 ```rust
 #[component]
@@ -208,9 +210,6 @@ fn ProgressBar(
     }
 }
 ```
-
-This is a perfectly reasonable way to write this component: `progress` now takes
-any value that implements this `Fn()` trait.
 
 > Generic props can also be specified using a `where` clause, or using inline generics like `ProgressBar<F: Fn() -> i32 + 'static>`.
 
@@ -235,7 +234,10 @@ pub fn App() -> impl IntoView {
 
 ### `into` Props
 
-There’s one more way we could implement this, and it would be to use `#[prop(into)]`.
+If you’re on stable Rust, signals don’t directly implement `Fn()`. We could wrap the signal in a closure (`move || progress.get()`)
+but that’s a bit messy.
+
+There’s another way we could implement this, and it would be to use `#[prop(into)]`.
 This attribute automatically calls `.into()` on the values you pass as props,
 which allows you to easily pass props with different values.
 
@@ -274,7 +276,7 @@ fn App() -> impl IntoView {
         </button>
         // .into() converts `ReadSignal` to `Signal`
         <ProgressBar progress=count/>
-        // use `Signal::derive()` to wrap a derived signal
+        // use `Signal::derive()` to wrap a derived signal with the `Signal` type
         <ProgressBar progress=Signal::derive(double_count)/>
     }
 }
