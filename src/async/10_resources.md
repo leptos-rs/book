@@ -4,7 +4,7 @@ Resources are reactive wrappers for asynchronous tasks, which allow you to integ
 
 They effectively allow you to load some async data, and then reactively access it either synchronously or asynchronously. You can `.await` a resource like an ordinary `Future`, and this will track it. But you can also access a resource with `.get()` and other signal access methods, as if a resource were a signal that returns `Some(T)` if it has resolved, and `None` if it’s still pending.
 
-Resources come in two primary flavors: `Resource` and `LocalResource`. If you’re using server-side rendering (which this book will discuss later), you should default to using `Resource`. If you’re using client-side rendering with a `!Send` API (like many of the browser APIs), or if you have are using SSR but have some async task that can only be done on the browser (for example, accessing an async browser API) then you should use `LocalResource`.
+Resources come in two primary flavors: `Resource` and `LocalResource`. If you’re using server-side rendering (which this book will discuss later), you should default to using `Resource`. If you’re using client-side rendering with a `!Send` API (like many of the browser APIs), or if you are using SSR but have some async task that can only be done on the browser (for example, accessing an async browser API) then you should use `LocalResource`.
 
 ## Local Resources
 
