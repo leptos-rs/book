@@ -233,7 +233,7 @@ pub fn App() -> impl IntoView {
 
     view! {
         <p>"Toggled? " {toggled}</p>
-        <Layout/>
+        <ButtonD />
     }
 }
 
