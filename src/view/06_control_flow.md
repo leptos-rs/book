@@ -253,11 +253,11 @@ Here’s the same example, with the conversion added:
 view! {
     <main>
         {move || match is_odd() {
-            true if value() == 1 => {
+            true if value.get() == 1 => {
                 // returns HtmlElement<Pre>
                 view! { <pre>"One"</pre> }.into_any()
             },
-            false if value() == 2 => {
+            false if value.get() == 2 => {
                 // returns HtmlElement<P>
                 view! { <p>"Two"</p> }.into_any()
             }
