@@ -47,7 +47,7 @@ The first thing I’ll do is to add the `islands` feature in my `Cargo.toml`. I 
 leptos = { version = "0.7", features = ["islands"] }
 ```
 
-Next I’m going to modify the `hydrate` function exported from `src/lib.rs`. I’m going to remove the line that calls `leptos::mount::mount_to_body(App)` and replace it with
+Next I’m going to modify the `hydrate` function exported from `src/lib.rs`. I’m going to remove the line that calls `leptos::mount::hydrate_body(App)` and replace it with
 
 ```rust
 leptos::mount::hydrate_islands();
