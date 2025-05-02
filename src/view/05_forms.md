@@ -74,11 +74,12 @@ view! {
 Adherence to Web standards and a clear division between “reading from a signal” and ”writing to a signal” are good, but creating
 controlled inputs in this way can sometimes seem like more boilerplate than is really necessary.
 
-Leptos also includes a special `bind:` syntax for inputs that allows you to automatically bind signals to inputs. They do exactly the same thing as the “controlled input” pattern above: create an event listener that updates the signal, and a dynamic property that reads from the signal. You can use `bind:value` for text inputs, and `bind:checked` for checkboxes.
+Leptos also includes a special `bind:` syntax for inputs that allows you to automatically bind signals to inputs. They do exactly the same thing as the “controlled input” pattern above: create an event listener that updates the signal, and a dynamic property that reads from the signal. You can use `bind:value` for text inputs, `bind:checked` for checkboxes, and `bind:group` for radio button groups.
 
 ```rust
 let (name, set_name) = signal("Controlled".to_string());
 let email = RwSignal::new("".to_string());
+let favorite_color = RwSignal::new("red".to_string());
 let spam_me = RwSignal::new(true);
 
 view! {
@@ -94,6 +95,37 @@ view! {
             bind:checked=spam_me
         />
     </label>
+    <fieldset>
+        <legend>"Favorite color"</legend>
+        <label>
+            "Red"
+            <input
+                type="radio"
+                name="color"
+                value="red"
+                bind:group=favorite_color
+            />
+        </label>
+        <label>
+            "Green"
+            <input
+                type="radio"
+                name="color"
+                value="green"
+                bind:group=favorite_color
+            />
+        </label>
+        <label>
+            "Blue"
+            <input
+                type="radio"
+                name="color"
+                value="bluee"
+                bind:group=favorite_color
+            />
+        </label>
+    </fieldset>
+    <p>"Your favorite color is " {favorite_color} "."</p>
     <p>"Name is: " {name}</p>
     <p>"Email is: " {email}</p>
     <Show when=move || spam_me.get()>
