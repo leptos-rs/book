@@ -210,16 +210,12 @@ Two form elements tend to cause some confusion, in different ways.
 
 ### `<textarea>`
 
-Unlike `<input>`, the `<textarea>` element does not support a `value` attribute.
-Instead, it receives its value as a plain text node in its HTML children.
+Unlike `<input>`, the `<textarea>` element does not support a `value` attribute in HTML.
+Instead, it receives its initial value as a plain text node in its HTML children.
 
-In the current version of Leptos (in fact in Leptos 0.1-0.6), creating a dynamic child
-inserts a comment marker node. This can cause incorrect `<textarea>` rendering (and issues
-during hydration) if you try to use it to show dynamic content.
-
-Instead, you can pass a non-reactive initial value as a child, and use `prop:value` to
-set its current value. (`<textarea>` doesn’t support the `value` **attribute**, but _does_
-support the `value` **property**...)
+So if you’d like to server render an initial value, and have the value also react in the browser,
+you can both pass it an initial text node as a child and use `prop:value` to
+set its current value.
 
 ```rust
 view! {
@@ -227,8 +223,7 @@ view! {
         prop:value=move || some_value.get()
         on:input:target=move |ev| some_value.set(ev.target().value())
     >
-        /* plain-text initial value, does not change if the signal changes */
-        {some_value.get_untracked()}
+        {some_value}
     </textarea>
 }
 ```
