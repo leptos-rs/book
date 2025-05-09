@@ -82,6 +82,11 @@ However, there are many ways to customize server functions, with a variety of su
 
 Take a look at the docs for the [`#[server]` macro](https://docs.rs/leptos/latest/leptos/attr.server.html) and [`server_fn` crate](https://docs.rs/server_fn/latest/server_fn/), and the extensive [`server_fns_axum` example](https://github.com/leptos-rs/leptos/blob/main/examples/server_fns_axum/src/app.rs) in the repo for more information and examples.
 
+## An Important Note on Number Sizes
+
+When using Server functions, one should not use pointer-sized integer types such as `isize` and `usize` as the pointer-size of the server will probably be 64 bit, while the pointer-size in Wasm is 32 bit.
+This will lead to a deserialization error when the server sends a number which does not fit in 32 bits. Use fixed size types such as `i32` or `i64` to mitigate this problem.
+
 ## Integrating Server Functions with Leptos
 
 So far, everything I’ve said is actually framework agnostic. (And in fact, the Leptos server function crate has been integrated into Dioxus as well!) Server functions are simply a way of defining a function-like RPC call that leans on Web standards like HTTP requests and URL encoding.
