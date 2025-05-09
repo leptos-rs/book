@@ -6,9 +6,9 @@ Some frontend frameworks (like Angular, Vue, and Svelte) provide built-in ways t
 
 Here are a few different approaches to styling your Leptos app, starting with plain CSS.
 
-## Plain CSS
+## Plain CSS (CSR)
 
-In order for leptos to know what CSS files to bundle with the app, define them in your index.html in the `<head>` as `<link data-trunk rel="css" href="./style.css" />`, you can add as many stylesheets as you need.
+To get started with CSS when your just doing a CSR site and use trunk you need to let trunk know which CSS files to bundle by defining them in your index.html in the `<head>` as `<link data-trunk rel="css" href="./style.css"/>`. You can also inject a stylesheet into your view using the `<Stylesheet/>` component, more on that in the chapter [Metadata](https://book.leptos.dev/metadata.html).
 
 ## TailwindCSS: Utility-first CSS
 
