@@ -19,7 +19,7 @@ The most popular way for people to deploy full-stack apps built with `cargo-lept
 
 ```dockerfile
 # Get started with a build env with Rust nightly
-FROM rustlang/rust:nightly-bullseye as builder
+FROM rustlang/rust:nightly-bookworm as builder
 
 # If you’re using stable, use this instead
 # FROM rust:1.86-bullseye as builder
