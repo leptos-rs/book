@@ -164,7 +164,7 @@ and setters.
 #[component]
 pub fn App() -> impl IntoView {
     // start with a set of three rows
-    let (data, set_data) = signal(vec![
+    let (data, _set_data) = signal(vec![
         DatabaseEntry {
             key: "foo".to_string(),
             value: RwSignal::new(10),
