@@ -4,7 +4,11 @@ Anyone creating a website or application soon runs into the question of styling.
 
 Some frontend frameworks (like Angular, Vue, and Svelte) provide built-in ways to scope your CSS to particular components, making it easier to manage styles across a whole application without styles meant to modify one small component having a global effect. Other frameworks (like React or Solid) don’t provide built-in CSS scoping, but rely on libraries in the ecosystem to do it for them. Leptos is in this latter camp: the framework itself has no opinions about CSS at all, but provides a few tools and primitives that allow others to build styling libraries.
 
-Here are a few different approaches to styling your Leptos app, other than plain CSS.
+Here are a few different approaches to styling your Leptos app, starting with plain CSS.
+
+## Plain CSS (CSR)
+
+When doing a CSR site and use trunk to build and serve it, you need to let trunk know which CSS files to bundle.  This is done by defining them in your index.html in the `<head>` as `<link data-trunk rel="css" href="./style.css"/>` like you normally would, but with those trunk features. You can also inject a stylesheet into your view using the `<Stylesheet/>` component, more on that in the chapter [Metadata](https://book.leptos.dev/metadata.html).
 
 ## TailwindCSS: Utility-first CSS
 
