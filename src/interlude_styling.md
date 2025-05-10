@@ -8,7 +8,7 @@ Here are a few different approaches to styling your Leptos app, starting with pl
 
 ## Plain CSS (CSR)
 
-To get started with CSS when your just doing a CSR site and use trunk you need to let trunk know which CSS files to bundle by defining them in your index.html in the `<head>` as `<link data-trunk rel="css" href="./style.css"/>`. You can also inject a stylesheet into your view using the `<Stylesheet/>` component, more on that in the chapter [Metadata](https://book.leptos.dev/metadata.html).
+When doing a CSR site and use trunk to build and serve it, you need to let trunk know which CSS files to bundle.  This is done by defining them in your index.html in the `<head>` as `<link data-trunk rel="css" href="./style.css"/>` like you normally would, but with those trunk features. You can also inject a stylesheet into your view using the `<Stylesheet/>` component, more on that in the chapter [Metadata](https://book.leptos.dev/metadata.html).
 
 ## TailwindCSS: Utility-first CSS
 
