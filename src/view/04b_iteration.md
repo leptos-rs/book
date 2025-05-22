@@ -353,6 +353,18 @@ On the other hand, it’s the newest API. As of writing this sentence (December 
 
 Here’s the complete store example. You can find another, more complete example [here](https://github.com/leptos-rs/leptos/blob/main/examples/stores/src/lib.rs), and more discussion in the book [here](../15_global_state.md).
 ```
+#[derive(Store, Debug, Clone)]
+pub struct Data {
+    #[store(key: String = |row| row.key.clone())]
+    rows: Vec<DatabaseEntry>,
+}
+
+#[derive(Store, Debug, Clone)]
+struct DatabaseEntry {
+    key: String,
+    value: i32,
+}
+
 #[component]
 pub fn App() -> impl IntoView {
     // instead of a signal with the rows, we create a store for Data
