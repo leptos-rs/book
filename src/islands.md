@@ -135,7 +135,7 @@ If you open up the source for the page now, you’ll see that your `HomePage` is
 </leptos-island>
 ```
 
-Only code for what's inside this `<leptos-island>` is compiled to WASM, only only that code runs when hydrating.
+Only code for what's inside this `<leptos-island>` is compiled to WASM, only that code runs when hydrating.
 
 ## Using Islands Effectively
 

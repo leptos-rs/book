@@ -184,7 +184,7 @@ B (CHECK)    C (CHECK)
    |____D (CHECK)__|
 ```
 
-Now those effects are run. (All of the effects will be marked `Check` at this point.) Before re-running its computation, the effect checks its parents to see if they are dirty. So
+Now those effects are run. (All of the effects will be marked `Check` at this point.) Before re-running its computation, the effect checks its parents to see if they are dirty.
 
 - So `D` goes to `B` and checks if it is `Dirty`.
 - But `B` is also marked `Check`. So `B` does the same thing:
