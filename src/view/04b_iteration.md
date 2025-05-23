@@ -299,7 +299,6 @@ Stores are built on top of the `Store` derive macro, which creates a getter for 
 We can adapt the data types we used in the examples above.
 
 The top level of a store always needs to be a struct, so we’ll create a `Data` wrapper with a single `rows` field.
-
 ```rust
 #[derive(Store, Debug, Clone)]
 pub struct Data {
@@ -313,11 +312,9 @@ struct DatabaseEntry {
     value: i32,
 }
 ```
-
 Adding `#[store(key)]` to the `rows` field allows us to have keyed access to the fields of the store, which will be useful in the `<For/>` component below. We can simply use `key`, the same key that we’ll use in `<For/>`.
 
 The `<For/>` component is pretty straightforward:
-
 ```rust
 <For
     each=move || data.rows()
@@ -328,7 +325,6 @@ The `<For/>` component is pretty straightforward:
     }
 />
 ```
-
 Because `rows` is a keyed field, it implements `IntoIterator`, and we can simply use `move || data.rows()` as the `each` prop. This will react to any changes to the `rows` list, just as `move || data.get()` did in our nested-signal version.
 
 The `key` field calls `.read()` to get access to the current value of the row, then clones and returns the `key` field.
@@ -336,7 +332,6 @@ The `key` field calls `.read()` to get access to the current value of the row, t
 In `children` prop, calling `child.value()` gives us reactive access to the `value` field for the row with this key. If rows are reordered, added, or removed, the keyed store field will keep in sync so that this `value` is always associated with the correct key.
 
 In the update button handler, we’ll iterate over the entries in `rows`, updating each one:
-
 ```rust
 for row in data.rows().iter_unkeyed() {
     *row.value().write() *= 2;
@@ -353,13 +348,11 @@ Personally, I think the stores version is the nicest one here. And no surprise, 
 
 On the other hand, it’s the newest API. As of writing this sentence (December 2024), stores have only been released for a few weeks; I am sure that there are still some bugs or edge cases to be figured out.
 
+
 ### Full Example
 
 Here’s the complete store example. You can find another, more complete example [here](https://github.com/leptos-rs/leptos/blob/main/examples/stores/src/lib.rs), and more discussion in the book [here](../15_global_state.md).
-
 ```
-use reactive_stores::Store;
-
 #[derive(Store, Debug, Clone)]
 pub struct Data {
     #[store(key: String = |row| row.key.clone())]
@@ -399,7 +392,7 @@ pub fn App() -> impl IntoView {
             // allows iterating over the entries in an iterable store field
             use reactive_stores::StoreFieldIterator;
 
-            // calling rows() gives us access to the rows
+            // calling rows() gives us access to the rows 
             for row in data.rows().iter_unkeyed() {
                 *row.value().write() *= 2;
             }
