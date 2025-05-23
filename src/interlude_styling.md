@@ -1,4 +1,10 @@
-# Interlude: Styling
+# Interlude: Styling & Assets
+
+# Images an Co. (CSR)
+
+To automatically bundle assets like images when using CSR you can tell `trunk` which asset directory to include using `<link data-trunk rel="copy-dir" href="/public" />` in your `<head>` section of your index.html. Trunk will then copy the assets automatically from `/root/public` into `/dist/public`, which enables you to link to your assets as you normally would.
+
+# CSS
 
 Anyone creating a website or application soon runs into the question of styling. For a small app, a single CSS file is probably plenty to style your user interface. But as an application grows, many developers find that plain CSS becomes increasingly hard to manage.
 
