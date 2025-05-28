@@ -144,10 +144,10 @@ This _works_, for sure. But if you added a log, you might be surprised
 
 ```rust
 let message = move || if value.get() > 5 {
-    logging::log!("{}: rendering Big", value());
+    logging::log!("{}: rendering Big", value.get());
     "Big"
 } else {
-    logging::log!("{}: rendering Small", value());
+    logging::log!("{}: rendering Small", value.get());
     "Small"
 };
 ```
