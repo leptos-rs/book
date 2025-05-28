@@ -60,7 +60,7 @@ Note here that instead of calling `signal()` to get a tuple with a reader and a 
 here we use `RwSignal::new()` to get a single, read-write signal. This is just more convenient
 for a situation where we’d otherwise be passing the tuples around.
 
-```
+```rust
 // each item manages a reactive view
 // but the list itself will never change
 let counter_buttons = counters
