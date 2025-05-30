@@ -61,13 +61,13 @@ view! {
 > // now go and type into the input: delete some characters, etc.
 >
 > el.setAttribute("value", "one more time?");
-> // nothing should have changed. setting the "initial value" does nothing now
+> // nothing should have changed. Setting the "initial value" does nothing now
 >
 > // however...
 > el.value = "But this works";
 > ```
 >
-> Many other frontend frameworks conflate attributes and properties, or create a special case for inputs that sets the value correctly. Maybe Leptos should do this too; but for now, I prefer giving users the maximum amount of control over whether they’re setting an attribute or a property, and doing my best to educate people about the actual underlying browser behavior rather than obscuring it.
+> Many other frontend frameworks conflate attributes and properties, or create a special case for inputs that sets the value correctly. Maybe Leptos should do this too, but for now, I prefer giving users the maximum amount of control over whether they’re setting an attribute or a property, and doing my best to educate people about the actual underlying browser behavior rather than obscuring it.
 
 ### Simplifying Controlled Inputs with `bind:`
 
@@ -120,7 +120,7 @@ view! {
             <input
                 type="radio"
                 name="color"
-                value="bluee"
+                value="blue"
                 bind:group=favorite_color
             />
         </label>
@@ -202,11 +202,11 @@ We can then call `.value()` to get the value out of the input, because `NodeRef`
 gives us access to a correctly-typed HTML element.
 
 Take a look at [`web_sys` and `HtmlElement`](../web_sys.md) to learn more about using a `leptos::HtmlElement`.
-Also see the full CodeSandbox example at the end of this page.
+Also, see the full CodeSandbox example at the end of this page.
 
 ## Special Cases: `<textarea>` and `<select>`
 
-Two form elements tend to cause some confusion, in different ways.
+Two form elements tend to cause some confusion in different ways.
 
 ### `<textarea>`
 
