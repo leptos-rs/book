@@ -16,7 +16,7 @@ The `start-trunk` template requires that you have `Trunk` and `cargo-generate` i
 
 To use the template to set up your project, just run
 
-`cargo generate --git https://github.com/leptos-community/start-csr`
+`cargo generate --git https://github.com/leptos-rs/start-trunk`
 
 then run
 
