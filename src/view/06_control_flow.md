@@ -357,8 +357,8 @@ fn App() -> impl IntoView {
         <h2>"Converting between Types"</h2>
         // e. Note: if branches return different types,
         //    you can convert between them with
-        //    `.into_any()` (for different HTML element types)
-        //    or `.into_view()` (for all view types)
+        //    `.into_any()` or using the `Either` enums
+        //    (`Either`, `EitherOf3`, `EitherOf4`, etc.)
         {move || match is_odd() {
             true if value.get() == 1 => {
                 // <pre> returns HtmlElement<Pre>

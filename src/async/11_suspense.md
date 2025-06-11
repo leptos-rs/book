@@ -9,8 +9,8 @@ let once = Resource::new(move || count.get(), |count| async move { load_a(count)
 view! {
     <h1>"My Data"</h1>
     {move || match once.get() {
-        None => view! { <p>"Loading..."</p> }.into_view(),
-        Some(data) => view! { <ShowData data/> }.into_view()
+        None => view! { <p>"Loading..."</p> }.into_any(),
+        Some(data) => view! { <ShowData data/> }.into_any()
     }}
 }
 ```
@@ -29,8 +29,8 @@ view! {
         (Some(a), Some(b)) => view! {
             <ShowA a/>
             <ShowA b/>
-        }.into_view(),
-        _ => view! { <p>"Loading..."</p> }.into_view()
+        }.into_any(),
+        _ => view! { <p>"Loading..."</p> }.into_any()
     }}
 }
 ```
