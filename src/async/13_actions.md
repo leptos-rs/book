@@ -112,6 +112,7 @@ Now, there’s a chance this all seems a little over-complicated, or maybe too r
 use gloo_timers::future::TimeoutFuture;
 use leptos::{html::Input, prelude::*};
 use uuid::Uuid;
+use send_wrapper;
 
 // Here we define an async function
 // This could be anything: a network request, database read, etc.
