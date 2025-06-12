@@ -4,7 +4,21 @@ Anyone creating a website or application soon runs into the question of styling.
 
 Some frontend frameworks (like Angular, Vue, and Svelte) provide built-in ways to scope your CSS to particular components, making it easier to manage styles across a whole application without styles meant to modify one small component having a global effect. Other frameworks (like React or Solid) don’t provide built-in CSS scoping, but rely on libraries in the ecosystem to do it for them. Leptos is in this latter camp: the framework itself has no opinions about CSS at all, but provides a few tools and primitives that allow others to build styling libraries.
 
-Here are a few different approaches to styling your Leptos app, other than plain CSS.
+Here are a few different approaches to styling your Leptos app, starting with plain CSS.
+
+## Plain CSS
+
+### Client-Side Rendering with Trunk
+
+`trunk` can be used to bundle CSS files and images with your site. To do this, you can add them as Trunk assets by defining them in your `index.html` in the `<head>`. For example, to add a CSS file located at `style.css` you can add the tag `<link data-trunk rel="css" href="./style.css"/>`.
+
+You can find more information in the Trunk documentation for [assets](https://trunkrs.dev/assets/).
+
+### Server-Side Rendering with `cargo-leptos`
+
+The `cargo-leptos` templates are configured by default to use SASS to bundle CSS files and output them at `/pkg/{project_name}.css`. If you want to load additional CSS files, you can do so either by importing them into that `style.scss` file, or by adding them to the `public` directory. (A file at `public/foo.css`, for example, is served at `/foo.css`.)
+
+To load stylesheets in a component, you can use the [`Stylesheet`](https://docs.rs/leptos_meta/latest/leptos_meta/fn.Stylesheet.html) component.
 
 ## TailwindCSS: Utility-first CSS
 
