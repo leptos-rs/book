@@ -152,7 +152,7 @@ let message = move || if value.get() > 5 {
 };
 ```
 
-As a user clicks a button, you’d see something like this:
+As a user repeatedly clicks a button incrementing `value`, you’d see something like this:
 
 ```
 1: rendering Small
