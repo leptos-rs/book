@@ -215,7 +215,7 @@ efficient. But if it’s at all expensive to render either branch, reach for
 
 ## Note: Type Conversions
 
-There‘s one final thing it’s important to say in this section.
+There’s one final thing it’s important to say in this section.
 
 Leptos uses a statically-typed view tree. The `view` macro returns different types
 for different kinds of view.

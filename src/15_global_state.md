@@ -1,6 +1,6 @@
 # Global State Management
 
-So far, we've only been working with local state in components, and we’ve seen how to coordinate state between parent and child components. On occasion, there are times where people look for a more general solution for global state management that can work throughout an application.
+So far, we've only been working with local state in components, and we’ve seen how to coordinate state between parent and child components. On occasion, there are times when people look for a more general solution for global state management that can work throughout an application.
 
 In general, **you do not need this chapter.** The typical pattern is to compose your application out of components, each of which manages its own local state, not to store all state in a global structure. However, there are some cases (like theming, saving user settings, or sharing data between components in different parts of your UI) in which you may want to use some kind of global state management.
 
