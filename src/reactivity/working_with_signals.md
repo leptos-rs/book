@@ -62,7 +62,7 @@ Now our function simply takes `names` by reference to run `is_empty()`, avoiding
 
 ## Thread Safety and Thread-Local Values
 
-You may have noticed, either by reading the docs or by experimenting with your own applications, that the values that are stored in signals must be `Send + Sync`. This is because the reactive system actually supports multi-threading: signals can be sent across threads, and the whole reactive graph can work across multiple threads. (This is especially useful when doing [server-side rendering](../ssr/README.md) with server frameworks like Axum, which use Tokio’s multi-threaded executor.) In most cases, this has no effect on what you do: ordinary Rust data types are `Send + Sync` by default.
+You may have noticed, either by reading the docs or by experimenting with your own applications, that the values that are stored in signals must be `Send + Sync`. This is because the reactive system actually supports multi-threading: signals can be sent across threads, and the whole reactive graph can work across multiple threads. (This is especially useful when doing [server-side rendering](../ssr/) with server frameworks like Axum, which use Tokio’s multi-threaded executor.) In most cases, this has no effect on what you do: ordinary Rust data types are `Send + Sync` by default.
 
 However, the browser environment is only single-threaded unless you use a Web Worker, and the JavaScript types provided by `wasm-bindgen` and `web-sys` are all explicitly `!Send`. This mean they can’t be stored in ordinary signals.
 
