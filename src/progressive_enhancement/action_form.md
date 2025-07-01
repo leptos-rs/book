@@ -42,7 +42,7 @@ It’s really that easy. With JS/WASM, your form will submit without a page relo
 
 ## Client-Side Validation
 
-Because the `<ActionForm/>` is just a `<form>`, it fires a `submit` event. You can use either HTML validation, or your own client-side validation logic in an `on:submit`. Just call `ev.prevent_default()` to prevent submission.
+Because the `<ActionForm/>` is just a `<form>`, it fires a `submit` event. You can use either HTML validation, or your own client-side validation logic in an `on:submit:capture` handler. Just call `ev.prevent_default()` to prevent submission.
 
 The [`FromFormData`](https://docs.rs/leptos/latest/leptos/form/trait.FromFormData.html) trait can be helpful here, for attempting to parse your server function’s data type from the submitted form.
 
@@ -57,8 +57,8 @@ let on_submit = move |ev| {
 }
 ```
 
-```admonish warning
-This pattern is temporarily broken on 0.7 due to changes in event delegation. If you want it to work, you can enable the `delegation` feature on the `leptos` crate in your `Cargo.toml`. [Read this issue](https://github.com/leptos-rs/leptos/issues/3457) for more context.
+```admonish note
+Note the use of `on:submit:capture` rather than `on:submit`. This adds an event listener that will fire during the browser’s “capture” phase of event handling, rather than during the “bubble” phase, which means that your event handler will run before the built-in `submit` handler of the `ActionForm`. For more information, check out [this issue](https://github.com/leptos-rs/leptos/issues/3872).
 ```
 
 ## Complex Inputs
