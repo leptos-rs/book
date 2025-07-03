@@ -84,7 +84,7 @@ Take a look at the docs for the [`#[server]` macro](https://docs.rs/leptos/lates
 
 ## Using Custom Errors
 
-Server functions can return any kind of errors that implement `FromServerFnError` trait.
+Server functions can return any kind of errors that implement the `FromServerFnError` trait.
 This makes error handling much more ergonomic and allows you to provide domain-specific error information to your clients:
 
 ```rust
