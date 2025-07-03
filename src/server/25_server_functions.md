@@ -82,6 +82,40 @@ However, there are many ways to customize server functions, with a variety of su
 
 Take a look at the docs for the [`#[server]` macro](https://docs.rs/leptos/latest/leptos/attr.server.html) and [`server_fn` crate](https://docs.rs/server_fn/latest/server_fn/), and the extensive [`server_fns_axum` example](https://github.com/leptos-rs/leptos/blob/main/examples/server_fns_axum/src/app.rs) in the repo for more information and examples.
 
+## Using Custom Errors
+
+Server functions can return any kind of errors that implement the `FromServerFnError` trait.
+This makes error handling much more ergonomic and allows you to provide domain-specific error information to your clients:
+
+```rust
+use leptos::prelude::*;
+use server_fn::codec::JsonEncoding;
+use serde::{Deserialize, Serialize};
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub enum AppError {
+    ServerFnError(ServerFnErrorErr),
+    DbError(String),
+}
+
+impl FromServerFnError for AppError {
+    type Encoder = JsonEncoding;
+
+    fn from_server_fn_error(value: ServerFnErrorErr) -> Self {
+        AppError::ServerFnError(value)
+    }
+}
+
+#[server]
+pub async fn create_user(name: String, email: String) -> Result<User, AppError> {
+    // Try to create user in database
+    match insert_user_into_db(&name, &email).await {
+        Ok(user) => Ok(user),
+        Err(e) => Err(AppError::DbError(e.to_string())),
+    }
+}
+```
+
 ## Integrating Server Functions with Leptos
 
 So far, everything I’ve said is actually framework agnostic. (And in fact, the Leptos server function crate has been integrated into Dioxus as well!) Server functions are simply a way of defining a function-like RPC call that leans on Web standards like HTTP requests and URL encoding.
