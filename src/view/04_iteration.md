@@ -297,3 +297,41 @@ fn main() {
 
 </details>
 </preview>
+
+### Accessing an index while iterating with `<ForEnumerate/>`
+
+For the cases where you need to access the real-time index while iterating,
+Leptos provides a [`<ForEnumerate/>`](https://docs.rs/leptos/latest/leptos/control_flow/fn.ForEnumerate.html) component.
+
+The props are identical to the [`<For/>`](https://docs.rs/leptos/latest/leptos/control_flow/fn.For.html) component, but when rendering `children`
+it additionally provides a `ReadSignal<usize>` parameter as the index:
+
+```rust
+#[derive(Copy, Clone, Debug, PartialEq, Eq)]
+struct Counter {
+  id: usize,
+  count: RwSignal<i32>
+}
+
+<ForEnumerate
+    each=move || counters.get() // Same as <For/>
+    key=|counter| counter.id    // Same as <For/>
+    // Provides the index as a signal and the child T
+    children={move |index: ReadSignal<usize>, counter: Counter| {
+        view! {
+            <button>{move || index.get()} ". Value: " {move || counter.count.get()}</button>
+        }
+    }}
+/>
+```
+
+or it could also be used with the more convenient `let` syntax:
+```rust
+<ForEnumerate
+    each=move || counters.get() // Same as <For/>
+    key=|counter| counter.id    // Same as <For/>
+    let(idx, counter)           // let syntax
+>
+    <button>{move || idx.get()} ". Value: " {move || counter.count.get()}</button>
+</ ForEnumerate>
+```
