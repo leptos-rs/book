@@ -124,6 +124,49 @@ You can edit the CSS directly without causing a Rust recompile.
 }
 ```
 
+
+## Styled: Runtime CSS Scoping
+
+
+
+[Styled](https://github.com/eboody/styled) is a runtime scoped CSS library that integrates well with Leptos. It lets you declare scoped CSS in the body of your component function, and then applies those styles at runtime.
+
+
+
+```rust
+
+use styled::style;
+
+
+
+#[component]
+
+pub fn MyComponent() -> impl IntoView {
+
+    let styles = style!(
+
+      div {
+
+        background-color: red;
+
+        color: white;
+
+      }
+
+    );
+
+
+
+    styled::view! { styles,
+
+        <div>"This text should be red with white text."</div>
+
+    }
+
+}
+
+```
+
 ## Contributions Welcome
 
 Leptos has no opinions on how you style your website or app, but we’re very happy to provide support to any tools you’re trying to create to make it easier. If you’re working on a CSS or styling approach that you’d like to add to this list, please let us know!
