@@ -92,7 +92,10 @@ let app = Router::new()
         &app_state,
         routes,
         move || provide_context(connection_pool.clone()),
-        App,
+        {
+            let leptos_options = leptos_options.clone();
+            move || shell(leptos_options.clone())
+        },
     )
     // etc.
 ```
