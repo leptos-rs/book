@@ -89,7 +89,7 @@ let connection_pool = /* some shared state here */;
 
 let app = Router::new()
     .leptos_routes_with_context(
-        &app_state,
+        &leptos_options,
         routes,
         move || provide_context(connection_pool.clone()),
         {
