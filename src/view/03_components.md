@@ -429,6 +429,24 @@ view! {
 }
 ```
 
+``````admonish note
+If you would like to extract the attributes into the function so you can use it in multiple components, you can do so by implementing a function that returns `impl Attribute`.
+
+That would make example above look like this:
+
+```rust
+fn spread_onto_component() -> impl Attribute {
+    view!{
+        <{..} aria-label="a component with attribute spreading">
+    }
+}
+
+view!{
+    <SomeComponent {..spread_onto_component()} />
+}
+```
+``````
+
 See the [`spread` example](https://github.com/leptos-rs/leptos/blob/main/examples/spread/src/lib.rs) for more examples.
 
 ```admonish sandbox title="Live example" collapsible=true
