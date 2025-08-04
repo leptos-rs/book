@@ -441,34 +441,8 @@ fn spread_onto_component() -> impl Attribute {
     }
 }
 
-#[component]
-fn UseComponentThatTakesSpread() -> impl IntoView {
-    view! {
-        // attributes that are spread onto a component will be applied to *all* elements returned as part of
-        // the component's view. to apply attributes to a subset of the component, pass them via a component prop
-        <ComponentThatTakesSpread
-            // plain identifiers are for props
-            some_prop="foo"
-            another_prop=42
-
-            // the class:, style:, prop:, on: syntaxes work just as they do on elements
-            class:foo=true
-            style:font-weight="bold"
-            prop:cool=42
-            on:click=move |_| alert("clicked ComponentThatTakesSpread")
-
-            // to pass a plain HTML attribute, prefix it with attr:
-            attr:id="foo"
-
-            // or, if you want to include multiple attributes, rather than prefixing each with
-            // attr:, you can separate them from component props with the spread {..}
-            {..} // everything after this is treated as an HTML attribute
-            title="ooh, a title!"
-
-            // we can add the whole list of attributes defined above
-            {..spread_onto_component()}
-        />
-    }
+view!{
+    <SomeComponent {..spread_onto_component()} />
 }
 ```
 ``````
