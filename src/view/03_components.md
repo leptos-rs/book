@@ -429,6 +429,8 @@ view! {
 }
 ```
 
+If you want to spread attributes onto a component, but want to apply the attributes to something other than all top-level elements, use [`AttributeInterceptor`](https://docs.rs/leptos/latest/leptos/attribute_interceptor/fn.AttributeInterceptor.html).
+
 See the [`spread` example](https://github.com/leptos-rs/leptos/blob/main/examples/spread/src/lib.rs) for more examples.
 
 ```admonish sandbox title="Live example" collapsible=true
