@@ -92,6 +92,87 @@ view! {
 }
 ```
 
+## Typed Children: Slots
+
+So far, we have discussed components with a single `children` prop, but sometimes it is helpful to create a component with multiple children of different types. For example:
+```rust
+view! {
+    <If condition=a_is_true>
+        <Then>"Show content when a is true"</Then>
+        <ElseIf condition=b_is_true>"b is true"</ElseIf>
+        <ElseIf condition=c_is_true>"c is true"</ElseIf>
+        <Else>"None of the above are true"</Else>
+    </If>
+}
+```
+The `If` component always expects a `Then` child, optionally multiple `ElseIf` children and an optional `Else` child. To handle this, Leptos provides [slot](https://docs.rs/leptos/latest/leptos/attr.slot.html)s.
+
+The `#[slot]` macro annotates a plain Rust struct as component slot:
+```rust
+// A simple struct annotated with `#[slot]`,
+// which expects children
+#[slot]
+struct Then {
+    children: ChildrenFn,
+}
+```
+
+This slot can be used as a prop in a component:
+```rust
+#[component]
+fn If(
+    condition: Signal<bool>,
+    // Component slot, should be passed through the <Then slot> syntax
+    then_slot: Then,
+) -> impl IntoView {
+    move || {
+        if condition.get() {
+            (then_slot.children)().into_any()
+        } else {
+            ().into_any()
+        }
+    }
+}
+```
+
+Now, the `If` component expects a child of type `Then`. You would need to annotate the used slot with `slot:<prop_name>`:
+```rust
+view! {
+    <If condition=a_is_true>
+        // The `If` component always expects a `Then` child for `then_slot`
+        <Then slot:then_slot>"Show content when a is true"</Then>
+    </If>
+}
+```
+
+> Specifying `slot` without a name will default the chosen slot as the snake case version of the struct name. So in this case `<Then slot>` would be equivalent to `<Then slot:then>`.
+
+For the complete example, see [slots examples](https://github.com/leptos-rs/leptos/tree/main/examples/slots).
+
+### Event handlers on slots
+
+Event handlers cannot be specified directly on slots like this:
+```rust
+<ComponentWithSlot>
+    // ⚠️ Event handler `on:click` directly on slot is not allowed
+    <SlotWithChildren slot:slot on:click=move |_| {}> 
+        <h1>"Hello, World!"</h1>
+    </SlotWithChildren>
+</ComponentWithSlot>
+```
+
+Instead, wrap the slot content in a regular element and attach event handlers there:
+```rust
+<ComponentWithSlot>
+    <SlotWithChildren slot:slot>
+        // ✅ Event handler is not defined directly on slot
+        <div on:click=move |_| {}>
+            <h1>"Hello, World!"</h1>
+        </div>
+    </SlotWithChildren>
+</ComponentWithSlot>
+```
+
 ## Manipulating Children
 
 The [`Fragment`](https://docs.rs/leptos/latest/leptos/tachys/view/fragment/struct.Fragment.html) type is
