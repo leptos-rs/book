@@ -429,6 +429,24 @@ view! {
 }
 ```
 
+``````admonish note
+If you would like to extract the attributes into a function so you can use it in multiple components, you can do so by implementing a function that returns `impl Attribute`.
+
+That would make the example above look like this:
+
+```rust
+fn spread_onto_component() -> impl Attribute {
+    view!{
+        <{..} aria-label="a component with attribute spreading">
+    }
+}
+
+view!{
+    <SomeComponent {..spread_onto_component()} />
+}
+```
+``````
+
 If you want to spread attributes onto a component, but want to apply the attributes to something other than all top-level elements, use [`AttributeInterceptor`](https://docs.rs/leptos/latest/leptos/attribute_interceptor/fn.AttributeInterceptor.html).
 
 See the [`spread` example](https://github.com/leptos-rs/leptos/blob/main/examples/spread/src/lib.rs) for more examples.
