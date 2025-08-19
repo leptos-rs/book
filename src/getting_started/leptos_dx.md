@@ -160,6 +160,21 @@ name = "rust"
 allFeatures = true
 ```
 
+Zed, in `settings.json`:
+
+```json
+{
+  -- Other Settings ...
+  "lsp": {
+    "rust-analyzer": {
+      "cargo": {
+        allFeatures: true  // Enable all features
+      }
+    }
+  }
+}
+```
+
 SublimeText 3,in the user settings for LSP-rust-analyzer-settings.json
 ```json
  {
