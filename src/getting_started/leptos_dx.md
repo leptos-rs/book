@@ -125,8 +125,60 @@ SublimeText 3, under `LSP-rust-analyzer.sublime-settings` in `Goto Anything...` 
   },
 }
 ```
+## 3) Enable features in Rust-Analyzer for your Editor (optional)
+By default, rust-analyzer will only run against the default features in your Rust project. Leptos uses different features to control compilation. For client side rendered projects, we use `csr` in different places, for server side rendered apps they can include `ssr` for server code and `hydrate` for code that we'll only run in the browser. 
 
-## 3) Set up `leptosfmt` With Rust Analyzer (optional)
+How to enable these features varies by your IDE, we've listed some common ones below. If your IDE is not listed, you can usually find the setting by searching for `rust-analyzer.cargo.features` or `rust-analyzer.cargo.allFeatures`.
+
+VSCode, in `settings.json`:
+```json
+{
+  "rust-analyzer.cargo.allFeatures": true,  // Enable all features
+}
+```
+
+neovim with lspconfig, in `init.lua` or `lspconfig.lua`:
+```lua
+require('lspconfig').rust_analyzer.setup {
+  -- Enable all features for rust-analyzer.
+  settings = {
+    ["rust-analyzer"] = {
+    cargo = {
+      allFeatures = true,  -- Enable all features
+      },
+    },
+  }
+}
+
+```
+helix, in `.helix/languages.toml` or per project in `.helix/config.toml`:
+```toml
+[[language]]
+name = "rust"
+
+[language-server.rust-analyzer.config.cargo]
+allFeatures = true
+```
+
+SublimeText 3,in the user settings for LSP-rust-analyzer-settings.json
+```json
+ {
+        "settings": {
+            "LSP": {
+                "rust-analyzer": {
+                    "settings": {
+                        "cargo": {
+                            "features": "all"
+                        }
+                    }
+                }
+            }
+        }
+    }
+```
+
+
+## 4) Set up `leptosfmt` With Rust Analyzer (optional)
 
 `leptosfmt` is a formatter for the Leptos `view!` macro (inside of which you'll typically write your UI code). Because the `view!` macro enables an 'RSX' (like JSX) style of writing your UI's, cargo-fmt has a harder time auto-formatting your code that's inside the `view!` macro. `leptosfmt` is a crate that solves your formatting issues and keeps your RSX-style UI code looking nice and tidy!
 
@@ -140,9 +192,11 @@ If you wish to set up your editor to work with `leptosfmt`, or if you wish to cu
 
 Just note that it's recommended to set up your editor with `leptosfmt` on a per-workspace basis for best results.
 
-## 4) Use `--cfg=erase_components` during development
+## 5) Use `--cfg=erase_components` during development
 
-Leptos 0.7 made a number of changes to the renderer that relied more heavily on the type system. For larger projects, this can lead to slower compile times. Most of the slowdown in compile times can be alleviated by using the custom configuration flag `--cfg=erase_components` during development. (This erases some of that type information to reduce the amount of work done and debug info emitted by the compiler, at the expense of additional binary size and runtime cost, so it’s best not to use it in release mode.) You can set this easily in the command line (`RUSTFLAGS="--cfg erase_components" trunk serve` or `RUSTFLAGS="--cfg erase_components" cargo leptos watch`), or in your `.cargo/config.toml`:
+Leptos 0.7 made a number of changes to the renderer that relied more heavily on the type system. For larger projects, this can lead to slower compile times. Most of the slowdown in compile times can be alleviated by using the custom configuration flag `--cfg=erase_components` during development. (This erases some of that type information to reduce the amount of work done and debug info emitted by the compiler, at the expense of additional binary size and runtime cost, so it’s best not to use it in release mode.) 
+
+As of cargo-leptos v0.2.40, this is automatically enabled for you in development mode. If you are using trunk, not using cargo-leptos, you can set this easily in the command line (`RUSTFLAGS="--cfg erase_components" trunk serve` or `RUSTFLAGS="--cfg erase_components" cargo leptos watch`), or in your `.cargo/config.toml`:
 ```toml
 # use your own native target
 [target.aarch64-apple-darwin]
