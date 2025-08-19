@@ -437,7 +437,7 @@ That would make the example above look like this:
 ```rust
 fn spread_onto_component() -> impl Attribute {
     view!{
-        <{..} aria-label="a component with attribute spreading">
+        <{..} aria-label="a component with attribute spreading"/>
     }
 }
 
