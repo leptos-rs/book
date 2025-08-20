@@ -56,26 +56,26 @@ VSCode with cargo-leptos `settings.json`:
 "rust-analyzer.cargo.features": ["ssr"]
 ```
 
-neovim with lspconfig:
+Neovim:
 
 ```lua
-require('lspconfig').rust_analyzer.setup {
+vim.lsp.config('rust_analyzer', {
   -- Other Configs ...
   settings = {
     ["rust-analyzer"] = {
       -- Other Settings ...
       procMacro = {
         ignored = {
-            leptos_macro = {
-                -- optional: --
-                -- "component",
-                "server",
-            },
+          leptos_macro = {
+            -- optional: --
+            -- "component",
+            "server",
+          },
         },
       },
     },
   }
-}
+})
 ```
 
 Helix, in `.helix/languages.toml`:
@@ -137,18 +137,17 @@ VSCode, in `settings.json`:
 }
 ```
 
-neovim with lspconfig, in `init.lua` or `lspconfig.lua`:
+Neovim, in `init.lua`:
 ```lua
-require('lspconfig').rust_analyzer.setup {
-  -- Enable all features for rust-analyzer.
+vim.lsp.config('rust_analyzer', {
   settings = {
     ["rust-analyzer"] = {
-    cargo = {
-      allFeatures = true,  -- Enable all features
+      cargo = {
+        features = "all", -- Enable all features
       },
     },
   }
-}
+})
 
 ```
 helix, in `.helix/languages.toml` or per project in `.helix/config.toml`:
