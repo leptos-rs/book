@@ -167,10 +167,12 @@ Zed, in `settings.json`:
   -- Other Settings ...
   "lsp": {
     "rust-analyzer": {
-      "cargo": {
-        allFeatures: true  // Enable all features
+      "initialization_options": {
+        "cargo": {
+          "allFeatures": true // Enable all features
+        }
       }
-    }
+	}
   }
 }
 ```
