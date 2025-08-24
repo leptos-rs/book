@@ -55,7 +55,7 @@ rustflags = ["--cfg=has_std"]
 
 And you'll need to add `panic = "abort"` to `[profile.release]` in `Cargo.toml`. Note that this applies the same `build-std` and panic settings to your server binary, which may not be desirable. Some further exploration is probably needed here.
 
-5. One of the sources of binary size in WASM binaries can be `serde` serialization/deserialization code. Leptos uses `serde` by default to serialize and deserialize resources created with `create_resource`. You might try experimenting with the `miniserde` and `serde-lite` features, which allow you to use those crates for serialization and deserialization instead; each only implements a subset of `serde`’s functionality, but typically optimizes for size over speed.
+5. One of the sources of binary size in WASM binaries can be `serde` serialization/deserialization code. Leptos uses `serde` by default to serialize and deserialize resources created with `Resource::new()`. `leptos_server` includes additional features to activate alternative encodings by adding additional `new_` methods. For example, activating the `miniserde` feature on the `leptos_server` crate adds a `Resource::new_miniserde()` method, and the `serde-lite` feature adds `new_serde_lite`. `miniserde` and `serde-lite` only implement subsets of `serde`’s functionality, but typically optimize for binary size over speed.
 
 ## Things to Avoid
 
