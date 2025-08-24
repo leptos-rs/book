@@ -67,9 +67,15 @@ Server function arguments that are structs with nested serializable fields shoul
 
 ```rust
 #[derive(serde::Serialize, serde::Deserialize, Debug, Clone)]
+struct Settings {
+    display_name: String,
+}
+
+#[derive(serde::Serialize, serde::Deserialize, Debug, Clone)]
 struct HeftyData {
     first_name: String,
     last_name: String,
+    settings: Settings,
 }
 
 #[component]
@@ -84,6 +90,11 @@ fn ComplexInput() -> impl IntoView {
           name="hefty_arg[last_name]"
           value="closures-everywhere"
         />
+        <input
+          type="text"
+          name="hefty_arg[settings][display_name]"
+          value="my alias"
+        />
         <input type="submit"/>
       </ActionForm>
     }
@@ -93,6 +104,7 @@ fn ComplexInput() -> impl IntoView {
 async fn very_important_fn(hefty_arg: HeftyData) -> Result<(), ServerFnError> {
     assert_eq!(hefty_arg.first_name.as_str(), "leptos");
     assert_eq!(hefty_arg.last_name.as_str(), "closures-everywhere");
+    aseert_eq!(hefty_arg.settings.display_name.as_str(), "my alias");
     Ok(())
 }
 ```
