@@ -42,7 +42,7 @@ struct ContactSearch {
 
 Now we can use them in a component. Imagine a URL that has both params and a query, like `/contacts/:id?q=Search`.
 
-The typed versions return `Memo<Result<T, _>>`. It’s a Memo so it reacts to changes in the URL. It’s a `Result` because the params or query need to be parsed from the URL, and may or may not be valid.
+The typed versions return `Memo<Result<T, _>>`. It’s a `Memo` so it reacts to changes in the URL. It’s a `Result` because the params or query need to be parsed from the URL, and may or may not be valid.
 
 ```rust
 use leptos_router::hooks::{use_params, use_query};
@@ -61,7 +61,7 @@ let id = move || {
 };
 ```
 
-The untyped versions return `Memo<ParamsMap>`. Again, it’s memo to react to changes in the URL. [`ParamsMap`](https://docs.rs/leptos_router/latest/leptos_router/params/struct.ParamsMap.html) behaves a lot like any other map type, with a `.get()` method that returns `Option<String>`.
+The untyped versions return `Memo<ParamsMap>`. Again, it’s a `Memo` to react to changes in the URL. [`ParamsMap`](https://docs.rs/leptos_router/latest/leptos_router/params/struct.ParamsMap.html) behaves a lot like any other map type, with a `.get()` method that returns `Option<String>`.
 
 ```rust
 use leptos_router::hooks::{use_params_map, use_query_map};
