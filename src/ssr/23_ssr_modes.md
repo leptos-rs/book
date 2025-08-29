@@ -74,7 +74,7 @@ This is useful when you have multiple `<Suspense/>` on the page, and one is more
 - _Pros_: Works if JavaScript is disabled or not supported on the user’s device.
 - _Cons_
   - Slower initial response time than out-of-order.
-  - Marginally overall response due to additional work on the server.
+  - Marginally slower overall response due to additional work on the server.
   - No fallback state shown.
 
 ## Using SSR Modes
