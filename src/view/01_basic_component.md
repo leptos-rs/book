@@ -120,9 +120,20 @@ view! {
 }
 ```
 
-This should mostly be easy to understand: it looks like HTML, with a special
-`on:click` to define a `click` event listener, a few text nodes that look like
-Rust strings, and then two values in braces: one, `{count}`, seems pretty easy
+This should mostly be easy to understand: it mostly looks like HTML, with a special
+`on:click` syntax to define a `click` event listener and a few text nodes that look like
+Rust strings.
+
+```admonish info
+**Unquoted text**: The `view` macro does have some support for unquoted text nodes, which are the
+norm in HTML or JSX (i.e., `<p>Hello!</p>` rather than `<p>"Hello!"</p>`). Due to limitations of
+Rust proc macros, using unquoted text can occasionally cause spacing issues around punctuation, and
+does not support all Unicode strings. You can use unquoted text if it’s your preference; note that
+if you encounter any issues with it, they can always be resolved by quoting the text node as an ordinary
+Rust string.
+```
+
+Then there are two values in braces: one, `{count}`, seems pretty easy
 to understand (it's just the value of our signal), and then...
 
 ```rust
