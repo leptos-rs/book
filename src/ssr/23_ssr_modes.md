@@ -10,10 +10,13 @@ Let me say a little more about what I mean.
 
 Leptos supports all the major ways of rendering HTML that includes asynchronous data:
 
-1. [Synchronous Rendering](#synchronous-rendering)
-1. [Async Rendering](#async-rendering)
-1. [In-Order streaming](#in-order-streaming)
-1. [Out-of-Order Streaming](#out-of-order-streaming) (and a partially-blocked variant)
+- [Async Rendering and SSR “Modes”](#async-rendering-and-ssr-modes)
+  - [Synchronous Rendering](#synchronous-rendering)
+  - [Async Rendering](#async-rendering)
+  - [In-Order Streaming](#in-order-streaming)
+  - [Out-of-Order Streaming](#out-of-order-streaming)
+  - [Using SSR Modes](#using-ssr-modes)
+  - [Blocking Resources](#blocking-resources)
 
 ## Synchronous Rendering
 
@@ -67,7 +70,7 @@ If you’re using server-side rendering, the synchronous mode is almost never wh
   - Able to show the fallback loading state and dynamically replace it, instead of showing blank sections for un-loaded data.
 - _Cons_: Requires JavaScript to be enabled for suspended fragments to appear in correct order. (This small chunk of JS streamed down in a `<script>` tag alongside the `<template>` tag that contains the rendered `<Suspense/>` fragment, so it does not need to load any additional JS files.)
 
-5. **Partially-blocked streaming**: “Partially-blocked” streaming is useful when you have multiple separate `<Suspense/>` components on the page.  It is triggered by setting `ssr=SsrMode::PartiallyBlocked` on a route, and depending on blocking resources within the view.   If one of the `<Suspense/>` components reads from one or more “blocking resources” (see below), the fallback will not be sent; rather, the server will wait until that `<Suspense/>` has resolved and then replace the fallback with the resolved fragment on the server, which means that it is included in the initial HTML response and appears even if JavaScript is disabled or not supported. Other `<Suspense/>` stream in out of order, similar to the `SsrMode::OutOfOrder` default.
+5. **Partially-blocked streaming**: “Partially-blocked” streaming is useful when you have multiple separate `<Suspense/>` components on the page. It is triggered by setting `ssr=SsrMode::PartiallyBlocked` on a route, and depending on blocking resources within the view. If one of the `<Suspense/>` components reads from one or more “blocking resources” (see below), the fallback will not be sent; rather, the server will wait until that `<Suspense/>` has resolved and then replace the fallback with the resolved fragment on the server, which means that it is included in the initial HTML response and appears even if JavaScript is disabled or not supported. Other `<Suspense/>` stream in out of order, similar to the `SsrMode::OutOfOrder` default.
 
 This is useful when you have multiple `<Suspense/>` on the page, and one is more important than the other: think of a blog post and comments, or product information and reviews. It is _not_ useful if there’s only one `<Suspense/>`, or if every `<Suspense/>` reads from blocking resources. In those cases it is a slower form of `async` rendering.
 
@@ -110,7 +113,7 @@ With blocking resources, I can do something like this:
 
 ```rust
 #[component]
-pub fn BlogPost() -> impl IntoView {
+pub fn Post() -> impl IntoView {
     let post_data = Resource::new_blocking(/* load blog post */);
     let comments_data = Resource::new(/* load blog comments */);
     view! {
@@ -136,7 +139,7 @@ pub fn BlogPost() -> impl IntoView {
 }
 ```
 
-The first `<Suspense/>`, with the body of the blog post, will block my HTML stream, because it reads from a blocking resource.  Meta tags and other head elements awaiting the blocking resource will be rendered before the stream is sent.
+The first `<Suspense/>`, with the body of the blog post, will block my HTML stream, because it reads from a blocking resource. Meta tags and other head elements awaiting the blocking resource will be rendered before the stream is sent.
 
 Combined with the following route definition, which uses `SsrMode::PartiallyBlocked`, the blocking resource will be fully rendered on the server side, making it accessible to users who disable WebAssembly or JavaScript.
 
