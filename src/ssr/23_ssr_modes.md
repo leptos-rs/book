@@ -90,7 +90,7 @@ Because it offers the best blend of performance characteristics, Leptos defaults
 	// the title and metadata *after* loading the data
 	<Route
 		path=path!("/post/:id")
-		view=Post
+		view=BlogPost
 		ssr=SsrMode::Async
 	/>
 </Routes>
@@ -149,7 +149,7 @@ Combined with the following route definition, which uses `SsrMode::PartiallyBloc
 	// the title and metadata *after* loading the data
 	<Route
 		path=path!("/post/:id")
-		view=Post
+		view=BlogPost
 		ssr=SsrMode::PartiallyBlocked
 	/>
 </Routes>
