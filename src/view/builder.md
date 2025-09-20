@@ -74,3 +74,37 @@ pub fn counter(initial_value: i32, step: i32) -> impl IntoView {
     ))
 }
 ```
+
+## Using Components with the Builder Syntax
+
+To create your own components with the builder syntax, you can simply use plain functions (see above). To use other components (for example, the built-in `For` or `Show` control-flow components), you can take advantage of the fact that each component is a function of one component props argument, and component props have their own builder.
+
+You can either use the component props builder:
+```rust
+use leptos::html::p;
+
+let (value, set_value) = signal(0);
+
+Show(
+    ShowProps::builder()
+        .when(move || value.get() > 5)
+        .fallback(|| p().child("I will appear if `value` is 5 or lower"))
+        .children(ToChildren::to_children(|| {
+            p().child("I will appear if `value` is above 5")
+        }))
+        .build(),
+)
+```
+or you can directly build the props struct:
+```rust
+use leptos::html::p;
+
+let (value, set_value) = signal(0);
+
+Show(ShowProps {
+    when: move || value.get() > 5,
+    fallback: (|| p().child("I will appear if `value` is 5 or lower")).into(),
+    children: ToChildren::to_children(|| p().child("I will appear if `value` is above 5")),
+})
+```
+Using the component builder correctly applies the various modifiers like `#[prop(into)]`; using the struct syntax, we’ve applied this manually by calling `.into()` ourselves.
