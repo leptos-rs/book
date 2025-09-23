@@ -44,6 +44,28 @@ fn App() -> impl IntoView {
 }
 ```
 
+~~~admonish title="Builder syntax", collapsible=true
+  ```rust
+  use leptos::{
+    IntoView, component, ev,
+    html::{ElementChild, button, p},
+    prelude::{Get, OnAttribute, Set},
+    reactive::signal::signal,
+  };
+
+  #[component]
+  fn App() -> impl IntoView {
+      let (count, set_count) = signal(0);
+      (
+          button().child(move || format!("Click me: {}", count.get())).on(ev::click, move |_| {
+              set_count.set(3);
+          }),
+          p().child(move || format!("Double count: {}", count.get() * 2)),
+      )
+  }
+  ```
+~~~
+
 ## Importing the Prelude
 
 ```rust
