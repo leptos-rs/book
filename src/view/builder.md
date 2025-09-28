@@ -108,3 +108,7 @@ Show(ShowProps {
 })
 ```
 Using the component builder correctly applies the various modifiers like `#[prop(into)]`; using the struct syntax, we’ve applied this manually by calling `.into()` ourselves.
+
+## Expanding Macros
+
+Not every feature of the `view` macro or `component` macro syntax has been described here in detail. However, Rust provides you the tools you need to understand what is going on with any macro. Specifically, rust-analyzer’s ["expand macro recursively" feature](https://rust-analyzer.github.io/book/features.html#expand-macro-recursively) allows you to expand any macro to show the code it generates, and [`cargo-expand`](https://crates.io/crates/cargo-expand) expands all the macros in a project into regular Rust code. The rest of this book will continue using the `view` macro syntax, but if you’re ever unsure how to translate this into the builder syntax, you can use these tools to explore the code that is generated.
