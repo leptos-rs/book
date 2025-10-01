@@ -116,6 +116,11 @@ pub async fn create_user(name: String, email: String) -> Result<User, AppError> 
 }
 ```
 
+## An Important Note on Number Sizes
+
+When using Server functions, one should not use pointer-sized integer types such as `isize` and `usize` as the pointer-size of the server will probably be 64 bits, while the pointer-size in Wasm is 32 bits.
+This will lead to a deserialization error when the server sends a number which does not fit in 32 bits. Use fixed size types such as `i32` or `i64` to mitigate this problem.
+
 ## Integrating Server Functions with Leptos
 
 So far, everything I’ve said is actually framework agnostic. (And in fact, the Leptos server function crate has been integrated into Dioxus as well!) Server functions are simply a way of defining a function-like RPC call that leans on Web standards like HTTP requests and URL encoding.
