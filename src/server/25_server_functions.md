@@ -137,7 +137,7 @@ Server functions are a cool technology, but it’s very important to remember. *
 
 ## An Important Note on Number Sizes
 
-When using Server functions, one should not use pointer-sized integer types such as `isize` and `usize` as the pointer-size of the server will probably be 64 bit, while the pointer-size in Wasm is 32 bit.
+When using Server functions, one should not use pointer-sized integer types such as `isize` and `usize` as the pointer-size of the server will probably be 64 bits, while the pointer-size in Wasm is 32 bits.
 This will lead to a deserialization error when the server sends a number which does not fit in 32 bits. Use fixed size types such as `i32` or `i64` to mitigate this problem.
 
 ## Integrating Server Functions with Leptos
