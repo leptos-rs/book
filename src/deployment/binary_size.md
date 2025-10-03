@@ -1,8 +1,6 @@
 # Optimizing WASM Binary Size
 
-One of the primary downsides of deploying a Rust/WebAssembly frontend app is that splitting a WASM file into smaller chunks to be dynamically loaded is significantly more difficult than splitting a JavaScript bundle. There have been experiments like [`wasm-split`](https://emscripten.org/docs/optimizing/Module-Splitting.html) in the Emscripten ecosystem but at present there’s no way to split and dynamically load a Rust/`wasm-bindgen` binary. This means that the whole WASM binary needs to be loaded before your app becomes interactive. Because the WASM format is designed for streaming compilation, WASM files are much faster to compile per kilobyte than JavaScript files. (For a deeper look, you can [read this great article from the Mozilla team](https://hacks.mozilla.org/2018/01/making-webassembly-even-faster-firefoxs-new-streaming-and-tiering-compiler/) on streaming WASM compilation.)
-
-Still, it’s important to ship the smallest WASM binary to users that you can, as it will reduce their network usage and make your app interactive as quickly as possible.
+WebAssembly binaries are significantly larger than the JavaScript bundles you’d expect for the equivalent application. Because the WASM format is designed for streaming compilation, WASM files are much faster to compile per kilobyte than JavaScript files. (For a deeper look, you can [read this great article from the Mozilla team](https://hacks.mozilla.org/2018/01/making-webassembly-even-faster-firefoxs-new-streaming-and-tiering-compiler/) on streaming WASM compilation.) Still, it’s important to ship the smallest WASM binary to users that you can, as it will reduce their network usage and make your app interactive as quickly as possible.
 
 So what are some practical steps?
 
@@ -63,10 +61,75 @@ There are certain crates that tend to inflate binary sizes. For example, the `re
 
 In general, Rust’s commitment to runtime performance is sometimes at odds with a commitment to a small binary. For example, Rust monomorphizes generic functions, meaning it creates a distinct copy of the function for each generic type it’s called with. This is significantly faster than dynamic dispatch, but increases binary size. Leptos tries to balance runtime performance with binary size considerations pretty carefully; but you might find that writing code that uses many generics tends to increase binary size. For example, if you have a generic component with a lot of code in its body and call it with four different types, remember that the compiler could include four copies of that same code. Refactoring to use a concrete inner function or helper can often maintain performance and ergonomics while reducing binary size.
 
-## A Final Thought
+## Code Splitting
 
-Remember that in a server-rendered app, JS bundle size/WASM binary size affects only _one_ thing: time to interactivity on the first load. This is very important to a good user experience: nobody wants to click a button three times and have it do nothing because the interactive code is still loading — but it's not the only important measure.
+`cargo-leptos` and the Leptos framework and router have support for WASM binary splitting. (Note that this support was released during the summer of 2025; depending on when you’re reading this, we may still be ironing out bugs.)
 
-It’s especially worth remembering that streaming in a single WASM binary means all subsequent navigations are nearly instantaneous, depending only on any additional data loading. Precisely because your WASM binary is _not_ bundle split, navigating to a new route does not require loading additional JS/WASM, as it does in nearly every JavaScript framework. Is this copium? Maybe. Or maybe it’s just an honest trade-off between the two approaches!
+This can be used through the combination of three tools: `cargo leptos (serve|watch|build) --split`, the [`#[lazy]`](https://docs.rs/leptos/latest/leptos/attr.lazy.html) macro, and the [`#[lazy_route]`](https://docs.rs/leptos_router/latest/leptos_router/attr.lazy_route.html) macro (paired with the [`LazyRoute`](https://docs.rs/leptos_router/latest/leptos_router/trait.LazyRoute.html) trait).
 
-Always take the opportunity to optimize the low-hanging fruit in your application. And always test your app under real circumstances with real user network speeds and devices before making any heroic efforts.
+### `#[lazy]`
+
+The `#[lazy]` macro indicates that a function can be lazy-loaded from a separate WebAssembly (WASM) binary. It can be used to annotate a synchronous or async function; in either case, it will produce an async function. The first time you call the lazy-loaded function, that separate chunk of code will be loaded from the server and called. Subsequently, it will be called without an additional loading step.
+
+```rust
+#[lazy]
+fn lazy_synchronous_function() -> String {
+    "Hello, lazy world!".to_string()
+}
+
+#[lazy]
+async fn lazy_async_function() -> String {
+    /* do something that requires async work */
+    "Hello, lazy async world!".to_string()
+}
+
+async fn use_lazy_functions() {
+    // synchronous function has been converted to async
+    let value1 = lazy_synchronous_function().await;
+
+    // async function is still async
+    let value1 = lazy_async_function().await;
+}
+```
+
+This can be useful for one-off lazy functions. But lazy-loading is most powerful when it’s paired with the router.
+
+### `#[lazy_route]`
+
+Lazy routes allow you to split out the code for a route’s view, and to lazily load it concurrently with data for that route while navigating. Through the use of nested routing, multiple lazy-loaded routes can be nested: each will load its own data and its own lazy view concurrently.
+
+Splitting the data loading from the (lazy-loaded) view allows you to prevent a “waterfall,” in which you wait for the lazy view to load, then begin loading data.
+
+```rust
+use leptos::prelude::*;
+use leptos_router::{lazy_route, LazyRoute};
+
+// the route definition
+#[derive(Debug)]
+struct BlogListingRoute {
+    titles: Resource<Vec<String>>
+}
+
+#[lazy_route]
+impl LazyRoute for BlogListingRoute {
+    fn data() -> Self {
+        Self {
+            titles: Resource::new(|| (), |_| async {
+                vec![/* todo: load blog posts */]
+            })
+        }
+    }
+
+    // this function will be lazy-loaded, concurrently with data()
+    fn view(this: Self) -> AnyView {
+        let BlogListingRoute { titles } = this;
+
+        // ... now you can use the `posts` resource with Suspense, etc.,
+        // and return AnyView by calling .into_any() on a view
+    }
+}
+```
+
+### Examples and More Information
+
+You can find more in-depth discussion in [this YouTube video](https://www.youtube.com/watch?v=w5fhcoxQnII), and a full [`lazy_routes`](https://github.com/leptos-rs/leptos/blob/main/examples/lazy_routes/src/app.rs) example in the repo.
