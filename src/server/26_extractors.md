@@ -8,7 +8,7 @@ We call Leptos a “full-stack” framework, but “full-stack” is always a mi
 
 Instead, Leptos provides integrations for the two most popular Rust web server frameworks, Actix Web ([`leptos_actix`](https://docs.rs/leptos_actix/latest/leptos_actix/)) and Axum ([`leptos_axum`](https://docs.rs/leptos_axum/latest/leptos_axum/)). We’ve built integrations with each server’s router so that you can simply plug your Leptos app into an existing server with `.leptos_routes()`, and easily handle server function calls.
 
-> If you haven’t seen our [Actix](https://github.com/leptos-rs/start) and [Axum](https://github.com/leptos-rs/start-axum) templates, now’s a good time to check them out.
+> If you haven’t seen our [Actix](https://github.com/leptos-rs/start-actix) and [Axum](https://github.com/leptos-rs/start-axum) templates, now’s a good time to check them out.
 
 ## Using Extractors
 
