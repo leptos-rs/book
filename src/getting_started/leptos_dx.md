@@ -133,7 +133,7 @@ How to enable these features varies by your IDE, we've listed some common ones b
 VSCode, in `settings.json`:
 ```json
 {
-  "rust-analyzer.cargo.allFeatures": true,  // Enable all features
+  "rust-analyzer.cargo.features": "all",  // Enable all features
 }
 ```
 
