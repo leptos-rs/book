@@ -262,7 +262,7 @@ view! {
                 view! { <p>"Two"</p> }.into_any()
             }
             // returns HtmlElement<Textarea>
-            _ => view! { <textarea>{value()}</textarea> }.into_any()
+            _ => view! { <textarea>{value.get()}</textarea> }.into_any()
         }}
     </main>
 }
