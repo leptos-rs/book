@@ -20,6 +20,11 @@ Elements are created by calling a function with the same name as the HTML elemen
 p()
 ```
 
+Custom elements/web components can be created by using the [`custom()`](https://docs.rs/leptos/latest/leptos/html/fn.custom.html) function with their name:
+```rust
+custom("my-custom-element")
+```
+
 You can add children to the element with [`.child()`](https://docs.rs/leptos/latest/leptos/html/trait.ElementChild.html#tymethod.child), which takes a single child or a tuple or array of types that implement [`IntoView`](https://docs.rs/leptos/latest/leptos/trait.IntoView.html).
 
 ```rust
