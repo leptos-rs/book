@@ -122,7 +122,8 @@ view! {
 
 This should mostly be easy to understand: it mostly looks like HTML, with a special
 `on:click` syntax to define a `click` event listener and a few text nodes that look like
-Rust strings.
+Rust strings. All HTML elements are supported, including both built-in elements (like `<p>`)
+and custom elements/web components (like `<my-custom-element>`).
 
 ```admonish info
 **Unquoted text**: The `view` macro does have some support for unquoted text nodes, which are the
