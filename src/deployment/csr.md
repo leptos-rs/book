@@ -17,6 +17,7 @@ Examples:
 - [Github Pages](#github-pages)
 - [Vercel](#vercel)
 - [Spin (serverless WebAssembly)](#spin---serverless-webassembly)
+- [Netlify](#netlify)
 
 ## Github Pages
 
@@ -527,3 +528,48 @@ Start by installing the [Spin CLI using the instructions, here](https://develope
 ```
 
 See [the example repo here](https://github.com/diversable/leptos-spin-CSR).
+
+# Netlify
+
+All it takes to deploy a Leptos CSR app to Netlify is to create a project and to
+add two simple configuration files in your project root. Let's begin with the
+latter.
+
+## Configuration Files
+
+Create a `netlify.toml` file in your project root with the following content:
+
+```toml
+[build]
+command = "rustup target add wasm32-unknown-unknown && cargo install trunk --locked && trunk build --release"
+publish = "dist"
+
+[build.environment]
+RUST_VERSION = "stable"
+
+[[redirects]]
+from = "/*"
+to = "/index.html"
+status = 200
+```
+
+Create a `rust-toolchain.toml` file in your project root with the following
+content:
+
+```toml
+[toolchain]
+channel = "stable"
+targets = ["wasm32-unknown-unknown"]
+```
+
+## Deployment
+
+1. [Add your project to Netlify](https://docs.netlify.com/start/add-new-project/)
+   by connecting your Git repository
+2. Netlify will automatically detect your `netlify.toml` configuration
+3. If you need additional environment variables, configure them in
+   [Netlify's environment variables settings](https://docs.netlify.com/build/environment-variables/overview/)
+
+The `rust-toolchain.toml` ensures the correct Rust toolchain and WASM target are
+available during the build process. The redirect rule in `netlify.toml` ensures
+your SPA routes work correctly by serving `index.html` for all paths.
