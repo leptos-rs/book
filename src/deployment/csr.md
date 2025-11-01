@@ -86,6 +86,10 @@ Deploying a Leptos CSR app to Github pages is a simple affair. First, go to your
             # will obviously return error 404 not found.
             run: ./trunk build --release --public-url "${GITHUB_REPOSITORY#*/}"
 
+          # Copy index.html to 404.html for SPA routing
+          # Will allow routing to work if client enters from any route
+          # - name: Copy index.html to 404.html
+          #   run: cp dist/index.html dist/404.html
 
           # Deploy to gh-pages branch
           # - name: Deploy 🚀
