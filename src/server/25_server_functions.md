@@ -116,10 +116,12 @@ pub async fn create_user(name: String, email: String) -> Result<User, AppError> 
 }
 ```
 
-## An Important Note on Number Sizes
+## Quirks to Note
 
-When using Server functions, one should not use pointer-sized integer types such as `isize` and `usize` as the pointer-size of the server will probably be 64 bits, while the pointer-size in Wasm is 32 bits.
-This will lead to a deserialization error when the server sends a number which does not fit in 32 bits. Use fixed size types such as `i32` or `i64` to mitigate this problem.
+Server functions come with a few quirks that are worth noting:
+
+- Using pointer-sized integer types such as `isize` and `usize` can lead to errors when making calls between the 32-bit WASM architecture and a 64-bit server architecture; if the server responds with a value that doesn't fit in 32 bits, this will lead to a deserialization error. Use fixed size types such as `i32` or `i64` to mitigate this problem.
+- Arguments sent to the server are URL-encoded using `serde_qs` by default. This allows them to work well with `<form>` elements, but can have some quirks: for example, the current version of `serde_qs` does not always work well with optional types (see [here](https://github.com/leptos-rs/leptos/issues/3832) or [here](https://github.com/leptos-rs/leptos/issues/4016)) or with enums that have tuple variants (see [here](https://github.com/leptos-rs/leptos/issues/4464)). You can use the workarounds described in those issues, or [switch to an alternate input encoding](https://docs.rs/leptos/latest/leptos/attr.server.html#named-arguments).
 
 ## Integrating Server Functions with Leptos
 
