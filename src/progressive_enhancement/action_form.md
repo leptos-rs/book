@@ -55,6 +55,10 @@ let on_submit = move |ev| {
 		ev.prevent_default();
 	}
 }
+
+// ... add the `submit` handler to an `ActionForm`
+
+<ActionForm on:submit:capture=on_submit /* ... */>
 ```
 
 ```admonish note
