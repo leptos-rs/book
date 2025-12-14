@@ -20,6 +20,10 @@ That’s where the [`leptos_meta`](https://docs.rs/leptos_meta/latest/leptos_met
 
 [`<Meta/>`](https://docs.rs/leptos_meta/latest/leptos_meta/fn.Meta.html) lets you set `<meta>` tags with descriptions and other metadata.
 
+```admonish warning
+Note: These components should be used in the body of your application, somewhere in a component. They should not be used in the `<head>` (for example, if you are using server-side rendering.) Rather than putting `leptos_meta` components into the `<head>`, you can and should simply use the corresponding HTML elements.
+```
+
 ## `<Script/>` and `<script>`
 
 `leptos_meta` also provides a [`<Script/>`](https://docs.rs/leptos_meta/latest/leptos_meta/fn.Script.html) component, and it’s worth pausing here for a second. All of the other components we’ve considered inject `<head>`-only elements in the `<head>`. But a `<script>` can also be included in the body.
