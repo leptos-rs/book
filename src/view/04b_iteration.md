@@ -235,11 +235,41 @@ Leptos provides a primitive called a [`Memo`](https://docs.rs/leptos/latest/lept
 which creates a derived computation that only triggers a reactive update when its value
 has changed.
 
-This allows you to create reactive values for subfields of a larger data structure,
-without needing to wrap the fields of that structure in signals.
+This allows you to create reactive values for subfields of a larger data structure, without needing
+to wrap the fields of that structure in signals. In combination with
+[`<ForEnumerate/>`](https://docs.rs/leptos/latest/leptos/control_flow/fn.ForEnumerate.html), this
+will allow us to rerender only changed data values.
 
 Most of the application can remain the same as the initial (broken) version, but the `<For/>`
 will be updated to this:
+
+```rust
+<ForEnumerate
+    each=move || data.get()
+    key=|state| state.key.clone()
+    children=move |index, _| {
+        let value = Memo::new(move |_| {
+            data.with(|data| data.get(index.get()).map(|d| d.value).unwrap_or(0))
+        });
+        view! {
+            <p>{value}</p>
+        }
+    }
+/>
+```
+
+You’ll notice a few differences here:
+
+- we use `ForEnumerate` rather than `For`, so we have access to an `index` signal
+- we use the `children` prop explicitly, to make it easier to run some non-`view` code
+- we define a `value` memo and use that in the view. This `value` field doesn’t actually
+  use the `child` being passed into each row. Instead, it uses the index and reaches back
+  into the original `data` to get the value.
+
+Now every time `data` changes, each memo will be recalculated. If its value has changed,
+it will update its text node, without rerendering the whole row.
+
+**Note**: It is not safe to use `For` for this with an enumerated iterator, as in an earlier version of this example:
 
 ```rust
 <For
@@ -256,16 +286,9 @@ will be updated to this:
 />
 ```
 
-You’ll notice a few differences here:
-
-- we convert the `data` signal into an enumerated iterator
-- we use the `children` prop explicitly, to make it easier to run some non-`view` code
-- we define a `value` memo and use that in the view. This `value` field doesn’t actually
-  use the `child` being passed into each row. Instead, it uses the index and reaches back
-  into the original `data` to get the value.
-
-Every time `data` changes, now, each memo will be recalculated. If its value has changed,
-it will update its text node, without rerendering the whole row.
+In this case, changes to values in `data` will be reacted to, but changes to ordering will not, as
+the Memo will always use the `index` it was initially created with. This will result in duplicate
+entries in the rendered output if any items are moved.
 
 ### Pros
 
@@ -274,11 +297,11 @@ wrap the data in signals.
 
 ### Cons
 
-It’s a bit more complex to set up this memo-per-row inside the `<For/>` loop rather than
-using nested signals. For example, you’ll notice that we have to guard against the possibility
-that the `data[index]` would panic by using `data.get(index)`, because this memo may be
-triggered to re-run once just after the row is removed. (This is because the memo for each row
-and the whole `<For/>` both depend on the same `data` signal, and the order of execution for
+It’s a bit more complex to set up this memo-per-row inside the `<ForEnumerate/>` loop rather than
+using nested signals. For example, you’ll notice that we have to guard against the possibility that
+the `data[index.get()]` would panic by using `data.get(index.get())`, because this memo may be
+triggered to re-run once just after the row is removed. (This is because the memo for each row and
+the whole `<ForEnumerate/>` both depend on the same `data` signal, and the order of execution for
 multiple reactive values that depend on the same signal isn’t guaranteed.)
 
 Note also that while memos memoize their reactive changes, the same
@@ -299,6 +322,7 @@ Stores are built on top of the `Store` derive macro, which creates a getter for 
 We can adapt the data types we used in the examples above.
 
 The top level of a store always needs to be a struct, so we’ll create a `Data` wrapper with a single `rows` field.
+
 ```rust
 #[derive(Store, Debug, Clone)]
 pub struct Data {
@@ -312,9 +336,11 @@ struct DatabaseEntry {
     value: i32,
 }
 ```
+
 Adding `#[store(key)]` to the `rows` field allows us to have keyed access to the fields of the store, which will be useful in the `<For/>` component below. We can simply use `key`, the same key that we’ll use in `<For/>`.
 
 The `<For/>` component is pretty straightforward:
+
 ```rust
 <For
     each=move || data.rows()
@@ -325,6 +351,7 @@ The `<For/>` component is pretty straightforward:
     }
 />
 ```
+
 Because `rows` is a keyed field, it implements `IntoIterator`, and we can simply use `move || data.rows()` as the `each` prop. This will react to any changes to the `rows` list, just as `move || data.get()` did in our nested-signal version.
 
 The `key` field calls `.read()` to get access to the current value of the row, then clones and returns the `key` field.
@@ -332,6 +359,7 @@ The `key` field calls `.read()` to get access to the current value of the row, t
 In `children` prop, calling `child.value()` gives us reactive access to the `value` field for the row with this key. If rows are reordered, added, or removed, the keyed store field will keep in sync so that this `value` is always associated with the correct key.
 
 In the update button handler, we’ll iterate over the entries in `rows`, updating each one:
+
 ```rust
 for row in data.rows().iter_unkeyed() {
     *row.value().write() *= 2;
@@ -348,10 +376,10 @@ Personally, I think the stores version is the nicest one here. And no surprise, 
 
 On the other hand, it’s the newest API. As of writing this sentence (December 2024), stores have only been released for a few weeks; I am sure that there are still some bugs or edge cases to be figured out.
 
-
 ### Full Example
 
 Here’s the complete store example. You can find another, more complete example [here](https://github.com/leptos-rs/leptos/blob/main/examples/stores/src/lib.rs), and more discussion in the book [here](../15_global_state.md).
+
 ```
 use reactive_stores::Store;
 
@@ -394,7 +422,7 @@ pub fn App() -> impl IntoView {
             // allows iterating over the entries in an iterable store field
             use reactive_stores::StoreFieldIterator;
 
-            // calling rows() gives us access to the rows 
+            // calling rows() gives us access to the rows
             for row in data.rows().iter_unkeyed() {
                 *row.value().write() *= 2;
             }
