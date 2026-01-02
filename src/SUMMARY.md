@@ -52,9 +52,9 @@
 - [Deployment](./deployment/README.md)
   - [Deploying CSR Apps](./deployment/csr.md)
   - [Deploying SSR Apps](./deployment/ssr.md)
+  - [Deploying at Non-Root Paths](./deployment/sub_path.md)
   - [Optimizing WASM Binary Size](./deployment/binary_size.md)
 - [Guide: Islands](./islands.md)
 
 - [Appendix: How Does the Reactive System Work?](./appendix_reactive_graph.md)
 - [Appendix: The Life Cycle of a Signal](./appendix_life_cycle.md)
-
