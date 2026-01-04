@@ -188,6 +188,7 @@ fn ContactInfoRoutes() -> impl MatchNestedRoutes + Clone {
       </ParentRoute>
     }
     .into_inner()
+    .into_any_nested_route()
 }
 ```
 
