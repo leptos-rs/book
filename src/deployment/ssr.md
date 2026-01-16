@@ -19,10 +19,10 @@ The most popular way for people to deploy full-stack apps built with `cargo-lept
 
 ```dockerfile
 # Get started with a build env with Rust nightly
-FROM rustlang/rust:nightly-bookworm as builder
+FROM rustlang/rust:nightly-trixie as builder
 
 # If you’re using stable, use this instead
-# FROM rust:1.88-bookworm as builder
+# FROM rust:1.92.0-trixie as builder # See current official Rust tags here: https://hub.docker.com/_/rust
 
 # Install cargo-binstall, which makes it easier to install other
 # cargo extensions like cargo-leptos
@@ -48,7 +48,7 @@ COPY . .
 # Build the app
 RUN cargo leptos build --release -vv
 
-FROM debian:bookworm-slim as runtime
+FROM debian:trixie-slim as runtime
 WORKDIR /app
 RUN apt-get update -y \
   && apt-get install -y --no-install-recommends openssl ca-certificates \
