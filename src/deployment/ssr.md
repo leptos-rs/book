@@ -148,7 +148,8 @@ app.example.com {
     reverse_proxy leptos-app:8080
 }
 ```
-For more details, check the [Caddy Reverse Proxy Quick-start](https://caddyserver.com/docs/quick-starts/reverse-proxy) or the [Caddyfile concept documentation](https://caddyserver.com/docs/caddyfile).
+For more details, see the [Caddy Reverse Proxy Quick-start](https://caddyserver.com/docs/quick-starts/reverse-proxy) 
+and the [Caddyfile concept documentation](https://caddyserver.com/docs/caddyfile), among other resources.
 
 ## Cloud Deployments
 
