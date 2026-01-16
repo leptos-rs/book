@@ -102,11 +102,12 @@ nothing has rerendered. And if you look at the type of `child.value`, it’s a p
 `i32`, not a reactive `ReadSignal<i32>` or something. This means that even if we
 wrap a closure around it, the value in this row will never update.
 
-We have three possible solutions:
+We have four possible solutions:
 
 1. change the `key` so that it always updates when the data structure changes
 2. change the `value` so that it’s reactive
 3. take a reactive slice of the data structure instead of using each row directly
+4. use a `Store`
 
 ## Option 1: Change the Key
 
