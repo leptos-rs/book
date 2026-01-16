@@ -116,6 +116,40 @@ CMD ["/app/leptos_start"]
 
 > Read more: [`gnu` and `musl` build files for Leptos apps](https://github.com/leptos-rs/leptos/issues/1152#issuecomment-1634916088).
 
+## A Note on Reverse Proxies
+
+While you can expose your Leptos app directly, it's usually better to put it behind a reverse proxy. 
+This allows you to handle SSL/TLS, compression, and security headers in a dedicated layer rather 
+than in your Rust binary.
+
+There are several popular reverse proxy options. Caddy is often chosen for its automatic HTTPS certificate management, 
+while Nginx, Traefik, or Apache are also widely used depending on your requirements and familiarity.
+
+If you are using Caddy, your configuration can be as simple as pointing a domain 
+to your container name or IP:
+
+```Caddyfile
+# Simple setup
+example.com {
+    reverse_proxy leptos-app:8080
+}
+
+# Advanced: Basic auth and HSTS headers
+app.example.com {
+    # Protect a staging site with basic auth
+    basic_auth {
+        admin $2a$14$CIW9S... 
+    }
+    
+    header {
+        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+    }
+
+    reverse_proxy leptos-app:8080
+}
+```
+For more details, check the [Caddy Reverse Proxy Quick-start](https://caddyserver.com/docs/quick-starts/reverse-proxy) or the [Caddyfile concept documentation](https://caddyserver.com/docs/caddyfile).
+
 ## Cloud Deployments
 
 ### Deploy to Fly.io
