@@ -42,6 +42,10 @@ pub async fn login(
     password: String,
     remember: Option<String>,
 ) -> Result<(), ServerFnError> {
+    const INVALID_CREDENTIALS: fn() -> ServerFnError = || -> ServerFnError {
+        ServerFnError::ServerError("Invalid credentials".into())
+    };
+
     // pull the DB pool and auth provider from context
     let pool = pool()?;
     let auth = auth()?;
@@ -49,9 +53,7 @@ pub async fn login(
     // check whether the user exists
     let user: User = User::get_from_username(username, &pool)
         .await
-        .ok_or_else(|| {
-            ServerFnError::ServerError("User does not exist.".into())
-        })?;
+        .ok_or_else(INVALID_CREDENTIALS)?;
 
     // check whether the user has provided the correct password
     match verify(password, &user.password)? {
@@ -66,9 +68,7 @@ pub async fn login(
             Ok(())
         }
         // if not, return an error
-        false => Err(ServerFnError::ServerError(
-            "Password does not match.".to_string(),
-        )),
+        false => Err(INVALID_CREDENTIALS()),
     }
 }
 ```
