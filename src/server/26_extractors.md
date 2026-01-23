@@ -133,9 +133,46 @@ let app = Router::new()
 // ...
 #[server]
 pub async fn uses_state() -> Result<(), ServerFnError> {
-    let state = expect_context::<AppState>();
+    let state = expect_context::<MyData>();
     let SomeStateExtractor(data) = extract_with_state(&state).await?;
     // todo
+}
+```
+
+#### Generic State
+
+In some cases, you may want to use a generic type for your state. Let's use the following example:
+
+```rust
+pub struct AppState<TS: ThingService> {
+    pub thing_service: Arc<TS>,
+} 
+```
+
+In Axum you would typically use a generic parameter with your handler, like so:
+
+```rust
+pub async fn do_thing<TS: ThingService>(
+    State(state): State<AppState<TS>>,
+) -> Result<(), ThingError> {
+    state.thing_service.do_thing()
+}
+```
+
+Unfortunately, generic parameters are not currently supported in Leptos server functions. However, you can work around this limitation by using a concrete type in your server function to call an inner generic function. Here's how you can do it:
+
+```rust
+pub async do_thing_inner<TS: ThingService>() -> Result<(), ServerFnError> {
+    let state = expect_context::<AppState<TS>>(); // Works!
+    state.thing_service.do_thing()
+}
+
+#[server]
+pub async do_thing() -> Result<(), ServerFnError> {
+    use crate::thing::service::Service as ConcreteThingService;
+    use crate::thing::some_dep::SomeDep;
+
+    do_thing_inner::<ConcreteThingService<SomeDep>>().await
 }
 ```
 
