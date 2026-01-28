@@ -47,6 +47,7 @@
   - [Server Functions](./server/25_server_functions.md)
   - [Extractors](./server/26_extractors.md)
   - [Responses and Redirects](./server/27_response.md)
+  - [Quick reference of asynchronous closures](./server/28_summary.md)
 - [Progressive Enhancement and Graceful Degradation](./progressive_enhancement/README.md)
   - [`<ActionForm/>`](./progressive_enhancement/action_form.md)
 - [Deployment](./deployment/README.md)
