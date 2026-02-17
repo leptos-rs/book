@@ -434,7 +434,7 @@ pub fn App() -> impl IntoView {
         </button>
         // iterate over the rows and display each value
         <For
-            each=move || data.rows()
+            each=move || data.rows().iter_unkeyed()
             key=|row| row.read().key.clone()
             children=|child| {
                 let value = child.value();
