@@ -2,7 +2,7 @@
 
 There are two basic paths to getting started with Leptos:
 
-1. **Client-side rendering (CSR) with [Trunk](https://trunkrs.dev/)** - a great option if you just want to make a snappy website with Leptos, or work with a pre-existing server or API.
+1. **Client-side rendering (CSR) with [Trunk](https://trunk-rs.github.io/trunk/)** - a great option if you just want to make a snappy website with Leptos, or work with a pre-existing server or API.
    In CSR mode, Trunk compiles your Leptos app to WebAssembly (WASM) and runs it in the browser like a typical Javascript single-page app (SPA). The advantages of Leptos CSR include faster build times and a quicker iterative development cycle, as well as a simpler mental model and more options for deploying your app. CSR apps do come with some disadvantages: initial load times for your end users are slower compared to a server-side rendering approach, and the usual SEO challenges that come along with using a JS single-page app model apply to Leptos CSR apps as well. Also note that, under the hood, an auto-generated snippet of JS is used to load the Leptos WASM bundle, so JS _must_ be enabled on the client device for your CSR app to display properly. As with all software engineering, there are trade-offs here you'll need to consider.
 
 2. **Full-stack, server-side rendering (SSR) with [`cargo-leptos`](https://github.com/leptos-rs/cargo-leptos)** - SSR is a great option for building CRUD-style websites and custom web apps if you want Rust powering both your frontend and backend.
