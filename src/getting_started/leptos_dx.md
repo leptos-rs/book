@@ -99,15 +99,19 @@ Zed, in `settings.json`:
   -- Other Settings ...
   "lsp": {
     "rust-analyzer": {
-      "procMacro": {
-        "ignored": [
-          // optional:
-          // "component",
-          "server"
-        ]
-      }
-    }
-  }
+      "initialization_options": {
+        "procMacro": {
+          "ignored": {
+            "leptos_macro": [
+				// Optional:
+				// "component",
+				"server"
+			],
+          },
+        },
+      },
+    },
+  },
 }
 ```
 
