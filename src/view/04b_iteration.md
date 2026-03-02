@@ -135,7 +135,7 @@ on `DatabaseEntry`, in which case we could just `key=|state| state.clone()`.
 
 ### Cons
 
-**This is the least efficient of the three options.** Every time the value of a row
+**This is the least efficient of the four options.** Every time the value of a row
 changes, it throws out the previous `<p>` element and replaces it with an entirely new
 one. Rather than making a fine-grained update to the text node, in other words, it really
 does rerender the entire row on every change, and this is expensive in proportion to how
