@@ -313,25 +313,124 @@ struct Counter {
   count: RwSignal<i32>
 }
 
-<ForEnumerate
-    each=move || counters.get() // Same as <For/>
-    key=|counter| counter.id    // Same as <For/>
-    // Provides the index as a signal and the child T
-    children={move |index: ReadSignal<usize>, counter: Counter| {
-        view! {
-            <button>{move || index.get()} ". Value: " {move || counter.count.get()}</button>
-        }
-    }}
-/>
+#[component]
+fn Counters(initial_length: i32) -> impl IntoView {
+    let mut next_counter_id = initial_length;
+
+    let initial_counters = (0..initial_length)
+        .map(|idx| Counter {
+            id: idx,
+            count: RwSignal::new(idx + 1),
+        })
+        .collect::<Vec<Counter>>();
+
+    let (counters, set_counters) = signal::<Vec<Counter>>(initial_counters);
+
+    let add_counter = move |_| {
+        let sig = RwSignal::new(next_counter_id + 1);
+        set_counters.update(move |counters| {
+            counters.push(Counter {
+                id: next_counter_id,
+                count: sig,
+            })
+        });
+        next_counter_id += 1;
+    };
+    view! {
+        <div>
+            <button on:click=add_counter>
+            "Agregar un botón"
+            </button>
+            <ul>
+
+            <ForEnumerate
+                    each=move || counters.get() // Lo mismo que en For
+                    key=|counter| counter.id // Igual que en for pat in expr {
+                    children={move | index: ReadSignal<usize>, counter: Counter|{
+                        view! {
+                            <li>
+                            <button
+                                on:click=move |_| *counter.count.write() += 1
+                            >{move || index.get() + 1} ". Value: " {move || counter.count.get()}</button>
+                            <button on:click=move |_| {
+
+                                // debug_log!("counter.id= {:#?} , \nidx ={:#?}", counter.count, idx.get());
+                                set_counters
+                                    .write()
+                                        .retain(|idx| {
+                                            &counter != idx
+                                        });
+                                }>
+                                    "Eliminar botón"
+                                </button>
+
+                            </li>
+                        }
+                    }}
+            />
+            </ul>
+        </div>
+    }
+}
+
 ```
 
 or it could also be used with the more convenient `let` syntax:
 ```rust
-<ForEnumerate
-    each=move || counters.get() // Same as <For/>
-    key=|counter| counter.id    // Same as <For/>
-    let(idx, counter)           // let syntax
->
-    <button>{move || idx.get()} ". Value: " {move || counter.count.get()}</button>
-</ ForEnumerate>
+#[component]
+fn Counters(initial_length: i32) -> impl IntoView {
+    let mut next_counter_id = initial_length;
+
+    let initial_counters = (0..initial_length)
+        .map(|idx| Counter {
+            id: idx,
+            count: RwSignal::new(idx + 1),
+        })
+        .collect::<Vec<Counter>>();
+
+    let (counters, set_counters) = signal::<Vec<Counter>>(initial_counters);
+
+    let add_counter = move |_| {
+        let sig = RwSignal::new(next_counter_id + 1);
+        set_counters.update(move |counters| {
+            counters.push(Counter {
+                id: next_counter_id,
+                count: sig,
+            })
+        });
+        next_counter_id += 1;
+    };
+    view! {
+        <div>
+            <button on:click=add_counter>
+            "Agregar un botón"
+            </button>
+            <ul>
+
+            <ForEnumerate
+                    each=move || counters.get() // Lo mismo que en For
+                    key=|counter| counter.id // Igual que en for
+                    let (idx, counter)
+                    >
+                    <li>
+                        <button
+                            on:click=move |_| *counter.count.write() += 1
+                        >
+                            {move || idx.get() + 1} ". Value: " {move || counter.count.get()}
+                        </button>
+                        <button on:click=move |_| {
+                            set_counters
+                                .write()
+                                .retain(|idx| {
+                                    &counter != idx
+                                });
+                        }>
+                            "Eliminar botón"
+                        </button>
+                    </li>
+            </ForEnumerate>
+            </ul>
+        </div>
+    }
+}
 ```
