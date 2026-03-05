@@ -101,20 +101,20 @@ Deploying a Leptos CSR app to Github pages is a simple affair. First, go to your
           # Deploy with Github Static Pages
 
           - name: Setup Pages
-            uses: actions/configure-pages@v4
+            uses: actions/configure-pages@v5
             with:
               enablement: true
               # token:
 
           - name: Upload artifact
-            uses: actions/upload-pages-artifact@v2
+            uses: actions/upload-pages-artifact@v3
             with:
               # Upload dist dir
               path: './dist'
 
           - name: Deploy to GitHub Pages 🚀
             id: deployment
-            uses: actions/deploy-pages@v3
+            uses: actions/deploy-pages@v4
 
 ```
 
