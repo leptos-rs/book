@@ -71,7 +71,7 @@ where
 ```
 
 `render_prop` and `children` are both functions, so we can call them to generate
-the appropriate views. `children`, in particular, is an alias for
+the appropriate views. `Children`, in particular, is an alias for
 `Box<dyn FnOnce() -> AnyView>`. (Aren't you glad we named it `Children` instead?)
 The `AnyView` returned here is an opaque, type-erased view: you can’t do anything to
 inspect it. There are a variety of other child types: for example, `ChildrenFragment`
