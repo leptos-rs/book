@@ -317,7 +317,7 @@ struct Counter {
     each=move || counters.get() // Same as <For/>
     key=|counter| counter.id    // Same as <For/>
     // Provides the index as a signal and the child T
-    children={move |index: ReadSignal<usize>, counter: Counter| {
+    children={move |index, counter| {
         view! {
             <button>{move || index.get()} ". Value: " {move || counter.count.get()}</button>
         }
