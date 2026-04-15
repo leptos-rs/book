@@ -12,7 +12,7 @@ Here are a few different approaches to styling your Leptos app, starting with pl
 
 `trunk` can be used to bundle CSS files and images with your site. To do this, you can add them as Trunk assets by defining them in your `index.html` in the `<head>`. For example, to add a CSS file located at `style.css` you can add the tag `<link data-trunk rel="css" href="./style.css"/>`.
 
-You can find more information in the Trunk documentation for [assets](https://trunkrs.dev/assets/).
+You can find more information in the Trunk documentation for [assets](https://trunk-rs.github.io/trunk/guide/assets/index.html).
 
 ### Server-Side Rendering with `cargo-leptos`
 

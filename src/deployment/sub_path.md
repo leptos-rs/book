@@ -39,4 +39,4 @@ If you are using server functions, they will default to sending requests to `/`.
 
 ## Trunk configuration
 
-If you’re using client-side rendering with Trunk, [consult the Trunk docs](https://trunkrs.dev/assets/#directives) on how to set the public URL via `--public-url`.
+If you’re using client-side rendering with Trunk, [consult the Trunk docs](https://trunk-rs.github.io/trunk/guide/assets/index.html#directives) on how to set the public URL via `--public-url`.
