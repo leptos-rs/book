@@ -213,11 +213,11 @@ fn ProgressBar(
 
 > Generic props can also be specified using a `where` clause, or using inline generics like `ProgressBar<F: Fn() -> i32 + 'static>`.
 
-Generics need to be used somewhere in the component props. This is because props are built into a struct, so all generic types must be used somewhere in the struct. This is often easily accomplished using an optional `PhantomData` prop. You can then specify a generic in the view using the syntax for expressing types: `<Component<T>/>` (not with the turbofish-style `<Component::<T>/>`).
+You can specify a generic in the view using the syntax for expressing types: `<Component<T>/>` (not with the turbofish-style `<Component::<T>/>`).
 
 ```rust
 #[component]
-fn SizeOf<T: Sized>(#[prop(optional)] _ty: PhantomData<T>) -> impl IntoView {
+fn SizeOf<T: Sized>(#[prop(marker)] _ty: PhantomData<T>) -> impl IntoView {
     std::mem::size_of::<T>()
 }
 
@@ -231,6 +231,13 @@ pub fn App() -> impl IntoView {
 ```
 
 > Note that there are some limitations. For example, our view macro parser can’t handle nested generics like `<SizeOf<Vec<T>>/>`.
+
+### `marker` Props
+
+Generics need to be used somewhere in the component props. This is because props are built into a struct, so all generic types must be used somewhere in the struct.
+This is easily accomplished using an optional `PhantomData` prop: `#[prop(optional)] _ty: PhantomData<T>`, but this generates some docs and a setter
+for the `_ty` field, you can use `#[prop(marker)]` for types that are always defaulted. This will remove the props from the docs and the builder,
+and will `#[serde(skip)]` the field for islands.
 
 ### `into` Props
 
