@@ -33,7 +33,7 @@ First up, make sure Rust is installed and up-to-date ([see here if you need inst
 If you don’t have it installed already, you can install the "Trunk" tool for running Leptos CSR sites by running the following on the command-line:
 
 ```bash
-cargo install trunk
+cargo install --locked trunk
 ```
 
 And then create a basic Rust project
