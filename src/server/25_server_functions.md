@@ -123,6 +123,63 @@ Server functions come with a few quirks that are worth noting:
 - Using pointer-sized integer types such as `isize` and `usize` can lead to errors when making calls between the 32-bit WASM architecture and a 64-bit server architecture; if the server responds with a value that doesn't fit in 32 bits, this will lead to a deserialization error. Use fixed size types such as `i32` or `i64` to mitigate this problem.
 - Arguments sent to the server are URL-encoded using `serde_qs` by default. This allows them to work well with `<form>` elements, but can have some quirks: for example, the current version of `serde_qs` does not always work well with optional types (see [here](https://github.com/leptos-rs/leptos/issues/3832) or [here](https://github.com/leptos-rs/leptos/issues/4016)) or with enums that have tuple variants (see [here](https://github.com/leptos-rs/leptos/issues/4464)). You can use the workarounds described in those issues, or [switch to an alternate input encoding](https://docs.rs/leptos/latest/leptos/attr.server.html#named-arguments).
 
+As established, server functions and other ways for server and client communication are predominately asynchronous. Under some rare circumstances, the data is required to be identical and loaded synchronously. For this purpose, a [`SharedValue`](https://docs.rs/leptos/latest/leptos/prelude/struct.SharedValue.html) can be used.
+A good example for such niche can be Environmental Variables. Their value is solely assignable and fetchable on the server; they do not change and you may design your program to require them before the first hydration. In simpler terms, you may need to know what their values are before the client even starts working (e.g a third party URL for your client to fetch its miscellaneous resources from). The following snippet shows a provided context with a custom `ClientEnv` structure:
+
+```rust
+use leptos::prelude::*;
+use serde::{Deserialize, Serialize};
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct ClientEnv {
+    tp_url: String,
+}
+
+impl ClientEnv {
+    /// Load the data from the environment or set defaults if fails.
+    pub fn load() -> Self {
+        let tp_url = std::env::var("CLIENT_TP_URL")
+            .unwrap_or("http://localhost:1234".to_string());
+
+        Self { tp_url }
+    }
+}
+
+#[component]
+pub fn App() -> impl IntoView {
+	// by wrapping the value in `SharedValue`
+	// 1. It is called on the server synchronously
+	// 2. Its result is used and always available to the client,
+	//    without a need to call it asynchronously.
+    let env = SharedValue::new(|| ClientEnv::load()).into_inner();
+
+    // if not called like this, the context will only exist on the server
+    // the following prints can highlight the difference assuming the CLIENT_TP_URL
+    // variable is defined.
+    // Run with `CLIENT_TP_URL="https://example.dev" cargo leptos run`:
+    leptos::logging::log!("ClientEnv: {:?}", ClientEnv::load());
+    //    ClientEnv: ClientEnv { tp_url: "http://localhost:1234" }
+    leptos::logging::log!("SharedValue<ClientEnv>: {:?}", env);
+    //    SharedValue<ClientEnv>: ClientEnv { tp_url: "https://example.dev" }
+
+    provide_context(env);
+
+    // ...
+}
+
+#[component]
+pub fn MyComponent() -> impl IntoView {
+    // Other components (both on the server and client) can expect the data exists
+    let env = expect_context::<ClientEnv>();
+
+    view! {
+        <a href=env.tp_url>"Visit the Third Party"</a>
+    }
+}
+```
+
+This differs with server states which are explained in the following section. Server states only exist on the server but `SharedValue`s are initialized on the server and available on both the client and the server.
+
 ## Integrating Server Functions with Leptos
 
 So far, everything I’ve said is actually framework agnostic. (And in fact, the Leptos server function crate has been integrated into Dioxus as well!) Server functions are simply a way of defining a function-like RPC call that leans on Web standards like HTTP requests and URL encoding.
