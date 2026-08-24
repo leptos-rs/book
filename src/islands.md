@@ -389,6 +389,20 @@ Now the tabs behave exactly as I’d expect. `Tabs` passes the signal via contex
 
 Our complete tabs demo is about 200kb uncompressed: not the smallest demo in the world, but still significantly smaller than the “Hello, world” using client side routing that we started with! Just for kicks, I built the same demo without islands mode, using `#[server]` functions and `Suspense`. and it was over 400kb. So again, this was about a 50% savings in binary size. And this app includes quite minimal server-only content: remember that as we add additional server-only components and pages, this 200kb will not grow.
 
+## Replacing the Client-Side Router
+
+One of the main purposes of using islands is to keep routing out of the client. Once you have a client-side router, you need to be able to render every page on the client. Using islands, you can minimize the amount of code shipped to the browser; but in exchange, you lose access to the conveniences of client-side routing.
+
+There is an "islands router" mode that combines client-side routing with islands, by using a small amount of JavaScript on the frontend to fetch new server-rendered pages and diff them in an efficient way. You can read more about it in [the `islands_router` example](https://github.com/leptos-rs/leptos/tree/main/examples/islands_router). It works pretty well, and supports both link and form navigations.
+
+Note that without a client-side router, you lose the ability to call `redirect()` directly from server functions and have them redirect on the client. This ability is provided by the router. However, you can create your own minimal version by calling [`set_redirect_hook`](https://docs.rs/leptos/latest/leptos/server_fn/redirect/fn.set_redirect_hook.html):
+```rust
+set_redirect_hook(|url| {
+    window().location().set_href(url);
+});
+```
+Now, any server function that calls `redirect()` will be handled on the client by ordinary page navigation.
+
 ## Overview
 
 This demo may seem pretty basic. It is. But there are a number of immediate takeaways:
