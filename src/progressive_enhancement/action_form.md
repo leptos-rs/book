@@ -108,7 +108,7 @@ fn ComplexInput() -> impl IntoView {
 async fn very_important_fn(hefty_arg: HeftyData) -> Result<(), ServerFnError> {
     assert_eq!(hefty_arg.first_name.as_str(), "leptos");
     assert_eq!(hefty_arg.last_name.as_str(), "closures-everywhere");
-    aseert_eq!(hefty_arg.settings.display_name.as_str(), "my alias");
+    assert_eq!(hefty_arg.settings.display_name.as_str(), "my alias");
     Ok(())
 }
 ```
