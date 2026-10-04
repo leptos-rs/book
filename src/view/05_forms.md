@@ -178,17 +178,19 @@ let on_submit = move |ev: SubmitEvent| {
     ev.prevent_default();
 
     // here, we'll extract the value from the input
-    let value = input_element
-        .get()
-        // event handlers can only fire after the view
-        // is mounted to the DOM, so the `NodeRef` will be `Some`
-        .expect("<input> should be mounted")
+    if let Some(v) = input_element.get() {
         // `leptos::HtmlElement<html::Input>` implements `Deref`
         // to a `web_sys::HtmlInputElement`.
         // this means we can call`HtmlInputElement::value()`
         // to get the current value of the input
-        .value();
-    set_name.set(value);
+        let value = v.value();
+        set_name.set(value);
+    } else {
+        // event handlers can only fire after the view
+        // is mounted to the DOM, so the `NodeRef` will be `Some`
+        leptos::logging::error!("<input> should be mounted");
+        unreachable!();
+    }
 };
 ```
 
