@@ -234,7 +234,7 @@ The `<select>` element can likewise be controlled via a `value` property on the 
 which will select whichever `<option>` has that value.
 
 ```rust
-let (value, set_value) = signal(0i32);
+let (value, set_value) = signal(0_i32);
 view! {
   <select
     on:change:target=move |ev| {
