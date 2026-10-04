@@ -227,9 +227,11 @@ view! {
     <main>
         {move || match is_odd() {
             true if value.get() == 1 => {
+                // returns HtmlElement<Pre>
                 view! { <pre>"One"</pre> }
             },
             false if value.get() == 2 => {
+                // returns HtmlElement<P>
                 view! { <p>"Two"</p> }
             }
             // returns HtmlElement<Textarea>
