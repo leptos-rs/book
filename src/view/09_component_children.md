@@ -1,4 +1,4 @@
-# Component Children
+# Passing Children to Components
 
 It’s pretty common to want to pass children into a component, just as you can pass
 children into an HTML element. For example, imagine I have a `<FancyForm/>` component
