@@ -17,13 +17,13 @@ Your Rust code can be compiled to a WebAssembly (WASM) module and loaded to run 
 have direct access to browser APIs. Instead, the Rust/WASM ecosystem depends on generating bindings from your Rust code
 to the JavaScript browser environment that hosts it.
 
-The [`wasm-bindgen`](https://rustwasm.github.io/docs/wasm-bindgen/) crate is at the center of that ecosystem. It provides
+The [`wasm-bindgen`](https://wasm-bindgen.github.io/wasm-bindgen/) crate is at the center of that ecosystem. It provides
 both an interface for marking parts of Rust code with annotations telling it how to call JS, and a CLI tool for generating
 the necessary JS glue code. You’ve been using this without knowing it all along: both `trunk` and `cargo-leptos` rely on
 `wasm-bindgen` under the hood.
 
 If there is a JavaScript library that you want to call from Rust, you should refer to the `wasm-bindgen` docs on
-[importing functions from JS](https://rustwasm.github.io/docs/wasm-bindgen/examples/import-js.html). It is relatively
+[importing functions from JS](https://wasm-bindgen.github.io/wasm-bindgen/examples/import-js.html). It is relatively
 easy to import individual functions, classes, or values from JavaScript to use in your Rust app.
 
 It is not always easy to integrate JS libraries into your app directly. In particular, any library that depends on a
