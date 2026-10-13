@@ -59,7 +59,7 @@ The easiest way to see how to use these is to take a look at the test examples t
 
 ### `wasm-bindgen-test` with [`counter`](https://github.com/leptos-rs/leptos/blob/main/examples/counter/tests/web.rs)
 
-This is a fairly simple manual testing setup that uses the [`wasm-pack test`](https://rustwasm.github.io/wasm-pack/book/commands/test.html) command.
+This is a fairly simple manual testing setup that uses the [`wasm-pack test`](https://wasm-bindgen.github.io/wasm-pack/book/commands/test.html#wasm-pack-test) command.
 
 #### Sample Test
 
