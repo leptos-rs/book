@@ -136,7 +136,7 @@ be `0`. In the case of a progress bar, a max value of `0` is not very useful.
 
 So let’s give it a particular default value instead.
 
-### `default` props
+### `default` Props
 
 You can specify a default value other than `Default::default()` pretty simply
 with `#[prop(default = ...)`.
