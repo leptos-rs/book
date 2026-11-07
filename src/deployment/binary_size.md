@@ -36,7 +36,10 @@ To do this, create a file in your project at `.cargo/config.toml`
 ```toml
 [unstable]
 build-std = ["std", "panic_abort", "core", "alloc"]
-build-std-features = ["panic_immediate_abort"]
+# before nightly-2025-09-24: build-std-features = ["panic_immediate_abort"]
+
+[build]
+rustflags = ["-Zunstable-options", "-Cpanic=immediate-abort"]
 ```
 
 Note that if you're using this with SSR too, the same Cargo profile will be applied. You'll need to explicitly specify your target:
